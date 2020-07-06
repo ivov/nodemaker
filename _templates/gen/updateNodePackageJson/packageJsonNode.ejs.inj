@@ -1,0 +1,8 @@
+---
+inject: true
+nodeSpot: <%= nodeSpot %>
+serviceName: <%= serviceName %>
+to: output/package.json
+before: \s+"dist\/nodes\/<%= nodeSpot %>.node.js",
+---
+      "dist/nodes/<%= serviceName %>/<%= serviceName %>.node.js",

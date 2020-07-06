@@ -1,0 +1,259 @@
+---
+to: output/<%= name.replace(/\s/g, "") %>.node.ts
+mainParameters: <%= mainParameters %>
+metaParameters: <%= metaParameters %>
+---
+<%_
+ mainParameters = JSON.parse(mainParameters);
+ metaParameters = JSON.parse(metaParameters);
+_%>
+import {
+	IExecuteFunctions,
+} from 'n8n-core';
+
+import {
+	INodeExecutionData,
+	INodeType,
+	INodeTypeDescription,
+	IDataObject,
+} from 'n8n-workflow';
+
+import {
+	<%= h.camelify(metaParameters.serviceName) %>ApiRequest,
+	<%_ if (h.hasGetAll(mainParameters)) { _%>
+	<%= h.camelify(name) %>ApiRequestAllItems,
+	<%_ } _%>
+} from './GenericFunctions';
+
+export class <%= h.classify(metaParameters.serviceName) %> implements INodeType {
+	description: INodeTypeDescription = {
+		displayName: '<%= metaParameters.serviceName %>',
+		name: '<%= h.camelify(metaParameters.serviceName) %>',
+		icon: 'file:<%= h.camelify(metaParameters.serviceName) %>.png',
+		group: ['transform'],
+		version: 1,
+		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+		description: 'Consume <%= metaParameters.serviceName %> API',
+		defaults: {
+			name: '<%= metaParameters.serviceName %>',
+			color: '<%= metaParameters.nodeColor %>',
+		},
+		inputs: ['main'],
+		outputs: ['main'],
+		properties: [
+			// ----------------------------------
+			//         Resources
+			// ----------------------------------
+			{
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				options: [
+					<%_ for (let resource of Object.keys(mainParameters)) { _%>
+					{
+						name: '<%= resource %>',
+						value: '<%= h.camelify(resource) %>',
+					},
+					<%_ } _%>
+				],
+				default: '<%= Object.keys(mainParameters)[0].toLowerCase() %>',
+				description: 'Resource to consume',
+			},
+			// ----------------------------------
+			//         Operations
+			// ----------------------------------
+			<%_ Object.keys(mainParameters).forEach(function(resource) { _%>
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: [
+							'<%= resource.toLowerCase() %>',
+						],
+					},
+				},
+				options: [
+					<%_ for (let operation of mainParameters[resource]) { _%>
+					{
+						name: '<%= operation.name %>',
+						value: '<%= h.camelify(operation.name) %>',
+						description: '<%= operation.description %>',
+					},
+					<%_ } _%>
+				],
+				default: '<%= h.camelify(mainParameters[resource][0].name) %>',
+				description: 'Operation to perform',
+			},
+			<% }); %>
+			// ----------------------------------
+			//         Fields
+			// ----------------------------------
+			<%_ Object.keys(mainParameters).forEach((resource) => { _%>
+				<%_ for (let operation of mainParameters[resource]) { _%>
+					<%_ for (let field of operation.fields) { _%>
+			{
+				displayName: '<%= field.name %>',
+				name: '<%= field.name %>',
+				<%_ if (field.name !== 'Additional Fields') { _%>
+				description: '<%= field.description %>',
+				<%_ } _%>
+				type: '<%= field.type %>',
+				required: <%= field.name !== 'additionalFields' ? true : false %>,
+				default: <%_ if (field.default === true || field.default === false || typeof field.default === "number") { _%>
+				<%_ %> <%= field.default _%>,
+				<%_ } else if (typeof field.default === 'object' && field.default !== null) { _%>
+				<%_ %> <%= JSON.stringify(field.default) _%>,
+				<%_ } else { _%>
+				<%_ %> '<%= field.default _%>',
+				<%_ } _%>
+				displayOptions: {
+					show: {
+						resource: [
+							'<%= h.camelify(resource) %>',
+						],
+						operation: [
+							'<%= h.camelify(operation.name) %>',
+						],
+						<%_ if (field.extraDisplayRestriction) { _%>
+						<%= h.camelify(Object.keys(field.extraDisplayRestriction).toString()) %>: [
+							<%= Object.values(field.extraDisplayRestriction) %>,
+						]
+						<%_ } _%>
+					},
+				},
+				<%_ if (field.name === 'Additional Fields' && (field.type === 'collection' || field.type === 'multiOptions')) { _%>
+				options: [
+				<%_ for (let option of field.options) { _%>
+					{
+						name: '<%= option.name %>',
+						description: '<%= option.description %>',
+						type: '<%= option.type %>',
+						default: <%_ if (option.default === true || option.default === false || typeof option.default === "number") { _%>
+						<%_ %> <%= option.default %>,
+						<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
+						<%_ %> <%= JSON.stringify(option.default) %>,
+						<%_ } else { _%>
+						<%_ %> '<%= option.default _%>',
+						<%_ } _%>
+						<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+						options: [
+							<%_ for (let option of field.options) { _%>
+							{
+								name: '<%= option.name %>',
+								description: '<%= option.description %>',
+								type: '<%= option.type %>',
+								default: <%_ if (option.default === true || option.default === false || typeof option.default === "number") { _%>
+								<%_ %> <%= option.default %>,
+								<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
+								<%_ %> <%= JSON.stringify(option.default) %>,
+								<%_ } else { _%>
+								<%_ %> '<%= option.default %>',
+								<%_ } _%>
+								<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+								options: [
+									<%_ for (let nestedOption of option.options) { _%>
+									{
+										name: '<%= nestedOption.name %>',
+										description: '<%= nestedOption.description %>',
+									},
+									<%_ } _%>
+								],
+							<%_ } _%>
+							},
+						<%_ } _%>
+						],
+					<%_ } _%>
+					},
+				<%_ } _%>
+				],
+		<%_ } _%>
+			},
+	<%_ } _%>
+	<%_ } _%>
+<%_ }); _%>
+		],
+	};
+
+	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const items = this.getInputData();
+		const returnData: IDataObject[] = [];
+
+		const resource = this.getNodeParameter('resource', 0) as string;
+		const operation = this.getNodeParameter('operation', 0) as string;
+
+		let responseData: any;
+
+		for (let i = 0; i < items.length; i++) {
+
+			let qs: IDataObject = {};
+			let body: IDataObject = {};
+
+			<%_ Object.keys(mainParameters).forEach(function(resource) { _%>
+			<%_ if (Object.keys(mainParameters).indexOf(resource) !== 0) { _%>
+			} else if (resource === '<%= h.camelify(resource) %>') {
+
+			<%_ } else { _%>
+			if (resource === '<%= h.camelify(resource) %>') {
+
+			<%_ } _%>
+				<%_ for (let operation of mainParameters[resource]) { _%>
+				<%_ if (mainParameters[resource].indexOf(operation) !== 0) { _%>
+
+				} else if (operation === '<%= h.camelify(operation.name) %>') {
+				<%_ } else { _%>
+				if (operation === '<%= h.camelify(operation.name) %>') {
+				<%_ } _%>
+
+					<%_ if (h.hasEndpointVariable(operation.endpoint)) { _%>
+					const <%= h.getVariableFromEndpoint(operation.endpoint) %> = this.getNodeParameter('<%= h.getVariableFromEndpoint(operation.endpoint) %>', i);
+					<%_ } _%>
+					const endpoint =<%_ if (h.hasEndpointVariable(operation.endpoint)) { _%>
+					<%_ %> `<%= h.fixEndpoint(operation.endpoint) _%>`;
+					<%_ } else { _%>
+					<%_ %> '<%= operation.endpoint _%>';
+					<%_ } _%>
+
+					<%_ if (h.hasAdditionalFields(operation)) { _%>
+					const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
+					// TODO: Use additionalFields.fieldName in `qs` or in `body` or as boolean flag
+					<%_ } _%>
+
+					<%_ if (operation.name === "Get All") { _%>
+					responseData = await <%= h.camelify(metaParameters.serviceName) %>ApiRequestAllItems.call(this, '<%= operation.requestMethod %>', endpoint, body, qs);
+					<%_ } else if (h.isRetrieval(operation)) { _%>
+					responseData = await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, '<%= operation.requestMethod %>', endpoint, body, qs);
+					<%_ } else { _%>
+					await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, '<%= operation.requestMethod %>', endpoint, body, qs);
+					responseData = { success: true };
+					<%_ } _%>
+				<%_ if (mainParameters[resource].indexOf(operation) + 1 === mainParameters[resource].length) { _%>
+
+				} else {
+					throw new Error(`The operation ${operation} is not known!`);
+				}
+				<%_ } else { _%>
+				<%_ } _%>
+			<%_ } _%>
+			<%_ if (Object.keys(mainParameters).indexOf(resource) + 1 === Object.keys(mainParameters).length) { _%>
+
+			} else {
+				throw new Error(`The resource ${resource} is not known!`);
+			}
+			<%_ } _%>
+
+			<%_ }); _%>
+			if (Array.isArray(responseData)) {
+				returnData.push.apply(returnData, responseData as IDataObject[]);
+			} else {
+				returnData.push(responseData as IDataObject);
+			}
+
+		}
+
+		return [this.helpers.returnJsonArray(returnData)];
+	}
+}
+
+

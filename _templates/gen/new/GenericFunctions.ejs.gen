@@ -1,0 +1,121 @@
+---
+to: output/GenericFunctions.ts
+mainParameters: <%= mainParameters %>
+metaParameters: <%= metaParameters %>
+---
+<%_
+ mainParameters = JSON.parse(mainParameters);
+ metaParameters = JSON.parse(metaParameters);
+_%>
+import {
+	IExecuteFunctions,
+	IHookFunctions,
+} from 'n8n-core';
+
+import {
+	IDataObject,
+} from 'n8n-workflow';
+
+import {
+	OptionsWithUri,
+} from 'request';
+
+
+/**
+ * Make an API request to <%= metaParameters.serviceName %>
+ *
+ * @param {IHookFunctions | IExecuteFunctions} this
+ * @param {string} method
+ * @param {string} endpoint
+ * @param {IDataObject} body
+ * @param {IDataObject} qs
+ * @param {string} [uri]
+ * @param {IDataObject} [headers]
+ * @returns {Promise<any>}
+ */
+export async function <%= h.camelify(metaParameters.serviceName) %>ApiRequest(
+	this: IHookFunctions | IExecuteFunctions,
+	method: string,
+	endpoint: string,
+	body: IDataObject,
+	qs: IDataObject,
+	uri?: string,
+	headers?: IDataObject,
+): Promise<any> { // tslint:disable-line:no-any
+
+	const options: OptionsWithUri = {
+		headers: {},
+		body,
+		method,
+		qs,
+		uri: uri || `<%= metaParameters.apiUrl %>${endpoint}`,
+		json: true,
+	};
+
+	try {
+		<%_ if (metaParameters.auth === "") { _%>
+		<%_ } else { _%>
+
+		const credentials = this.getCredentials('<%= h.getCredentialsString(h.camelify(metaParameters.serviceName), metaParameters.auth) %>');
+
+		if (credentials === undefined) {
+			throw new Error('No credentials got returned!');
+		}
+		<%_ } _%>
+
+		if (Object.keys(headers).length !== 0) {
+			options.headers = Object.assign({}, options.headers, headers);
+		}
+
+		if (Object.keys(body).length === 0) {
+			delete options.body;
+		}
+
+		<%_ if (metaParameters.auth === "OAuth2") { _%>
+		return await this.helpers.requestOAuth2.call(this, '<%= h.getCredentialsString(h.camelify(metaParameters.serviceName), metaParameters.auth) %>', options);
+		<%_ } else { _%>
+		return await this.helpers.request!(options);
+		<%_ } _%>
+
+	} catch (error) {
+
+		// TODO: Error handling per API
+
+		throw error;
+	}
+}
+
+
+/**
+ * Make an API request to <%= metaParameters.serviceName %> and return all results
+ *
+ * @export
+ * @param {IHookFunctions | IExecuteFunctions} this
+ * @param {string} method
+ * @param {string} endpoint
+ * @param {IDataObject} body
+ * @param {IDataObject} qs
+ * @returns {Promise<any>}
+ */
+export async function <%= h.camelify(metaParameters.serviceName) %>ApiRequestAllItems(
+	this: IHookFunctions | IExecuteFunctions,
+	method: string,
+	endpoint: string,
+	body: IDataObject,
+	qs: IDataObject
+): Promise<any> { // tslint:disable-line:no-any
+
+	const returnData: IDataObject[] = [];
+	let responseData: any;
+
+	do {
+		responseData = await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, method, endpoint, body, qs);
+		returnData.push.apply(returnData, responseData.hits);
+		// TODO: Get next page from responseData
+
+	} while (
+		// TODO: Condition for total not yet reached
+	);
+
+	return returnData;
+}

@@ -1,0 +1,21 @@
+{
+  "name": "nodemaker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run node && npm run pack",
+    "node": "node generateNodeFiles.js",
+    "pack": "node generatePackageJson.js",
+    "empty": "rm -rfv output/*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "hygen": "^5.0.3",
+    "json-stringify-pretty-compact": "^2.0.0",
+    "minimist": "^1.2.5",
+    "node-fetch": "^2.6.0"
+  }
+}
