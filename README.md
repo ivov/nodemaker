@@ -11,7 +11,7 @@ Quick proof of concept for n8n node generator.
 
 Run it with `npm run start`. A functional example file is already provided in `parameters.js`. Edit the params to generate a custom node. More info on editing params below.
 
-Nodemaker are generated in `/output`:
+Files are generated in `/output`:
 - `Entity.node.ts`
 - `EntityCredentialTypeApi.credentials.ts`
 - `GenericFunctions.ts`
