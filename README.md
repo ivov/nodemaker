@@ -9,9 +9,9 @@ Quick proof of concept for n8n node generator.
 
 ## Operation
 
-Run it with `npm run start`. A functional example file is already provided in `parameters.js`. Edit the params to generate a custom node; specifics below.
+Run it with `npm run start`. A functional example file is already provided in `parameters.js`. Edit the params to generate a custom node. More info on editing params below.
 
-Nodemaker generate in `/output`:
+Nodemaker are generated in `/output`:
 - `Entity.node.ts`
 - `EntityCredentialTypeApi.credentials.ts`
 - `GenericFunctions.ts`
@@ -21,7 +21,7 @@ Nodemaker generate in `/output`:
 
 The three TypeScript files contain `// TODO:` lines, for the developer to add in custom logic.
 
-`package.json` is the one at `/packages/nodes-base/package.json`. Items are inserted at the right spot in alphabetic order. The pre-insertion `package.json` is retrieved at runtime from the official repo.
+`package.json` is the one at `/packages/nodes-base/package.json`. The paths for the node and credentials are inserted at the right spot in alphabetic order. The pre-insertion `package.json` is retrieved at runtime from the official repo.
 
 Regenerating files overwrites same-name files. You can clean up the `/output` dir with `npm run empty`.
 
@@ -100,4 +100,4 @@ const mainParameters = {
 }
 ```
 
-Field fisplay restrictions are inferred from the object structure, but if you have an additional field display restriction, add it with `extraDisplayRestriction: { fieldName: boolean }`.
+Field display restrictions are inferred from the object structure, but if you have an additional field display restriction, you can add it with `extraDisplayRestriction: { fieldName: boolean }`.
