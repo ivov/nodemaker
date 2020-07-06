@@ -74,17 +74,17 @@ const mainParameters = {
                     default: "",
                 },
                 {
-                name: "Additional Fields",
-                type: "collection",
-                default: {},
-                options: [
-                    {
-                        name: "Keyword",
-                        description: "The keyword for filtering the results of the query",
-                        type: "string",
-                        default: "",
-                    },
-                ],
+                    name: "Additional Fields",
+                    type: "collection",
+                    default: {},
+                    options: [
+                        {
+                            name: "Keyword",
+                            description: "The keyword for filtering the results of the query",
+                            type: "string",
+                            default: "",
+                        },
+                    ],
                 },
             ],
         },
