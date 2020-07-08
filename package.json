@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run node && npm run pack",
-    "node": "node generateNodeFiles.js",
+    "start": "npm run empty && npm run node",
+    "node": "node generateNodeFiles.js --outputNodeType complex",
     "pack": "node generatePackageJson.js",
     "empty": "rm -rfv output/*"
   },

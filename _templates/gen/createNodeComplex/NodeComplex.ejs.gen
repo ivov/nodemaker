@@ -25,6 +25,14 @@ import {
 	<%_ } _%>
 } from './GenericFunctions';
 
+<%_ Object.keys(mainParameters).forEach((resource) => { _%>
+import {
+	<%= h.camelify(resource) %>Operations,
+	<%= h.camelify(resource) %>Fields,
+} from './<%= h.camelify(resource) %>Description';
+
+<%_ }) _%>
+
 export class <%= h.classify(metaParameters.serviceName) %> implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: '<%= metaParameters.serviceName %>',
@@ -62,117 +70,10 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 			// ----------------------------------
 			//         Operations
 			// ----------------------------------
-			<%_ Object.keys(mainParameters).forEach(function(resource) { _%>
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				displayOptions: {
-					show: {
-						resource: [
-							'<%= resource.toLowerCase() %>',
-						],
-					},
-				},
-				options: [
-					<%_ for (let operation of mainParameters[resource]) { _%>
-					{
-						name: '<%= operation.name %>',
-						value: '<%= h.camelify(operation.name) %>',
-						description: '<%= operation.description %>',
-					},
-					<%_ } _%>
-				],
-				default: '<%= h.camelify(mainParameters[resource][0].name) %>',
-				description: 'Operation to perform',
-			},
-			<% }); %>
-			// ----------------------------------
-			//         Fields
-			// ----------------------------------
 			<%_ Object.keys(mainParameters).forEach((resource) => { _%>
-				<%_ for (let operation of mainParameters[resource]) { _%>
-					<%_ for (let field of operation.fields) { _%>
-			{
-				displayName: '<%= field.name %>',
-				name: '<%= field.name %>',
-				<%_ if (field.name !== 'Additional Fields') { _%>
-				description: '<%= field.description %>',
-				<%_ } _%>
-				type: '<%= field.type %>',
-				required: <%= field.name !== 'additionalFields' ? true : false %>,
-				default: <%_ if (field.default === true || field.default === false || typeof field.default === "number") { _%>
-				<%_ %> <%= field.default _%>,
-				<%_ } else if (typeof field.default === 'object' && field.default !== null) { _%>
-				<%_ %> <%= JSON.stringify(field.default) _%>,
-				<%_ } else { _%>
-				<%_ %> '<%= field.default _%>',
-				<%_ } _%>
-				displayOptions: {
-					show: {
-						resource: [
-							'<%= h.camelify(resource) %>',
-						],
-						operation: [
-							'<%= h.camelify(operation.name) %>',
-						],
-						<%_ if (field.extraDisplayRestriction) { _%>
-						<%= h.camelify(Object.keys(field.extraDisplayRestriction).toString()) %>: [
-							<%= Object.values(field.extraDisplayRestriction) %>,
-						]
-						<%_ } _%>
-					},
-				},
-				<%_ if (field.name === 'Additional Fields' && (field.type === 'collection' || field.type === 'multiOptions')) { _%>
-				options: [
-				<%_ for (let option of field.options) { _%>
-					{
-						name: '<%= option.name %>',
-						description: '<%= option.description %>',
-						type: '<%= option.type %>',
-						default: <%_ if (option.default === true || option.default === false || typeof option.default === "number") { _%>
-						<%_ %> <%= option.default %>,
-						<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
-						<%_ %> <%= JSON.stringify(option.default) %>,
-						<%_ } else { _%>
-						<%_ %> '<%= option.default _%>',
-						<%_ } _%>
-						<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
-						options: [
-							<%_ for (let option of field.options) { _%>
-							{
-								name: '<%= option.name %>',
-								description: '<%= option.description %>',
-								type: '<%= option.type %>',
-								default: <%_ if (option.default === true || option.default === false || typeof option.default === "number") { _%>
-								<%_ %> <%= option.default %>,
-								<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
-								<%_ %> <%= JSON.stringify(option.default) %>,
-								<%_ } else { _%>
-								<%_ %> '<%= option.default %>',
-								<%_ } _%>
-								<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
-								options: [
-									<%_ for (let nestedOption of option.options) { _%>
-									{
-										name: '<%= nestedOption.name %>',
-										description: '<%= nestedOption.description %>',
-									},
-									<%_ } _%>
-								],
-							<%_ } _%>
-							},
-						<%_ } _%>
-						],
-					<%_ } _%>
-					},
-				<%_ } _%>
-				],
-		<%_ } _%>
-			},
-	<%_ } _%>
-	<%_ } _%>
-<%_ }); _%>
+			...<%= h.camelify(resource) %>Operations,
+			...<%= h.camelify(resource) %>Fields,
+			<%_ }) _%>
 		],
 	};
 

@@ -1,0 +1,118 @@
+---
+to: output/<%= resourceName.replace(/\s/g, "") %>Description.ts
+resourceObject: <%= resourceObject %>
+---
+<%_ resourceObject = JSON.parse(resourceObject); _%>
+import {
+	INodeProperties,
+} from 'n8n-workflow';
+
+export const <%= h.camelify(resourceName) %>Operations = [
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: [
+					'<%= h.camelify(resourceName) %>',
+				],
+			},
+		},
+		options: [
+			<%_ for (let operation of resourceObject) { _%>
+			{
+				name: '<%= operation.name %>',
+				value: '<%= h.camelify(operation.name) %>',
+				description: '<%= operation.description %>',
+			},
+			<%_ } _%>
+		],
+		default: '<%= h.camelify(resourceObject[0].name) %>',
+		description: 'Operation to perform',
+	},
+] as INodeProperties[];
+
+export const <%= h.camelify(resourceName) %>Fields = [
+	<%_ for (let operation of resourceObject) { _%>
+		<%_ for (let field of operation.fields) { _%>
+	{
+		displayName: '<%= field.name %>',
+		name: '<%= field.name %>',
+		<%_ if (field.name !== 'Additional Fields') { _%>
+		description: '<%= field.description %>',
+		<%_ } _%>
+		type: '<%= field.type %>',
+		required: <%= field.name !== 'additionalFields' ? true : false %>,
+		default: <%_ if (field.default === true || field.default === false || typeof field.default === "number") { _%>
+		<%_ %> <%= field.default _%>,
+		<%_ } else if (typeof field.default === 'object' && field.default !== null) { _%>
+		<%_ %> <%= JSON.stringify(field.default) _%>,
+		<%_ } else { _%>
+		<%_ %> '<%= field.default _%>',
+		<%_ } _%>
+		displayOptions: {
+			show: {
+				resource: [
+					'<%= h.camelify(resourceName) %>',
+				],
+				operation: [
+					'<%= h.camelify(operation.name) %>',
+				],
+				<%_ if (field.extraDisplayRestriction) { _%>
+				<%= h.camelify(Object.keys(field.extraDisplayRestriction).toString()) %>: [
+					<%= Object.values(field.extraDisplayRestriction) %>,
+				]
+				<%_ } _%>
+			},
+		},
+		<%_ if (field.name === 'Additional Fields' && (field.type === 'collection' || field.type === 'multiOptions')) { _%>
+		options: [
+		<%_ for (let option of field.options) { _%>
+			{
+				name: '<%= option.name %>',
+				description: '<%= option.description %>',
+				type: '<%= option.type %>',
+				default: <%_ if (typeof option.default === "boolean" || typeof option.default === "number") { _%>
+				<%_ %> <%= option.default %>,
+				<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
+				<%_ %> <%= JSON.stringify(option.default) %>,
+				<%_ } else { _%>
+				<%_ %> '<%= option.default _%>',
+				<%_ } _%>
+				<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+				options: [
+					<%_ for (let option of field.options) { _%>
+					{
+						name: '<%= option.name %>',
+						description: '<%= option.description %>',
+						type: '<%= option.type %>',
+						default: <%_ if (typeof option.default === "boolean" || typeof option.default === "number") { _%>
+						<%_ %> <%= option.default %>,
+						<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
+						<%_ %> <%= JSON.stringify(option.default) %>,
+						<%_ } else { _%>
+						<%_ %> '<%= option.default %>',
+						<%_ } _%>
+						<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+						options: [
+							<%_ for (let nestedOption of option.options) { _%>
+							{
+								name: '<%= nestedOption.name %>',
+								description: '<%= nestedOption.description %>',
+							},
+							<%_ } _%>
+						],
+					<%_ } _%>
+					},
+				<%_ } _%>
+				],
+			<%_ } _%>
+			},
+		<%_ } _%>
+		],
+		<%_ } _%>
+	},
+	<%_ } _%>
+	<%_ } _%>
+] as INodeProperties[];

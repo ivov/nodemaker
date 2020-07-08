@@ -1,30 +1,33 @@
 const { exec } = require("child_process");
+const minimist = require("minimist");
 const { mainParameters, metaParameters } = require("./parameters");
-const { formatCommand, getServiceCredential } = require("./utils");
+const {
+  createNodeCommand,
+  createGenericFunctionsCommand,
+  createoauth2CredentialCommand,
+  createResourceDescriptionCommand,
+} = require("./commands");
 
-// `name` is passed in separately from `metaParameters` because it is needed in the file name, which is parsed first.
-
-const nodeGeneration = formatCommand(`
-  env HYGEN_OVERWRITE=1
-  node node_modules/hygen/dist/bin.js
-  gen new
-    --name \"${metaParameters.serviceName}\"
-    --metaParameters '${JSON.stringify(metaParameters)}'
-    --mainParameters '${JSON.stringify(mainParameters)}'
-`);
+const { outputNodeType } = minimist(process.argv.slice(2), {
+  string: ["outputNodeType"],
+});
 
 (async () => {
-  exec(nodeGeneration);
+  exec(createNodeCommand(outputNodeType, metaParameters, mainParameters));
+  exec(createGenericFunctionsCommand(metaParameters, mainParameters));
 
-  if (metaParameters.auth !== "") {
-    const oauth2CredentialGeneration = formatCommand(`
-      env HYGEN_OVERWRITE=1
-      node node_modules/hygen/dist/bin.js
-      gen create${metaParameters.auth}Credential
-        --name \"${metaParameters.serviceName}\"
-        --serviceCredential ${getServiceCredential(metaParameters)}
-    `);
+  if (outputNodeType === "complex") {
+    for (let resourceName in mainParameters) {
+      exec(
+        createResourceDescriptionCommand({
+          resourceName: resourceName,
+          resourceObject: mainParameters[resourceName],
+        })
+      );
+    }
+  }
 
-    exec(oauth2CredentialGeneration);
+  if (metaParameters.auth === "OAuth2") {
+    exec(createoauth2CredentialCommand(metaParameters));
   }
 })();
