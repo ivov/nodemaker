@@ -28,12 +28,8 @@ module.exports = {
       return stringPath.join("::").replace(/\s/g, "");
     },
     hasGetAll: (mainParameters) => {
-      for (let resource in mainParameters) {
-        for (let operation of mainParameters[resource]) {
-          if (operation.name === "Get All") return true;
-        }
-      }
-      return false;
+      const [operations] = Object.values(mainParameters);
+      return operations.some((operation) => operation.name === "Get All");
     },
     getCredentialsString: (name, auth) =>
       name + (auth === "OAuth2" ? "OAuth2" : "") + "Api",
@@ -41,17 +37,12 @@ module.exports = {
     hasAdditionalFields: (operation) =>
       operation.fields.filter((field) => field.name === "Additional Fields"),
     classify: (name) => name.replace(/\s/g, ""),
-    hasEndpointVariable: (endpoint) => {
-      return endpoint.split("").includes("$");
-    },
-    getVariableFromEndpoint: (endpoint) => {
-      return endpoint.match(/\$\$(.*)\$\$/)[1];
-    },
-    fixEndpoint: (endpoint) => {
-      return endpoint
+    hasEndpointVariable: (endpoint) => endpoint.split("").includes("$"),
+    getVariableFromEndpoint: (endpoint) => endpoint.match(/\$\$(.*)\$\$/)[1],
+    fixEndpoint: (endpoint) =>
+      endpoint
         .replace(/\/\$\$/, "/${")
         .replace(/\$\$$/, "}")
-        .replace(/\"/g, "`");
-    },
+        .replace(/\"/g, "`"),
   },
 };
