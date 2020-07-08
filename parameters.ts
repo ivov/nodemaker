@@ -1,11 +1,11 @@
-const metaParameters = {
+export const metaParameters: MetaParameters = {
   serviceName: "Hacker News",
-  auth: "OAuth2", // "OAuth2" or "Key" or ""
+  auth: "OAuth2",
   nodeColor: "#ff6600",
   apiUrl: "http://hn.algolia.com/api/v1/",
 };
 
-const mainParameters = {
+export const mainParameters: MainParameters = {
   Article: [
     {
       name: "Get",
@@ -134,5 +134,3 @@ const mainParameters = {
     },
   ],
 };
-
-module.exports = { mainParameters, metaParameters };

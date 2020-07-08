@@ -1,0 +1,13 @@
+{
+	"exclude": [ "output" ],
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"outDir": "./build",
+
+		"strict": true,
+		"strictPropertyInitialization": false,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true
+	}
+}

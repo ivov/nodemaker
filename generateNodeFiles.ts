@@ -1,20 +1,21 @@
-const { exec } = require("child_process");
-const minimist = require("minimist");
-const { mainParameters, metaParameters } = require("./parameters");
-const {
+import { exec } from "child_process";
+import minimist from "minimist";
+import { mainParameters, metaParameters } from "./parameters";
+import {
   createNodeCommand,
   createGenericFunctionsCommand,
   createoauth2CredentialCommand,
   createResourceDescriptionCommand,
-} = require("./commands");
+} from "./commands";
 
 const { outputNodeType } = minimist(process.argv.slice(2), {
   string: ["outputNodeType"],
-});
+}) as { [key: string]: string };
 
-(async () => {
+const main = () => {
   exec(createNodeCommand(outputNodeType, metaParameters, mainParameters));
   exec(createGenericFunctionsCommand(metaParameters, mainParameters));
+  console.log(createGenericFunctionsCommand(metaParameters, mainParameters));
 
   if (outputNodeType === "complex") {
     for (let resourceName in mainParameters) {
@@ -28,6 +29,10 @@ const { outputNodeType } = minimist(process.argv.slice(2), {
   }
 
   if (metaParameters.auth === "OAuth2") {
+    console.log("----------------");
+    console.log(createoauth2CredentialCommand(metaParameters));
     exec(createoauth2CredentialCommand(metaParameters));
   }
-})();
+};
+
+main();
