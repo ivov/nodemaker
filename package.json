@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run empty && npm run node",
-    "node": "tsc && node build/generateNodeFiles.js --outputNodeType complex",
-    "pack": "tsc && node build/generatePackageJson.js",
+    "start": "npm run empty && tsc && npm run nodegen && npm run packgen",
+    "nodegen": "cp .hygen.js ./build/.hygen.js && node build/generateNodeFiles.js --outputNodeType complex",
+    "packgen": "node build/generatePackageJson.js",
     "empty": "rm -rfv output/*"
   },
   "keywords": [],

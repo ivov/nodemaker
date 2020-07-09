@@ -15,7 +15,6 @@ const { outputNodeType } = minimist(process.argv.slice(2), {
 const main = () => {
   exec(createNodeCommand(outputNodeType, metaParameters, mainParameters));
   exec(createGenericFunctionsCommand(metaParameters, mainParameters));
-  console.log(createGenericFunctionsCommand(metaParameters, mainParameters));
 
   if (outputNodeType === "complex") {
     for (let resourceName in mainParameters) {
@@ -29,8 +28,6 @@ const main = () => {
   }
 
   if (metaParameters.auth === "OAuth2") {
-    console.log("----------------");
-    console.log(createoauth2CredentialCommand(metaParameters));
     exec(createoauth2CredentialCommand(metaParameters));
   }
 };

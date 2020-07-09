@@ -1,9 +1,19 @@
+// ----------------------------------
+//         Meta parameters
+// ----------------------------------
+
 type MetaParameters = {
   serviceName: string;
-  auth: "OAuth2" | "Key" | "";
+  auth: Auth;
   nodeColor: string;
   apiUrl: string;
 };
+
+type Auth = "OAuth2" | "Key" | "";
+
+// ----------------------------------
+//         Main parameters
+// ----------------------------------
 
 type MainParameters = { [key: string]: Resource };
 
@@ -17,25 +27,48 @@ type Operation = {
   fields: OperationField[];
 };
 
-type OperationField = {
+// operation field
+
+type OperationField = OperationRegularField | OperationGroupField;
+
+type OperationRegularField = {
   name: string;
-  description?: string; // only optional for if name is "Additional Fields" → TODO: how to enforce this?
-  type: FieldType;
-  default: FieldDefault;
+  description: string;
+  type: SimpleFieldType;
+  default: RegularFieldDefault;
   options?: FieldOption[];
   extraDisplayRestriction?: { [key: string]: boolean };
 };
 
-type FieldType =
-  | "string"
-  | "number"
-  | "boolean"
+type OperationGroupField = {
+  name: string;
+  type: GroupFieldType;
+  default: GroupFieldDefault;
+  options?: FieldOption[];
+  extraDisplayRestriction?: { [key: string]: boolean };
+};
+
+// field type
+
+type FieldType = SimpleFieldType | GroupFieldType;
+
+type SimpleFieldType = "string" | "number" | "boolean";
+
+type GroupFieldType =
   | "collection"
   | "fixedCollection"
   | "options"
   | "multiOptions";
 
-type FieldDefault = string | number | boolean | {};
+// field default
+
+type FieldDefault = RegularFieldDefault | GroupFieldDefault;
+
+type RegularFieldDefault = string | number | boolean;
+
+type GroupFieldDefault = {};
+
+// field option
 
 type FieldOption = {
   name: string;

@@ -52,7 +52,7 @@ export const mainParameters: MainParameters = {
             "Limit of Hacker News articles to be returned for the query",
           type: "number",
           default: 5,
-          extraDisplayRestriction: { "Return All": false },
+          extraDisplayRestriction: { "Return All": true },
         },
         {
           name: "Additional Fields",

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   helpers: {
     camelify: (inputString) => {
       var stringPath = inputString.split("/");
@@ -27,10 +27,8 @@ export default {
 
       return stringPath.join("::").replace(/\s/g, "");
     },
-    // @ts-ignore → TODO: global definitions not being recognized in this file
     hasGetAll: (mainParameters) => {
       const [operations] = Object.values(mainParameters);
-      // @ts-ignore → TODO: global definitions not being recognized in this file
       return operations.some((operation) => operation.name === "Get All");
     },
     getCredentialsString: (name, auth) =>
