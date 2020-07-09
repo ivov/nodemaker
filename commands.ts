@@ -1,10 +1,14 @@
-const { formatCommand, getServiceCredential } = require("./utils");
+import { formatCommand, getServiceCredential } from "./utils/index";
 
 /**Command to generate a simple or complex node:
  * Simple: A node containing resources, operations and fields inside a single file.
  * Complex: A node divided into separate files for each of their resource operations and fields.
  * Note: `name` is passed in separately from `metaParameters` because it is needed in the file name, which is parsed first.*/
-const createNodeCommand = (outputNodeType, metaParameters, mainParameters) =>
+export const createNodeCommand = (
+  outputNodeType: string,
+  metaParameters: MetaParameters,
+  mainParameters: MainParameters
+) =>
   formatCommand(`
   env HYGEN_OVERWRITE=1
   node node_modules/hygen/dist/bin.js
@@ -14,7 +18,10 @@ const createNodeCommand = (outputNodeType, metaParameters, mainParameters) =>
     --mainParameters '${JSON.stringify(mainParameters)}'
 `);
 
-const createGenericFunctionsCommand = (metaParameters, mainParameters) =>
+export const createGenericFunctionsCommand = (
+  metaParameters: MetaParameters,
+  mainParameters: MainParameters
+) =>
   formatCommand(`
   env HYGEN_OVERWRITE=1
   node node_modules/hygen/dist/bin.js
@@ -23,7 +30,7 @@ const createGenericFunctionsCommand = (metaParameters, mainParameters) =>
     --mainParameters '${JSON.stringify(mainParameters)}'
 `);
 
-const createoauth2CredentialCommand = (metaParameters) =>
+export const createoauth2CredentialCommand = (metaParameters: MetaParameters) =>
   formatCommand(`
   env HYGEN_OVERWRITE=1
   node node_modules/hygen/dist/bin.js
@@ -32,7 +39,13 @@ const createoauth2CredentialCommand = (metaParameters) =>
     --serviceCredential ${getServiceCredential(metaParameters)}
 `);
 
-const createResourceDescriptionCommand = ({ resourceName, resourceObject }) =>
+export const createResourceDescriptionCommand = ({
+  resourceName,
+  resourceObject,
+}: {
+  resourceName: string;
+  resourceObject: Resource;
+}) =>
   formatCommand(`
   env HYGEN_OVERWRITE=1
   node node_modules/hygen/dist/bin.js
@@ -40,10 +53,3 @@ const createResourceDescriptionCommand = ({ resourceName, resourceObject }) =>
     --resourceName ${resourceName}
     --resourceObject '${JSON.stringify(resourceObject)}'
 `);
-
-module.exports = {
-  createNodeCommand,
-  createGenericFunctionsCommand,
-  createoauth2CredentialCommand,
-  createResourceDescriptionCommand,
-};

@@ -1,11 +1,11 @@
-const metaParameters = {
+export const metaParameters: MetaParameters = {
   serviceName: "Hacker News",
-  auth: "OAuth2", // "OAuth2" or "Key" or ""
+  auth: "OAuth2",
   nodeColor: "#ff6600",
   apiUrl: "http://hn.algolia.com/api/v1/",
 };
 
-const mainParameters = {
+export const mainParameters: MainParameters = {
   Article: [
     {
       name: "Get",
@@ -52,7 +52,7 @@ const mainParameters = {
             "Limit of Hacker News articles to be returned for the query",
           type: "number",
           default: 5,
-          extraDisplayRestriction: { "Return All": false },
+          extraDisplayRestriction: { "Return All": true },
         },
         {
           name: "Additional Fields",
@@ -134,5 +134,3 @@ const mainParameters = {
     },
   ],
 };
-
-module.exports = { mainParameters, metaParameters };

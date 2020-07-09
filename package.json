@@ -4,18 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run empty && npm run node",
-    "node": "node generateNodeFiles.js --outputNodeType complex",
-    "pack": "node generatePackageJson.js",
+    "start": "npm run empty && tsc && npm run nodegen && npm run packgen",
+    "nodegen": "cp .hygen.js ./build/.hygen.js && node build/generateNodeFiles.js --outputNodeType complex",
+    "packgen": "node build/generatePackageJson.js",
     "empty": "rm -rfv output/*"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/minimist": "^1.2.0",
+    "@types/node-fetch": "^2.5.7",
     "hygen": "^5.0.3",
-    "json-stringify-pretty-compact": "^2.0.0",
     "minimist": "^1.2.5",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.20",
+    "typescript": "^3.9.6"
   }
 }

@@ -1,16 +1,16 @@
-const { exec } = require("child_process");
-const {
+import { exec } from "child_process";
+import { metaParameters } from "./parameters";
+import {
   sleep,
   retrievePackageJson,
   getServiceCredential,
   readPackageJson,
   findCredentialSpot,
   findNodeSpot,
-} = require("./utils");
-const { metaParameters } = require("./parameters");
-const { formatCommand } = require("./utils");
+  formatCommand,
+} from "./utils/index";
 
-(async () => {
+const main = async () => {
   await retrievePackageJson();
   const packageJsonData = readPackageJson();
 
@@ -19,12 +19,12 @@ const { formatCommand } = require("./utils");
 
   const credentialSpot = findCredentialSpot(
     serviceCredential,
-    packageJsonData.n8n.credentials
+    packageJsonData.n8n.credentials as string[]
   );
 
   const nodeSpot = findNodeSpot(
     metaParameters.serviceName,
-    packageJsonData.n8n.nodes
+    packageJsonData.n8n.nodes as string[]
   );
 
   const credentialInsertion = formatCommand(`
@@ -46,4 +46,6 @@ const { formatCommand } = require("./utils");
   exec(credentialInsertion);
   await sleep(1000); // to ensure both insertions succeed
   exec(serviceInsertion);
-})();
+};
+
+main();
