@@ -1,8 +1,9 @@
 import { formatCommand, getServiceCredential } from "./utils/index";
 
 /**Command to generate a simple or complex node:
- * Simple: A node containing resources, operations and fields inside a single file.
- * Complex: A node divided into separate files for each of their resource operations and fields.
+ * - Simple: A node containing resources, operations and fields inside a single file.
+ * - Complex: A node divided into separate files for each of their resource operations and fields.
+ *
  * Note: `name` is passed in separately from `metaParameters` because it is needed in the file name, which is parsed first.*/
 export const createNodeCommand = (
   outputNodeType: string,
@@ -53,3 +54,27 @@ export const createResourceDescriptionCommand = ({
     --resourceName ${resourceName}
     --resourceObject '${JSON.stringify(resourceObject)}'
 `);
+
+export const createCredentialInsertionCommand = (
+  serviceCredential: string,
+  credentialSpot: string
+) =>
+  formatCommand(`
+  env HYGEN_OVERWRITE=1
+  node node_modules/hygen/dist/bin.js
+  gen updateCredentialPackageJson
+    --serviceCredential ${serviceCredential}
+    --credentialSpot ${credentialSpot}
+  `);
+
+export const createServiceInsertionCommand = (
+  formattedServiceName: string,
+  nodeSpot: string
+) =>
+  formatCommand(`
+  env HYGEN_OVERWRITE=1
+  node node_modules/hygen/dist/bin.js
+  gen updateNodePackageJson
+    --serviceName ${formattedServiceName}
+    --nodeSpot ${nodeSpot}
+  `);
