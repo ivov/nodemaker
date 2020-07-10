@@ -1,34 +1,24 @@
-import { exec } from "child_process";
-import minimist from "minimist";
-import { mainParameters, metaParameters } from "./parameters";
-import {
-  createNodeCommand,
-  createGenericFunctionsCommand,
-  createoauth2CredentialCommand,
-  createResourceDescriptionCommand,
-} from "./commands";
+import { metaParameters } from "./parameters";
+import NodeFilesGenerator from "./NodeFilesGenerator";
 
-const { outputNodeType } = minimist(process.argv.slice(2), {
-  string: ["outputNodeType"],
-}) as { [key: string]: string };
+const nodeGenerationType = process.argv[3].replace("--", "");
+
+if (nodeGenerationType !== "simple" && nodeGenerationType !== "complex") {
+  throw Error('Node generation type is neither "simple" nor "complex"!');
+}
 
 const main = () => {
-  exec(createNodeCommand(outputNodeType, metaParameters, mainParameters));
-  exec(createGenericFunctionsCommand(metaParameters, mainParameters));
+  const generator = new NodeFilesGenerator();
 
-  if (outputNodeType === "complex") {
-    for (let resourceName in mainParameters) {
-      exec(
-        createResourceDescriptionCommand({
-          resourceName: resourceName,
-          resourceObject: mainParameters[resourceName],
-        })
-      );
-    }
+  generator.createMainNodeFile(nodeGenerationType);
+  generator.createGenericFunctionsFile();
+
+  if (nodeGenerationType === "complex") {
+    generator.createResourceDescriptionFile();
   }
 
   if (metaParameters.auth === "OAuth2") {
-    exec(createoauth2CredentialCommand(metaParameters));
+    generator.createOAuth2CredentialsFile();
   }
 };
 

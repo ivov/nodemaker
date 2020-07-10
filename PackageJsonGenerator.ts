@@ -1,44 +1,47 @@
 import { exec } from "child_process";
 import fs from "fs";
-import path from "path";
 import fetch from "node-fetch";
-import {
-  createCredentialInsertionCommand,
-  createServiceInsertionCommand,
-} from "./commands";
+import { join } from "path";
+import Generator from "./Generator";
+import { metaParameters } from "./parameters";
+import { PACKAGE_JSON_URL } from "./constants";
 
-export default class PackageJsonGenerator {
-  public async getPackageJsonData() {
-    this.retrievePackageJson();
-    return this.readPackageJson();
+export default class PackageJsonGenerator extends Generator {
+  private packageJsonData: any;
+  private localPackageJsonPath: string;
+
+  constructor() {
+    super();
+    this.localPackageJsonPath = join("output", "package.json");
   }
 
-  private async retrievePackageJson() {
+  public async retrievePackageJson() {
     const packageJsonData = await this.fetchPackageJson();
     this.savePackageJson(packageJsonData);
   }
 
   private async fetchPackageJson() {
-    const url =
-      "https://raw.githubusercontent.com/n8n-io/n8n/master/packages/nodes-base/package.json";
-    const response = await fetch(url);
+    const response = await fetch(PACKAGE_JSON_URL);
     return response.json();
   }
 
   private async savePackageJson(packageJsonData: any) {
-    const destinationPath = path.join("output", "package.json");
-    fs.writeFileSync(destinationPath, JSON.stringify(packageJsonData, null, 2));
+    fs.writeFileSync(
+      this.localPackageJsonPath,
+      JSON.stringify(packageJsonData, null, 2)
+    );
+    this.packageJsonData = this.readPackageJson();
   }
 
   private readPackageJson() {
-    const sourcePath = path.join("output", "package.json");
-    return JSON.parse(fs.readFileSync(sourcePath).toString());
+    return JSON.parse(fs.readFileSync(this.localPackageJsonPath).toString());
   }
 
-  public findCredentialSpot(input: string, credentials: string[]) {
-    for (let credential of credentials) {
+  public findCredentialSpot() {
+    const serviceCredential = this.getServiceCredential();
+    for (let credential of this.packageJsonData.n8n.credentials) {
       const relevantString = credential.slice(17);
-      if (relevantString[0] < input[0]) {
+      if (relevantString[0] < serviceCredential[0]) {
         continue;
       }
       return relevantString.replace(".credentials.js", "");
@@ -47,8 +50,8 @@ export default class PackageJsonGenerator {
     throw Error("No spot found!");
   }
 
-  public findNodeSpot(input: string, nodes: string[]) {
-    for (let node of nodes) {
+  public findNodeSpot() {
+    for (let node of this.packageJsonData.n8n.nodes) {
       const pathMatch = node.match(/dist\/nodes\/(.*)\.node\.js/);
 
       if (pathMatch === null) {
@@ -57,7 +60,7 @@ export default class PackageJsonGenerator {
 
       const relevantString = pathMatch[1];
 
-      if (relevantString[0] < input[0]) {
+      if (relevantString[0] < metaParameters.serviceName[0]) {
         continue;
       }
       return relevantString.replace(".node.js", "");
@@ -65,11 +68,29 @@ export default class PackageJsonGenerator {
     throw Error("No spot found!");
   }
 
-  public insertCredential(serviceCredential: string, credentialSpot: string) {
-    exec(createCredentialInsertionCommand(serviceCredential, credentialSpot));
+  public insertCredential() {
+    const command = this.formatCommand(`
+    env HYGEN_OVERWRITE=1
+    node node_modules/hygen/dist/bin.js
+    gen updateCredentialPackageJson
+      --serviceCredential ${this.getServiceCredential()}
+      --credentialSpot ${this.findCredentialSpot()}
+    `);
+
+    exec(command);
   }
 
-  public insertService(serviceName: string, nodeSpot: string) {
-    exec(createServiceInsertionCommand(serviceName, nodeSpot));
+  public insertService() {
+    const formattedServiceName = metaParameters.serviceName.replace(/\s/, "");
+
+    const command = this.formatCommand(`
+    env HYGEN_OVERWRITE=1
+    node node_modules/hygen/dist/bin.js
+    gen updateNodePackageJson
+      --serviceName ${formattedServiceName}
+      --nodeSpot ${this.findNodeSpot()}
+    `);
+
+    exec(command);
   }
 }

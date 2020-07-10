@@ -1,4 +1,14 @@
 // ----------------------------------
+//         Node generation
+// ----------------------------------
+
+/**
+ - Simple: A node containing resources, operations and fields inside a single file.
+ - Complex: A node divided into separate files for each of their resource operations and fields.
+*/
+type NodeGenerationType = "simple" | "complex";
+
+// ----------------------------------
 //         Meta parameters
 // ----------------------------------
 

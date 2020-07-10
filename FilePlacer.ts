@@ -6,19 +6,19 @@ const relocate = promisify(fs.rename);
 
 export default class FilePlacer {
   // /output at nodemaker
-  sourceDirPath: string;
+  private sourceDirPath: string;
 
   // files in /output in nodemaker
-  sourceFilenames: string[];
+  private sourceFilenames: string[];
 
   // /packages/nodes-base/ at n8n
-  destinationNodesBaseDir: string;
+  private destinationNodesBaseDir: string;
 
   // /packages/nodes-base/nodes at n8n
-  destinationNodesDir: string;
+  private destinationNodesDir: string;
 
   // /packages/nodes-base/credentials at n8n
-  destinationCredentialsDir: string;
+  private destinationCredentialsDir: string;
 
   constructor() {
     this.sourceDirPath = join(__dirname, "..", "output");
@@ -75,7 +75,10 @@ export default class FilePlacer {
   /**Place node files (`*.node.ts`, `GenericFunctions.ts`, and resource files if any) in their appropriate location in the n8n repo.*/
   private async placeNodeFiles() {
     const nodeFilenames = this.sourceFilenames.filter(
-      (file) => file !== "package.json" && !file.endsWith(".credentials.ts")
+      (file) =>
+        file !== "package.json" &&
+        !file.endsWith(".credentials.ts") &&
+        file !== ".gitkeep"
     );
 
     const destination = join(
