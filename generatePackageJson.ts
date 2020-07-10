@@ -1,40 +1,30 @@
-import { exec } from "child_process";
 import { metaParameters } from "./parameters";
-import {
-  createCredentialInsertionCommand,
-  createServiceInsertionCommand,
-} from "./commands";
-import {
-  sleep,
-  retrievePackageJson,
-  getServiceCredential,
-  readPackageJson,
-  findCredentialSpot,
-  findNodeSpot,
-} from "./utils/index";
+import PackageJsonGenerator from "./PackageJsonGenerator";
+import { getServiceCredential, sleep } from "./utils/index";
 
 const main = async () => {
-  await retrievePackageJson();
-  const packageJsonData = readPackageJson();
+  const generator = new PackageJsonGenerator();
+
+  const packageJsonData = await generator.getPackageJsonData();
 
   const serviceCredential = getServiceCredential(metaParameters);
   const formattedServiceName = metaParameters.serviceName.replace(/\s/, "");
 
-  const credentialSpot = findCredentialSpot(
+  const credentialSpot = generator.findCredentialSpot(
     serviceCredential,
     packageJsonData.n8n.credentials as string[]
   );
 
-  const nodeSpot = findNodeSpot(
+  const nodeSpot = generator.findNodeSpot(
     metaParameters.serviceName,
     packageJsonData.n8n.nodes as string[]
   );
 
-  exec(createCredentialInsertionCommand(serviceCredential, credentialSpot));
+  generator.insertCredential(serviceCredential, credentialSpot);
 
   await sleep(1000); // to ensure both insertions succeed
 
-  exec(createServiceInsertionCommand(formattedServiceName, nodeSpot));
+  generator.insertService(formattedServiceName, nodeSpot);
 };
 
 main();
