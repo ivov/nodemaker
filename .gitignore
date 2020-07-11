@@ -1,4 +1,6 @@
 /node_modules
 /output/*.ts
 /output/*.json
+/output/icon-candidates
+/output/icon-candidates/*.png
 /build

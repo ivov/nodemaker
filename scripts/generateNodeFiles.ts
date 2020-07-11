@@ -1,25 +1,28 @@
 import { metaParameters } from "../parameters";
 import NodeFilesGenerator from "../generators/NodeFilesGenerator";
+import inquirer from "inquirer";
 
-const nodeGenerationType = process.argv[3].replace("--", "");
+inquirer
+  .prompt([
+    {
+      name: "nodeGenerationType",
+      type: "list",
+      message:
+        "Node generation type?\n  - Simple: Node resources in single file.\n  - Complex: Node resources in Description files.\n",
+      choices: ["simple", "complex"],
+    },
+  ])
+  .then(({ nodeGenerationType }) => {
+    const generator = new NodeFilesGenerator();
 
-if (nodeGenerationType !== "simple" && nodeGenerationType !== "complex") {
-  throw Error('Node generation type is neither "simple" nor "complex"');
-}
+    generator.createMainNodeFile(nodeGenerationType);
+    generator.createGenericFunctionsFile();
 
-const main = () => {
-  const generator = new NodeFilesGenerator();
+    if (nodeGenerationType === "complex") {
+      generator.createResourceDescriptionFile();
+    }
 
-  generator.createMainNodeFile(nodeGenerationType);
-  generator.createGenericFunctionsFile();
-
-  if (nodeGenerationType === "complex") {
-    generator.createResourceDescriptionFile();
-  }
-
-  if (metaParameters.auth === "OAuth2") {
-    generator.createOAuth2CredentialsFile();
-  }
-};
-
-main();
+    if (metaParameters.auth === "OAuth2") {
+      generator.createOAuth2CredentialsFile();
+    }
+  });

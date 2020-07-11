@@ -4,20 +4,25 @@
   "description": "Quick proof of concept for n8n node generator",
   "main": "index.js",
   "scripts": {
-    "start": "npm run empty && npm run nodegen && npm run packgen",
-    "nodegen": "cp .hygen.js ./build/.hygen.js && tsc && node build/generateNodeFiles.js --nodeGenerationType complex",
-    "packgen": "tsc && node build/generatePackageJson.js",
-    "place": "tsc && node build/placeFiles.js",
+    "nodegen": "cp .hygen.js ./build/.hygen.js && tsc && node build/scripts/generateNodeFiles.js",
+    "packgen": "tsc && node build/scripts/generatePackageJson.js",
+    "icongen": "tsc && node build/scripts/generateIconCandidates.js",
+    "place": "tsc && node build/scripts/placeFiles.js",
     "empty": "rm -rfv output/*"
   },
-  "keywords": ["n8n"],
+  "keywords": [
+    "n8n"
+  ],
   "author": "Iván Ovejero",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "hygen": "^5.0.3",
+    "inquirer": "^7.3.1",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
+    "@types/inquirer": "^6.5.0",
     "@types/node": "^14.0.20",
     "@types/node-fetch": "^2.5.7",
     "typescript": "^3.9.6"
