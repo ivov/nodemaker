@@ -48,6 +48,7 @@ $ npm run [script]
 ### Notes
 
 - All output files are generated in the `/output` dir. Same-name files are overwritten.
+- In "simple" node generation, the output node contains its resources in a single file. In "complex" node generation, the output node has its resources in separate `*Description.ts` files.
 - When node files are placed in the n8n repo, `output/package.json` will overwrite `/packages/nodes-base/package.json`.
 - The `package.json` used for file generation is retrieved at runtime from the official repo.
 - No credential file will be generated if `metaParameters.auth` is an empty string.
@@ -153,7 +154,7 @@ Contact the author for a Search Engine ID and API Key, or generate your own as d
 
 1. Access the [Custom Search Engine dashboard](https://cse.google.com/cse/create/new).
 2. Enter any site in `Sites to Search`, name the engine and `Create`.
-3. Click on `Edit search engine` and select yours.
+3. Click on `Edit search engine` and then on `Setup`.
 4. Under `Basics`, copy the string `Search engine ID` and use it for `GOOGLE_IMAGE_SEARCH_ENGINE_ID` in the `.env` file.
 5. Under `Basics`, switch on `Image search`.
 6. Under `Basics`, switch on `Search the entire web`.
@@ -164,5 +165,6 @@ Contact the author for a Search Engine ID and API Key, or generate your own as d
 1. Access the [Google Cloud Platform dashboard](https://console.developers.google.com).
 2. On the top-left corner, click on the project name and then on `New Project`.
 3. Name the project and `Create`.
-4. Click on `Enable APIs and Services`, search for `Custom Search API`, select it and enable it.
-5. Click on `Credentials` on the left nav, then `Create Credentials`, then `API key`. Use the generated API key for `GOOGLE_PROJECT_API_KEY` in the `.env` file.
+4. Select your new project on the top-left corner.
+5. Click on `Enable APIs and Services`, search for `Custom Search API`, select it and enable it.
+6. Click on `Create Credentials` on the top-right corner, then on `Credentials` on the left nav, then on the `API key` hyperlink, and finally on `Create`. Use the generated API key for `GOOGLE_PROJECT_API_KEY` in the `.env` file.

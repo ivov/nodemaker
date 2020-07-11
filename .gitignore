@@ -4,3 +4,4 @@
 /output/icon-candidates
 /output/icon-candidates/*.png
 /build
+/config/.env
