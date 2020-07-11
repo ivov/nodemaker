@@ -4,20 +4,22 @@ import { promisify } from "util";
 
 const relocate = promisify(fs.rename);
 
+/**Responsible for placing the various files in /output in various dirs in the n8n repo.
+ * **Requirement:** The n8n and nodemaker repos must be located side by side.*/
 export default class FilePlacer {
-  // /output at nodemaker
+  // dir /output at nodemaker
   private sourceDirPath: string;
 
   // files in /output in nodemaker
   private sourceFilenames: string[];
 
-  // /packages/nodes-base/ at n8n
+  // dir /packages/nodes-base/ at n8n
   private destinationNodesBaseDir: string;
 
-  // /packages/nodes-base/nodes at n8n
+  // dir /packages/nodes-base/nodes at n8n
   private destinationNodesDir: string;
 
-  // /packages/nodes-base/credentials at n8n
+  // dir /packages/nodes-base/credentials at n8n
   private destinationCredentialsDir: string;
 
   constructor() {
@@ -38,13 +40,13 @@ export default class FilePlacer {
     );
   }
 
-  /**Place `package.json`, credential file, and node files in their appropriate locations in the n8n repo.*/
   public async run() {
     await this.placePackageJson();
     await this.placeCredentialFile();
     await this.placeNodeFiles();
   }
 
+  /**Place `output/package.json` at `/packages/nodes-base/package.json` in the n8n repo, overwriting it.*/
   private async placePackageJson() {
     const source = join(this.sourceDirPath, "package.json");
     const destination = join(this.destinationNodesBaseDir, "package.json");
@@ -52,7 +54,7 @@ export default class FilePlacer {
     await relocate(source, destination);
   }
 
-  /**Place credential file (`*.credentials.ts`) in the appropriate location in the n8n repo.*/
+  /**Place `output/*.credentials.ts` at `/packages/nodes-base/credentials` in the n8n repo.*/
   private async placeCredentialFile() {
     const credentialsFilename = this.sourceFilenames.find((file) =>
       file.endsWith(".credentials.ts")
@@ -72,7 +74,7 @@ export default class FilePlacer {
     await relocate(source, destination);
   }
 
-  /**Place node files (`*.node.ts`, `GenericFunctions.ts`, and resource files if any) in their appropriate location in the n8n repo.*/
+  /**Place `*.node.ts` and `GenericFunctions.ts` (and resource files if any) at a new dir in /packages/nodes-base/nodes in the n8n repo.*/
   private async placeNodeFiles() {
     const nodeFilenames = this.sourceFilenames.filter(
       (file) =>
@@ -97,7 +99,7 @@ export default class FilePlacer {
     });
   }
 
-  /**Returns the name of the service, to be used as a dirname.*/
+  /**Returns the name of the service, to be used as a new dirname.*/
   private getDestinationDirname() {
     const serviceFilename = this.sourceFilenames.find((file) =>
       file.endsWith(".node.ts")

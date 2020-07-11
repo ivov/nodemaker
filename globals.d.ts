@@ -3,8 +3,9 @@
 // ----------------------------------
 
 /**
- - Simple: A node containing resources, operations and fields inside a single file.
- - Complex: A node divided into separate files for each of their resource operations and fields.
+ * Node generation can be:
+ - Simple: Output node with resource operations and fields in a single file.
+ - Complex: Output node with resource operations and fields in separate files.
 */
 type NodeGenerationType = "simple" | "complex";
 
@@ -33,62 +34,55 @@ type Operation = {
   name: string;
   description: string;
   endpoint: string;
-  requestMethod: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  requestMethod: RequestMethod;
   fields: OperationField[];
 };
 
-// operation field
+type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-type OperationField = OperationRegularField | OperationGroupField;
+type OperationField = SingleValueOperationField | ManyValuesGroupField;
 
-type OperationRegularField = {
+type SingleValueOperationField = {
   name: string;
   description: string;
-  type: SimpleFieldType;
-  default: RegularFieldDefault;
-  options?: FieldOption[];
+  type: SingleValueFieldType;
+  default: SingleValueFieldDefault;
   extraDisplayRestriction?: { [key: string]: boolean };
 };
 
-type OperationGroupField = {
+type ManyValuesGroupField = {
   name: string;
-  type: GroupFieldType;
-  default: GroupFieldDefault;
-  options?: FieldOption[];
+  type: ManyValuesFieldType;
+  default: ManyValuesFieldDefault;
+  options: FieldOption[];
   extraDisplayRestriction?: { [key: string]: boolean };
 };
 
-// field type
+type FieldType = SingleValueFieldType | ManyValuesFieldType;
 
-type FieldType = SimpleFieldType | GroupFieldType;
+type SingleValueFieldType = "string" | "number" | "boolean";
 
-type SimpleFieldType = "string" | "number" | "boolean";
-
-type GroupFieldType =
+type ManyValuesFieldType =
   | "collection"
   | "fixedCollection"
   | "options"
   | "multiOptions";
 
-// field default
+type FieldDefault = SingleValueFieldDefault | ManyValuesFieldDefault;
 
-type FieldDefault = RegularFieldDefault | GroupFieldDefault;
+type SingleValueFieldDefault = string | number | boolean;
 
-type RegularFieldDefault = string | number | boolean;
-
-type GroupFieldDefault = {};
-
-// field option
+type ManyValuesFieldDefault = {};
 
 type FieldOption = {
   name: string;
   description: string;
   type: FieldType;
   default: FieldDefault;
-  options?: MiniFieldOption[];
+  options?: MaxNestedFieldOption[];
 };
 
-type MiniFieldOption = {
+type MaxNestedFieldOption = {
   name: string;
   description: string;
 };

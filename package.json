@@ -1,16 +1,17 @@
 {
   "name": "nodemaker",
   "version": "1.0.0",
-  "description": "",
+  "description": "Quick proof of concept for n8n node generator",
   "main": "index.js",
   "scripts": {
-    "start": "npm run empty && tsc && npm run nodegen && npm run packgen",
-    "nodegen": "cp .hygen.js ./build/.hygen.js && node build/generateNodeFiles.js --nodeGenerationType complex",
+    "start": "npm run empty && npm run nodegen && npm run packgen",
+    "nodegen": "cp .hygen.js ./build/.hygen.js && tsc && node build/generateNodeFiles.js --nodeGenerationType complex",
     "packgen": "tsc && node build/generatePackageJson.js",
+    "place": "tsc && node build/placeFiles.js",
     "empty": "rm -rfv output/*"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["n8n"],
+  "author": "Iván Ovejero",
   "license": "MIT",
   "dependencies": {
     "hygen": "^5.0.3",

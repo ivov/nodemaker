@@ -1,5 +1,5 @@
-import PackageJsonGenerator from "./PackageJsonGenerator";
-import sleep from "./utils/sleep";
+import PackageJsonGenerator from "../generators/PackageJsonGenerator";
+import sleep from "../utils/sleep";
 
 const main = async () => {
   const generator = new PackageJsonGenerator();
