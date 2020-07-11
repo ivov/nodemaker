@@ -122,7 +122,8 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 					<%_ } _%>
 
 					<%_ if (operation.name === "Get All") { _%>
-					responseData = await <%= h.camelify(metaParameters.serviceName) %>ApiRequestAllItems.call(this, '<%= operation.requestMethod %>', endpoint, body, qs);
+					// TODO: Replace TODO_PROPERTY_NAME with the name of the property whose value is all the items
+					responseData = await <%= h.camelify(metaParameters.serviceName) %>ApiRequestAllItems.call(this, TODO_PROPERTY_NAME, '<%= operation.requestMethod %>', endpoint, body, qs);
 					<%_ } else if (h.isRetrieval(operation)) { _%>
 					responseData = await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, '<%= operation.requestMethod %>', endpoint, body, qs);
 					<%_ } else { _%>

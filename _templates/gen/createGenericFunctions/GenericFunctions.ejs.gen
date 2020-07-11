@@ -79,8 +79,21 @@ export async function <%= h.camelify(metaParameters.serviceName) %>ApiRequest(
 
 	} catch (error) {
 
-		// TODO: Error handling per API
+		// TODO: Replace TODO_ERROR_STATUS_CODE and TODO_ERROR_MESSAGE based on the error object returned by API.
 
+		<%_ if (metaParameters.auth !== "") { _%>
+		if (TODO_ERROR_STATUS_CODE === 401) {
+			// Return a clear error
+			throw new Error('The <%= metaParameters.serviceName %> credentials are invalid!');
+		}
+
+		<%_ } _%>
+		if (TODO_ERROR_MESSAGE) {
+			// Try to return the error prettier
+			throw new Error(`<%= metaParameters.serviceName %> error response [${TODO_ERROR_STATUS_CODE}]: ${TODO_ERROR_MESSAGE}`);
+		}
+
+		// If that data does not exist for some reason, return the actual error.
 		throw error;
 	}
 }
@@ -99,6 +112,7 @@ export async function <%= h.camelify(metaParameters.serviceName) %>ApiRequest(
  */
 export async function <%= h.camelify(metaParameters.serviceName) %>ApiRequestAllItems(
 	this: IHookFunctions | IExecuteFunctions,
+	propertyName: string,
 	method: string,
 	endpoint: string,
 	body: IDataObject,
@@ -110,11 +124,11 @@ export async function <%= h.camelify(metaParameters.serviceName) %>ApiRequestAll
 
 	do {
 		responseData = await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, method, endpoint, body, qs);
-		returnData.push.apply(returnData, responseData.hits);
-		// TODO: Get next page from responseData
+		// TODO: Get next page using `responseData` or `qs`
+		returnData.push.apply(returnData, responseData[propertyName]);
 
 	} while (
-		// TODO: Condition for total not yet reached
+		// TODO: Add condition for total not yet reached
 	);
 
 	return returnData;
