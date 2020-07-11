@@ -2,16 +2,19 @@
 
 Proof of concept for n8n node generator.
 
-Functionality:
+**Functionality**:
 
 - Generate main node files: `*.node.ts` and `GenericFunctions.ts`
 - Generate extra node files: `*Description.ts`
 - Generate node credentials file: `*.credentials.ts`
 - Generate an updated `package.json`
 - Generate icon candidates: `/icon-candidates`
-- Generate docs for node → Coming soon!
 - Place generated node files in the n8n repo
-- Place generated docs in the n8n docs repo → Coming soon!
+
+**Coming soon!**
+
+- Generate docs for node
+- Place generated docs in the n8n docs repo
 
 ## Installation
 
@@ -37,13 +40,13 @@ Functionality:
 $ npm run [script]
 ```
 
-| Script    | Action                                                                                        |
-| --------- | --------------------------------------------------------------------------------------------- |
-| `nodegen` | Generate `*.node.ts` and `GenericFunctions.ts` (simple) and `*Description.ts` files (complex) |
-| `packgen` | Generate an updated `package.json` with node and node credential insertions                   |
-| `icongen` | Generate a five images as icon candidates in `/output/icon-candidates`                        |
-| `empty`   | Clear the `/output` dir                                                                       |
-| `place`   | Move node-related files in `/output` to their appropriate locations in the n8n repo           |
+| Script    | Action                                                                                            |
+| --------- | ------------------------------------------------------------------------------------------------- |
+| `nodegen` | Generate `*.node.ts` and `GenericFunctions.ts` ("simple") and `*Description.ts` files ("complex") |
+| `packgen` | Generate an updated `package.json` with node and node credential insertions                       |
+| `icongen` | Generate a five images as icon candidates in `/output/icon-candidates`                            |
+| `empty`   | Clear the `/output` dir                                                                           |
+| `place`   | Move node-related files in `/output` to their appropriate locations in the n8n repo               |
 
 ### Notes
 
@@ -53,7 +56,7 @@ $ npm run [script]
 - The `package.json` used for file generation is retrieved at runtime from the official repo.
 - No credential file will be generated if `metaParameters.auth` is an empty string.
 - Some generated files contain `// TODO:` lines, for the developer to add in custom logic.
-- Icon candidate generation uses Google's CSE, which [requires credentials](###icon-generation-credentials).
+- Icon candidate generation uses Google's CSE, which [requires credentials](#icon-generation-credentials).
 
 ### Editing params
 
@@ -92,8 +95,8 @@ The `options` property points to an array of objects structured like a regular o
 
 ```js
 const mainParameters = {
-  Entity1: [
-    // first operation for Entity1 (some resource)
+  Resource1: [
+    // first operation for first resource
     {
       name: "Get",
       description: "Get some entity",
@@ -121,13 +124,13 @@ const mainParameters = {
         },
       ],
     },
-    // second operation for Entity1 (same resource as above)
+    // second operation for first resource
     {
       name: "Put",
       // etc.
     },
   ],
-  Entity2: [
+  Resource2: [
     // etc.
   ],
 };
@@ -139,9 +142,9 @@ Field display restrictions are inferred from the object structure, but if you ha
 
 Icon candidate generation uses Google's Custom Search Engine, which requires credentials.
 
-Please note that Google's Custom Search Engine is limited to 100 free requests a day.
+> Please note that Google's Custom Search Engine is limited to 100 free requests a day.
 
-Create a `.env` file in `/config`, containing:
+Credentials are to be placed in a `.env` file in `/config`, containing:
 
 ```bash
 GOOGLE_IMAGE_SEARCH_ENGINE_ID="01782..."
