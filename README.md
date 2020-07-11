@@ -1,42 +1,71 @@
 # Nodemaker
 
-Quick proof of concept for n8n node generator.
+Proof of concept for n8n node generator.
+
+Functionality:
+- Generate main node files: `*.node.ts` and `GenericFunctions.ts`
+- Generate extra node files: `*Description.ts`
+- Generate node credentials file: `*.credentials.ts`
+- Generate an updated `package.json`
+- Generate docs for node: `*.ts` → coming soon!
+- Place generated files in the n8n repo.
+- Place generated docs in the n8n docs repo.
 
 ## Installation
 
-1. Clone repo
+1. Clone repo.
 2. Install dependencies: `npm i`
+3. Ensure nodemaker is alongside the n8n and n8n docs repos.
+
+```bash
+.
+├── n8n
+├── n8n-docs
+└── nodemaker
+```
 
 ## Operation
 
-Run it with `npm run start`. A functional example file is already provided in `parameters.js`. Edit the params to generate a custom node. More info on editing params below.
+1. Enter node params in `parameters.js`. (This file is a functional example.) More info on editing params below.
 
-Files are generated in `/output`:
-- `Entity.node.ts`
-- `EntityCredentialTypeApi.credentials.ts`
-- `GenericFunctions.ts`
-- `package.json`
+2. Run an operation.
 
-> The credentials file is not generated if the `auth` property in `metaParameters` is an empty string.
+```
+$ npm run [script]
+```
 
-The three TypeScript files contain `// TODO:` lines, for the developer to add in custom logic.
+| Script   | Action                                                                         |
+| -------- | ------------------------------------------------------------------------------ |
+| `nodegen --simple` | Generate `*.node.ts` and `GenericFunctions.ts`                                                       |
+| `nodegen --complex`    | Generate `*.node.ts` and `GenericFunctions.ts` and place resources in multiple `*Description.ts` files.           |
+| `packgen`   | Generate an updated `package.json`                                             |
+| `empty`    | Clear the `/output` dir. |
+| `place --node`    | Move the files in `/output` to their appropriate locations in the n8n repo. |
+| `place --docs`    | Move the files in `/output/docs` to their appropriate locations in the n8n docs repo. |
 
-`package.json` is the one at `/packages/nodes-base/package.json`. The paths for the node and credentials are inserted at the right spot in alphabetic order. The pre-insertion `package.json` is retrieved at runtime from the official repo.
 
-Regenerating files overwrites same-name files. You can clean up the `/output` dir with `npm run empty`.
+### Notes
+
+- All output files are generated in the `/output` dir. Same-name files are overwritten.
+- When node files are placed in the n8n repo, `output/package.json` will overwrite `/packages/nodes-base/package.json`.
+- The `package.json` used for file generation is retrieved at runtime from the official repo.
+- No credential file will be generated if `metaParameters.auth` is an empty string.
+- Some generated files contain `// TODO:` lines, for the developer to add in custom logic.
 
 ## Editing params
 
 Node params are divided into:
-- `metaParameters` (non-resource-related params), and
-- `mainParameters` (resource-related).
+- `metaParameters` (service-related)
+- `mainParameters` (resource-related)
+
+Types for both sets of parameters are defined in `globals.d.ts`. Wrong parameters trigger TypeScript error messages.
 
 ### `metaParameters`
 
 ```js
 const metaParameters = {
-  serviceName: "Some Service",      // casing and spacing as in original service
-  auth: "OAuth2",                   // "OAuth2" or "Key" or ""
+  serviceName: "Some Service", // casing and spacing as in original service
+  auth: "OAuth2",
   nodeColor: "#ff6600",
   apiUrl: "http://api.service.com/",
 };
