@@ -13,7 +13,7 @@ Proof of concept for n8n node generator.
 - Generate main docs file for node
 - Place generated main docs in the n8n docs repo
 
-**Coming soon!**
+**More functionality to be added:**
 
 - See [roadmap](https://github.com/ivov/nodemaker/issues/1)
 
@@ -21,7 +21,7 @@ Proof of concept for n8n node generator.
 
 1. Clone repo.
 2. Install dependencies: `npm i`
-3. Ensure nodemaker is alongside the n8n and n8n docs repos.
+3. Ensure nodemaker is alongside the n8n and n8n-docs repos.
 
 ```bash
 .
