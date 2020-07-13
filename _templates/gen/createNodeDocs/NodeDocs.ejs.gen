@@ -1,0 +1,51 @@
+---
+to: output/<%= name %>.md
+docsParameters: <%= docsParameters %>
+nodeOperations: <%= nodeOperations %>
+---
+<%_
+docsParameters = JSON.parse(docsParameters);
+nodeOperations = JSON.parse(nodeOperations);
+filename = name.replace(/ /g, "")
+_%>
+---
+permalink: /nodes/n8n-nodes-base.<%= h.camelify(docsParameters.serviceName) %>
+---
+
+# <%= docsParameters.serviceName %>
+
+[<%= docsParameters.serviceName %>](<%= docsParameters.serviceUrl %>) is <%= docsParameters.introDescription %>.
+
+::: tip 🔑 Credentials
+You can find authentication information for this node [here](../../../credentials/<%= filename %>/README.md).
+:::
+
+## Basic Operations
+
+<%_ Object.keys(nodeOperations).forEach((resource) => { _%>
+- <%= resource %>
+<%_ for (let operation of nodeOperations[resource]) { _%>
+	- <%= operation %>
+<%_ } _%>
+<%_ }); _%>
+
+## Example Usage
+
+This workflow allows you to <%= docsParameters.exampleUsage %>. You can also find the [workflow](https://n8n.io/workflows/<%= docsParameters.workflowNumber %>) on this website. This example usage workflow would use the following two nodes.
+- [Start](../../core-nodes/Start/README.md)
+- [<%= docsParameters.serviceName %>]()
+
+The final workflow should look like the following image.
+
+![A workflow with the <%= docsParameters.serviceName %> node](./workflow.png)
+
+### 1. Start node
+
+The start node exists by default when you create a new workflow.
+
+### 2. <%= docsParameters.serviceName %> node
+
+1. First of all, you'll have to enter credentials for the <%= docsParameters.serviceName %> node. You can find out how to do that [here](../../../credentials/<%= docsParameters.serviceName %>/README.md).
+<!-- TODO: Fill in the steps for the operation and adjust the last step number -->
+X. Click on *Execute Node* to run the workflow.
+

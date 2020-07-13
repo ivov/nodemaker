@@ -7,6 +7,7 @@
     "nodegen": "cp .hygen.js ./build/.hygen.js && tsc && node build/scripts/generateNodeFiles.js",
     "packgen": "tsc && node build/scripts/generatePackageJson.js",
     "icongen": "tsc && node build/scripts/generateIconCandidates.js",
+    "docsgen": "tsc && node build/scripts/generateNodeDocs.js",
     "place": "tsc && node build/scripts/placeFiles.js",
     "empty": "rm -rfv output/*"
   },

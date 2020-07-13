@@ -8,7 +8,7 @@ const relocate = promisify(fs.rename);
  * **Requirement:** The n8n and nodemaker repos must be located side by side.*/
 export default class FilePlacer {
   // dir /output at nodemaker
-  private sourceDirPath: string;
+  private sourceDir: string;
 
   // files in /output in nodemaker
   private sourceFilenames: string[];
@@ -22,11 +22,18 @@ export default class FilePlacer {
   // dir /packages/nodes-base/credentials at n8n
   private destinationCredentialsDir: string;
 
+  // dir docs/nodes/ at n8n-docs
+  private destinationDocsNodesDir: string;
+
+  // dir docs/nodes/nodes-library/nodes at n8n-docs
+  private destinationDocsRegularNodesDir: string;
+
   constructor() {
-    this.sourceDirPath = join(__dirname, "..", "output");
-    this.sourceFilenames = fs.readdirSync(this.sourceDirPath);
+    this.sourceDir = join(__dirname, "..", "..", "output");
+    this.sourceFilenames = fs.readdirSync(this.sourceDir);
     this.destinationNodesBaseDir = join(
       __dirname,
+      "..",
       "..",
       "..",
       "n8n",
@@ -38,9 +45,47 @@ export default class FilePlacer {
       this.destinationNodesBaseDir,
       "credentials"
     );
+    this.destinationDocsNodesDir = join(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "n8n-docs",
+      "docs",
+      "nodes"
+    );
+    this.destinationDocsRegularNodesDir = join(
+      this.destinationDocsNodesDir,
+      "nodes-library",
+      "nodes"
+    );
   }
 
-  public async run() {
+  public async placeDocsFiles() {
+    const mainDocsFilename = this.sourceFilenames.find((file) =>
+      // TODO: Change this endsWith check when docs credentials generation functionality is added.
+      file.endsWith(".md")
+    );
+
+    if (!mainDocsFilename) {
+      throw Error("No main docs file found!");
+    }
+
+    const destinationDir = join(
+      this.destinationDocsRegularNodesDir,
+      this.getDocsDestinationDirname()
+    );
+
+    if (!fs.existsSync(destinationDir)) {
+      fs.mkdirSync(destinationDir);
+    }
+
+    const source = join(this.sourceDir, mainDocsFilename);
+
+    await relocate(source, join(destinationDir, mainDocsFilename));
+  }
+
+  public async placeFunctionalFiles() {
     await this.placePackageJson();
     await this.placeCredentialFile();
     await this.placeNodeFiles();
@@ -48,9 +93,15 @@ export default class FilePlacer {
 
   /**Place `output/package.json` at `/packages/nodes-base/package.json` in the n8n repo, overwriting it.*/
   private async placePackageJson() {
-    const source = join(this.sourceDirPath, "package.json");
-    const destination = join(this.destinationNodesBaseDir, "package.json");
+    const source = join(this.sourceDir, "package.json");
 
+    if (!fs.existsSync(source)) {
+      throw Error(
+        "No output/package.json found.\nGenerate a package.json before placement."
+      );
+    }
+
+    const destination = join(this.destinationNodesBaseDir, "package.json");
     await relocate(source, destination);
   }
 
@@ -61,10 +112,12 @@ export default class FilePlacer {
     );
 
     if (!credentialsFilename) {
-      throw Error("No source *.credentials.ts file found!");
+      // Not an error, since the node may need no auth.
+      console.log("No output/*.credentials.ts file found!");
+      return;
     }
 
-    const source = join(this.sourceDirPath, credentialsFilename);
+    const source = join(this.sourceDir, credentialsFilename);
 
     const destination = join(
       this.destinationCredentialsDir,
@@ -78,29 +131,30 @@ export default class FilePlacer {
   private async placeNodeFiles() {
     const nodeFilenames = this.sourceFilenames.filter(
       (file) =>
+        file !== ".gitkeep" &&
         file !== "package.json" &&
         !file.endsWith(".credentials.ts") &&
-        file !== ".gitkeep"
+        !file.endsWith(".md")
     );
 
-    const destination = join(
+    const destinationDir = join(
       this.destinationNodesDir,
-      this.getDestinationDirname()
+      this.getNodeDestinationDirname()
     );
 
-    if (!fs.existsSync(destination)) {
-      fs.mkdirSync(destination);
+    if (!fs.existsSync(destinationDir)) {
+      fs.mkdirSync(destinationDir);
     }
 
     nodeFilenames.forEach(async (filename) => {
-      const source = join(this.sourceDirPath, filename);
-      const fileDestination = join(destination, filename);
+      const source = join(this.sourceDir, filename);
+      const fileDestination = join(destinationDir, filename);
       await relocate(source, fileDestination);
     });
   }
 
   /**Returns the name of the service, to be used as a new dirname.*/
-  private getDestinationDirname() {
+  private getNodeDestinationDirname() {
     const serviceFilename = this.sourceFilenames.find((file) =>
       file.endsWith(".node.ts")
     );
@@ -110,5 +164,18 @@ export default class FilePlacer {
     }
 
     return serviceFilename.replace(".node.ts", "");
+  }
+
+  private getDocsDestinationDirname() {
+    const docsFilename = this.sourceFilenames.find((file) =>
+      // TODO: Change this endsWith check when docs credentials generation functionality is added.
+      file.endsWith(".md")
+    );
+
+    if (!docsFilename) {
+      throw Error("No main docs file found!");
+    }
+
+    return docsFilename.replace(".md", "");
   }
 }

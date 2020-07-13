@@ -134,3 +134,12 @@ export const mainParameters: MainParameters = {
     },
   ],
 };
+
+export const docsParameters: DocsParameters = {
+  serviceName: "Hacker News",
+  serviceUrl: "https://news.ycombinator.com",
+  introDescription:
+    "a social news website focusing on computer science and entrepreneurship",
+  exampleUsage: "get an article from Hacker News",
+  workflowNumber: "123",
+};

@@ -10,18 +10,18 @@ Proof of concept for n8n node generator.
 - Generate an updated `package.json`
 - Generate icon candidates: `/icon-candidates`
 - Place generated node files in the n8n repo
+- Generate main docs file for node
+- Place generated main docs in the n8n docs repo
 
 **Coming soon!**
 
-- Generate docs for node
-- Place generated docs in the n8n docs repo
+- See [roadmap](https://github.com/ivov/nodemaker/issues/1)
 
 ## Installation
 
 1. Clone repo.
 2. Install dependencies: `npm i`
-3. Place a `.env` file with CSE credentials. See below.
-4. Ensure nodemaker is alongside the n8n and n8n docs repos.
+3. Ensure nodemaker is alongside the n8n and n8n docs repos.
 
 ```bash
 .
@@ -32,9 +32,8 @@ Proof of concept for n8n node generator.
 
 ## Operation
 
-1. Enter node params in `parameters.js`. (This file is also a functional example.) More info on editing params below.
-
-2. Run an operation.
+1. Enter node params in `parameters.js`. (This is also a functional example.) More info on editing params below.
+2. Run one of the following scripts:
 
 ```
 $ npm run [script]
@@ -51,12 +50,12 @@ $ npm run [script]
 ### Notes
 
 - All output files are generated in the `/output` dir. Same-name files are overwritten.
-- In "simple" node generation, the output node contains its resources in a single file. In "complex" node generation, the output node has its resources in separate `*Description.ts` files.
+- In "simple" node generation, the output node has its resources in a single file. In "complex" node generation, the output node has its resources in separate `*Description.ts` files.
 - When node files are placed in the n8n repo, `output/package.json` will overwrite `/packages/nodes-base/package.json`.
 - The `package.json` used for file generation is retrieved at runtime from the official repo.
 - No credential file will be generated if `metaParameters.auth` is an empty string.
 - Some generated files contain `// TODO:` lines, for the developer to add in custom logic.
-- Icon candidate generation uses Google's CSE, which [requires credentials](#icon-generation-credentials).
+- Icon candidate generation [requires credentials](#icon-generation-credentials).
 
 ### Editing params
 
@@ -140,18 +139,14 @@ Field display restrictions are inferred from the object structure, but if you ha
 
 ### Icon generation credentials
 
-Icon candidate generation uses Google's Custom Search Engine, which requires credentials.
-
-> Please note that Google's Custom Search Engine is limited to 100 free requests a day.
-
-Credentials are to be placed in a `.env` file in `/config`, containing:
+Icon candidate generation uses Google's Custom Search Engine, which requires credentials. Please note that Google's Custom Search Engine is limited to 100 free requests a day. Credentials are to be placed in a `.env` file in `/config`, containing:
 
 ```bash
 GOOGLE_IMAGE_SEARCH_ENGINE_ID="01782..."
 GOOGLE_PROJECT_API_KEY="AIzaS..."
 ```
 
-Contact the author for a Search Engine ID and API Key, or generate your own as described below.
+Please contact the author for a Search Engine ID and API Key, or generate your own as described below.
 
 **Configuring Custom Search Engine and generating an engine ID**
 

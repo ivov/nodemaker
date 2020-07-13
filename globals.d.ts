@@ -23,6 +23,18 @@ type MetaParameters = {
 type Auth = "OAuth2" | "Key" | "";
 
 // ----------------------------------
+//         Docs parameters
+// ----------------------------------
+
+type DocsParameters = {
+  serviceName: string;
+  serviceUrl: string;
+  introDescription: string;
+  exampleUsage: string;
+  workflowNumber: string;
+};
+
+// ----------------------------------
 //         Main parameters
 // ----------------------------------
 
