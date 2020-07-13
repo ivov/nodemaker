@@ -39,13 +39,14 @@ Proof of concept for n8n node generator.
 $ npm run [script]
 ```
 
-| Script    | Action                                                                                            |
-| --------- | ------------------------------------------------------------------------------------------------- |
-| `nodegen` | Generate `*.node.ts` and `GenericFunctions.ts` ("simple") and `*Description.ts` files ("complex") |
-| `packgen` | Generate an updated `package.json` with node and node credential insertions                       |
-| `icongen` | Generate a five images as icon candidates in `/output/icon-candidates`                            |
-| `empty`   | Clear the `/output` dir                                                                           |
-| `place`   | Move node-related files in `/output` to their appropriate locations in the n8n repo               |
+| Script    | Action                                                                                |
+| --------- | ------------------------------------------------------------------------------------- |
+| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts` and `*Description.ts` files (with prompt) |
+| `packgen` | Generate an updated `package.json` with node and node credential insertions           |
+| `icongen` | Generate five images as icon candidates in `/output/icon-candidates`                  |
+| `docsgen` | Generate main node docs file in markdown                                              |
+| `empty`   | Clear the `/output` dir                                                               |
+| `place`   | Move files in `/output` to their appropriate locations in the n8n repo (with prompt)  |
 
 ### Notes
 
