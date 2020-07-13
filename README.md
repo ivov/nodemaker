@@ -21,7 +21,7 @@ Proof of concept for n8n node generator.
 
 1. Clone repo.
 2. Install dependencies: `npm i`
-3. Ensure nodemaker is alongside the n8n and n8n-docs repos.
+3. Ensure `nodemaker` is alongside the `n8n` and `n8n-docs` repos.
 
 ```bash
 .
@@ -39,14 +39,14 @@ Proof of concept for n8n node generator.
 $ npm run [script]
 ```
 
-| Script    | Action                                                                                |
-| --------- | ------------------------------------------------------------------------------------- |
-| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts` and `*Description.ts` files (with prompt) |
-| `packgen` | Generate an updated `package.json` with node and node credential insertions           |
-| `icongen` | Generate five images as icon candidates in `/output/icon-candidates`                  |
-| `docsgen` | Generate main node docs file in markdown                                              |
-| `empty`   | Clear the `/output` dir                                                               |
-| `place`   | Move files in `/output` to their appropriate locations in the n8n repo (with prompt)  |
+| Script    | Action                                                                                     |
+| --------- | ------------------------------------------------------------------------------------------ |
+| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts` and `*Description.ts` files (with prompt)      |
+| `packgen` | Generate an updated `package.json` with node and node credential insertions                |
+| `icongen` | Generate five images as icon candidates in `/output/icon-candidates`                       |
+| `docsgen` | Generate main node docs file in markdown                                                   |
+| `empty`   | Clear the `/output` dir                                                                    |
+| `place`   | Move files in `/output` to their locations in the `n8n` and `n8n-docs` repos (with prompt) |
 
 ### Notes
 
