@@ -1,6 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import { promisify } from "util";
+import { NodeDocFile } from "./enums";
 
 const relocate = promisify(fs.rename);
 
@@ -68,56 +69,91 @@ export default class FilePlacer {
     );
   }
 
-  public async placeMainDocFile() {
-    const mainDocFilename = this.sourceFilenames.find(
-      (file) => file.endsWith(".md") && !file.endsWith("Credentials.md")
-    );
+  /**Places a documentation file (either main documentation file or credential documentation file) in n8n-docs repo.*/
+  public async placeDocFile(docfile: NodeDocFile) {
+    const getMainDocFilename = (file: string) =>
+      file.endsWith(".md") && !file.endsWith("Credentials.md");
 
-    if (!mainDocFilename) {
+    const getCredentialDocFilename = (file: string) =>
+      file.endsWith("Credentials.md");
+
+    const sourceFilename =
+      docfile === NodeDocFile.main
+        ? this.sourceFilenames.find(getMainDocFilename)
+        : this.sourceFilenames.find(getCredentialDocFilename);
+
+    if (!sourceFilename) {
       throw Error(
-        "No main documentation file found. Generate it before placement."
+        `No ${docfile} documentation file found. Generate it before placement.`
       );
     }
 
     const destinationDir = join(
-      this.destinationDocsRegularNodesDir,
-      this.getDocsDestinationDirname()
+      docfile === NodeDocFile.main
+        ? this.destinationDocsRegularNodesDir
+        : this.destinationDocsCredentialsDir,
+      this.getDocFileDestinationDirname()
     );
 
     if (!fs.existsSync(destinationDir)) {
       fs.mkdirSync(destinationDir);
     }
 
-    const source = join(this.sourceDir, mainDocFilename);
+    const source = join(this.sourceDir, sourceFilename);
 
     await relocate(source, join(destinationDir, "README.md"));
   }
+
+  // public async placeMainDocFile() {
+  //   const mainDocFilename = this.sourceFilenames.find(
+  //     (file) => file.endsWith(".md") && !file.endsWith("Credentials.md")
+  //   );
+
+  //   if (!mainDocFilename) {
+  //     throw Error(
+  //       "No main documentation file found. Generate it before placement."
+  //     );
+  //   }
+
+  //   const destinationDir = join(
+  //     this.destinationDocsRegularNodesDir,
+  //     this.getDocsDestinationDirname()
+  //   );
+
+  //   if (!fs.existsSync(destinationDir)) {
+  //     fs.mkdirSync(destinationDir);
+  //   }
+
+  //   const source = join(this.sourceDir, mainDocFilename);
+
+  //   await relocate(source, join(destinationDir, "README.md"));
+  // }
 
   // TODO: De-duplicate this with above.
-  public async placeCredDocFile() {
-    const credDocFilename = this.sourceFilenames.find((file) =>
-      file.endsWith("Credentials.md")
-    );
+  // public async placeCredDocFile() {
+  //   const credDocFilename = this.sourceFilenames.find((file) =>
+  //     file.endsWith("Credentials.md")
+  //   );
 
-    if (!credDocFilename) {
-      throw Error(
-        "No credential documentation file found. Generate it before placement."
-      );
-    }
+  //   if (!credDocFilename) {
+  //     throw Error(
+  //       "No credential documentation file found. Generate it before placement."
+  //     );
+  //   }
 
-    const destinationDir = join(
-      this.destinationDocsCredentialsDir,
-      this.getDocsDestinationDirname()
-    );
+  //   const destinationDir = join(
+  //     this.destinationDocsCredentialsDir,
+  //     this.getDocsDestinationDirname()
+  //   );
 
-    if (!fs.existsSync(destinationDir)) {
-      fs.mkdirSync(destinationDir);
-    }
+  //   if (!fs.existsSync(destinationDir)) {
+  //     fs.mkdirSync(destinationDir);
+  //   }
 
-    const source = join(this.sourceDir, credDocFilename);
+  //   const source = join(this.sourceDir, credDocFilename);
 
-    await relocate(source, join(destinationDir, "README.md"));
-  }
+  //   await relocate(source, join(destinationDir, "README.md"));
+  // }
 
   public async placeFunctionalFiles() {
     await this.placePackageJson();
@@ -200,7 +236,7 @@ export default class FilePlacer {
     return serviceFilename.replace(".node.ts", "");
   }
 
-  private getDocsDestinationDirname() {
+  private getDocFileDestinationDirname() {
     const docsFilename = this.sourceFilenames.find((file) =>
       // TODO: Change this endsWith check when docs credentials generation functionality is added.
       file.endsWith(".md")

@@ -1,5 +1,6 @@
 import FilePlacer from "../utils/FilePlacer";
 import inquirer from "inquirer";
+import { NodeDocFile } from "../utils/enums";
 
 inquirer
   .prompt([
@@ -17,7 +18,8 @@ inquirer
     if (filesToPlace === "Node files") {
       filePlacer.placeFunctionalFiles();
     } else if (filesToPlace === "Docs files") {
-      // filePlacer.placeMainDocFile();
-      filePlacer.placeCredDocFile();
+      [NodeDocFile.main, NodeDocFile.credential].forEach((file) =>
+        filePlacer.placeDocFile(file)
+      );
     }
   });
