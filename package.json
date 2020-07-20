@@ -9,6 +9,7 @@
     "icongen": "tsc && node build/scripts/generateIconCandidates.js",
     "docsgen": "tsc && node build/scripts/generateNodeDocs.js",
     "place": "tsc && node build/scripts/placeFiles.js",
+    "resize": "tsc && node build/scripts/resizeImage.js",
     "empty": "rm -rfv output/*"
   },
   "keywords": [
@@ -17,10 +18,12 @@
   "author": "Iván Ovejero",
   "license": "MIT",
   "dependencies": {
+    "@types/sharp": "^0.25.0",
     "dotenv": "^8.2.0",
     "hygen": "^5.0.3",
     "inquirer": "^7.3.1",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "sharp": "^0.25.4"
   },
   "devDependencies": {
     "@types/inquirer": "^6.5.0",

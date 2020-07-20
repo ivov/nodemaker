@@ -41,10 +41,10 @@ export default class ImageFetcher {
         fs.mkdirSync(destination);
       }
 
-      const dest = fs.createWriteStream(
+      const outputFile = fs.createWriteStream(
         join(destination, `icon-candidate-${index + 1}.png`)
       );
-      response.body.pipe(dest);
+      response.body.pipe(outputFile);
     });
   }
 }
