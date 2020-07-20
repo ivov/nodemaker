@@ -1,6 +1,7 @@
 import { exec } from "child_process";
 import { mainParameters, metaParameters } from "../parameters";
 import Generator from "./Generator";
+import { NodeGenerationType } from "../utils/enums";
 
 /**Responsible for generating all node-related files in /output:
  * - `*.node.ts`
