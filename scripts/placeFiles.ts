@@ -1,14 +1,14 @@
 import FilePlacer from "../utils/FilePlacer";
-import { NodeDocFile } from "../utils/enums";
+import { NodeDocFile, FilesToPlace } from "../utils/enums";
 import Prompter from "../utils/Prompter";
 
 (async () => {
   const { filesToPlace } = await Prompter.forPlacement();
   const filePlacer = new FilePlacer();
 
-  if (filesToPlace === "Node files") {
+  if (filesToPlace === FilesToPlace.nodeFunctionalityFiles) {
     filePlacer.placeFunctionalFiles();
-  } else if (filesToPlace === "Docs files") {
+  } else if (FilesToPlace.nodeDocumentationFiles) {
     [NodeDocFile.main, NodeDocFile.credential].forEach((file) =>
       filePlacer.placeDocFile(file)
     );

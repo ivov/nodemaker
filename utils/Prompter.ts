@@ -1,5 +1,6 @@
 import inquirer from "inquirer";
 import { NodeGenerationType } from "../utils/enums";
+import { FilesToPlace } from "../utils/enums";
 
 export default class Prompter {
   private static nodeGenerationPrompt = [
@@ -22,11 +23,21 @@ export default class Prompter {
     },
   ];
 
-  private static iconPrompt = [
+  private static iconQueryPrompt = [
     {
       name: "imageQuery",
       type: "input",
       message: "Enter query string for image search:",
+    },
+  ];
+
+  private static iconNumberPrompt = [
+    {
+      name: "iconToResize",
+      type: "list",
+      message:
+        "Which icon to resize?\n  - Inspect /output/icon-candidates and select the icon by its number\n",
+      choices: "12345".split(""),
     },
   ];
 
@@ -37,10 +48,18 @@ export default class Prompter {
   }
 
   static async forPlacement() {
-    return inquirer.prompt<{ filesToPlace: string }>(this.placementPrompt);
+    return inquirer.prompt<{ filesToPlace: FilesToPlace }>(
+      this.placementPrompt
+    );
   }
 
   static async forIconGeneration() {
-    return inquirer.prompt<{ imageQuery: string }>(this.iconPrompt);
+    return inquirer.prompt<{ imageQuery: string }>(this.iconQueryPrompt);
+  }
+
+  static async forIconResizing() {
+    return await inquirer.prompt<{
+      iconToResize: "1" | "2" | "3" | "4" | "5";
+    }>(this.iconNumberPrompt);
   }
 }

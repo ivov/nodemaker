@@ -7,19 +7,15 @@ import { metaParameters } from "../parameters";
 const readFile = promisify(fs.readFile);
 
 export default class ImageResizer {
-  private iconCandidatesDir: string;
+  private static iconCandidatesDir = join(
+    __dirname,
+    "..",
+    "..",
+    "output",
+    "icon-candidates"
+  );
 
-  constructor() {
-    this.iconCandidatesDir = join(
-      __dirname,
-      "..",
-      "..",
-      "output",
-      "icon-candidates"
-    );
-  }
-
-  public async resize(number: string) {
+  public static async resize(number: string) {
     const filename = join(
       this.iconCandidatesDir,
       `icon-candidate-${number}.png`

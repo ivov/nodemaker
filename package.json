@@ -9,7 +9,7 @@
     "icongen": "tsc && node build/scripts/generateIconCandidates.js",
     "docsgen": "tsc && node build/scripts/generateNodeDocs.js",
     "place": "tsc && node build/scripts/placeFiles.js",
-    "resize": "tsc && node build/scripts/resizeImage.js",
+    "resize": "tsc && node build/scripts/resizeIcon.js",
     "empty": "rm -rfv output/*"
   },
   "keywords": [
