@@ -12,6 +12,9 @@ const iconPrompt = [
 ];
 
 (async () => {
-  const { iconToResize } = await inquirer.prompt(iconPrompt);
+  const { iconToResize } = await inquirer.prompt<{
+    iconToResize: "1" | "2" | "3" | "4" | "5";
+  }>(iconPrompt);
+
   new ImageResizer().resize(iconToResize);
 })();
