@@ -28,6 +28,9 @@ export default class FilePlacer {
   // dir docs/nodes/nodes-library/nodes at n8n-docs
   private destinationDocsRegularNodesDir: string;
 
+  // dir docs/nodes/credentials at n8n-docs
+  private destinationDocsCredentialsDir: string;
+
   constructor() {
     this.sourceDir = join(__dirname, "..", "..", "output");
     this.sourceFilenames = fs.readdirSync(this.sourceDir);
@@ -59,16 +62,21 @@ export default class FilePlacer {
       "nodes-library",
       "nodes"
     );
+    this.destinationDocsCredentialsDir = join(
+      this.destinationDocsNodesDir,
+      "credentials"
+    );
   }
 
-  public async placeDocsFiles() {
-    const mainDocsFilename = this.sourceFilenames.find((file) =>
-      // TODO: Change this endsWith check when docs credentials generation functionality is added.
-      file.endsWith(".md")
+  public async placeMainDocFile() {
+    const mainDocFilename = this.sourceFilenames.find(
+      (file) => file.endsWith(".md") && !file.endsWith("Credentials.md")
     );
 
-    if (!mainDocsFilename) {
-      throw Error("No main docs file found!");
+    if (!mainDocFilename) {
+      throw Error(
+        "No main documentation file found. Generate it before placement."
+      );
     }
 
     const destinationDir = join(
@@ -80,9 +88,35 @@ export default class FilePlacer {
       fs.mkdirSync(destinationDir);
     }
 
-    const source = join(this.sourceDir, mainDocsFilename);
+    const source = join(this.sourceDir, mainDocFilename);
 
-    await relocate(source, join(destinationDir, mainDocsFilename));
+    await relocate(source, join(destinationDir, "README.md"));
+  }
+
+  // TODO: De-duplicate this with above.
+  public async placeCredDocFile() {
+    const credDocFilename = this.sourceFilenames.find((file) =>
+      file.endsWith("Credentials.md")
+    );
+
+    if (!credDocFilename) {
+      throw Error(
+        "No credential documentation file found. Generate it before placement."
+      );
+    }
+
+    const destinationDir = join(
+      this.destinationDocsCredentialsDir,
+      this.getDocsDestinationDirname()
+    );
+
+    if (!fs.existsSync(destinationDir)) {
+      fs.mkdirSync(destinationDir);
+    }
+
+    const source = join(this.sourceDir, credDocFilename);
+
+    await relocate(source, join(destinationDir, "README.md"));
   }
 
   public async placeFunctionalFiles() {
@@ -97,7 +131,7 @@ export default class FilePlacer {
 
     if (!fs.existsSync(source)) {
       throw Error(
-        "No output/package.json found.\nGenerate a package.json before placement."
+        "No output/package.json found. Generate a package.json before placement."
       );
     }
 

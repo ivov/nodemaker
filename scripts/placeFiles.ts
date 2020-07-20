@@ -17,6 +17,7 @@ inquirer
     if (filesToPlace === "Node files") {
       filePlacer.placeFunctionalFiles();
     } else if (filesToPlace === "Docs files") {
-      filePlacer.placeDocsFiles();
+      // filePlacer.placeMainDocFile();
+      filePlacer.placeCredDocFile();
     }
   });
