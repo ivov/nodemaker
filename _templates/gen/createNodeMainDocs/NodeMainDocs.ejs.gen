@@ -1,5 +1,5 @@
 ---
-to: output/<%= name %>.md
+to: output/<%= name.replace(/ /g, "") %>.md
 docsParameters: <%= docsParameters %>
 nodeOperations: <%= nodeOperations %>
 ---
