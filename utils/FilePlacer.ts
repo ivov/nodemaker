@@ -82,9 +82,9 @@ export default class FilePlacer {
         ? this.sourceFilenames.find(getMainDocFilename)
         : this.sourceFilenames.find(getCredentialDocFilename);
 
-    if (!sourceFilename) {
+    if (sourceFilename === undefined) {
       throw Error(
-        `No ${docfile} documentation file found. Generate it before placement.`
+        `No ${NodeDocFile[docfile]} documentation file found. Generate it before placement.`
       );
     }
 
@@ -103,57 +103,6 @@ export default class FilePlacer {
 
     await relocate(source, join(destinationDir, "README.md"));
   }
-
-  // public async placeMainDocFile() {
-  //   const mainDocFilename = this.sourceFilenames.find(
-  //     (file) => file.endsWith(".md") && !file.endsWith("Credentials.md")
-  //   );
-
-  //   if (!mainDocFilename) {
-  //     throw Error(
-  //       "No main documentation file found. Generate it before placement."
-  //     );
-  //   }
-
-  //   const destinationDir = join(
-  //     this.destinationDocsRegularNodesDir,
-  //     this.getDocsDestinationDirname()
-  //   );
-
-  //   if (!fs.existsSync(destinationDir)) {
-  //     fs.mkdirSync(destinationDir);
-  //   }
-
-  //   const source = join(this.sourceDir, mainDocFilename);
-
-  //   await relocate(source, join(destinationDir, "README.md"));
-  // }
-
-  // TODO: De-duplicate this with above.
-  // public async placeCredDocFile() {
-  //   const credDocFilename = this.sourceFilenames.find((file) =>
-  //     file.endsWith("Credentials.md")
-  //   );
-
-  //   if (!credDocFilename) {
-  //     throw Error(
-  //       "No credential documentation file found. Generate it before placement."
-  //     );
-  //   }
-
-  //   const destinationDir = join(
-  //     this.destinationDocsCredentialsDir,
-  //     this.getDocsDestinationDirname()
-  //   );
-
-  //   if (!fs.existsSync(destinationDir)) {
-  //     fs.mkdirSync(destinationDir);
-  //   }
-
-  //   const source = join(this.sourceDir, credDocFilename);
-
-  //   await relocate(source, join(destinationDir, "README.md"));
-  // }
 
   public async placeFunctionalFiles() {
     await this.placePackageJson();
@@ -182,8 +131,8 @@ export default class FilePlacer {
     );
 
     if (!credentialsFilename) {
-      // Not an error, since the node may need no auth.
-      console.log("No output/*.credentials.ts file found!");
+      // Not an error, since the node may need no auth. TODO: Make code reflect this.
+      console.log("No output/*.credentials.ts file found.");
       return;
     }
 

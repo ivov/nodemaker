@@ -1,17 +1,12 @@
 import ImageFetcher from "../utils/ImageFetcher";
-import inquirer from "inquirer";
+import Prompter from "../utils/Prompter";
 
-inquirer
-  .prompt([
-    {
-      name: "imageQuery",
-      type: "input",
-      message: "Enter query string for image search:",
-    },
-  ])
-  .then(async ({ imageQuery }) => {
-    const fetcher = new ImageFetcher();
-    await fetcher.fetchImageObject(imageQuery);
-    fetcher.extractImageLinks();
-    fetcher.downloadIconCandidates();
-  });
+(async () => {
+  const { imageQuery } = await Prompter.forIconGeneration();
+
+  const fetcher = new ImageFetcher();
+
+  await fetcher.fetchImageObject(imageQuery);
+  fetcher.extractImageLinks();
+  fetcher.downloadIconCandidates();
+})();
