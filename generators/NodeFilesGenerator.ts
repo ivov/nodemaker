@@ -9,10 +9,10 @@ import Generator from "./Generator";
  * - `*Description.ts` (if complex node generation)
  */
 export default class NodeFilesGenerator extends Generator {
-  /**Create `*.node.ts`. Different version based on simple or complex node generation.*/
-  createMainNodeFile(nodeGenerationType: NodeGenerationType) {
+  /**Generate `*.node.ts`. Different version based on simple or complex node generation.*/
+  generateMainNodeFile(nodeGenerationType: NodeGenerationType) {
     const command = this.formatCommand(`
-    gen createNode${nodeGenerationType}
+    gen generateNode${nodeGenerationType}
       --name \"${metaParameters.serviceName}\"
       --metaParameters '${JSON.stringify(metaParameters)}'
       --mainParameters '${JSON.stringify(mainParameters)}'
@@ -20,10 +20,10 @@ export default class NodeFilesGenerator extends Generator {
     exec(command);
   }
 
-  /**Create `GenericFunctions.ts` with `*ApiRequest` and `*ApiRequestAllItems`.*/
-  createGenericFunctionsFile() {
+  /**Generate `GenericFunctions.ts` with `*ApiRequest` and `*ApiRequestAllItems`.*/
+  generateGenericFunctionsFile() {
     const command = this.formatCommand(`
-    gen createGenericFunctions
+    gen generateGenericFunctions
       --metaParameters '${JSON.stringify(metaParameters)}'
       --mainParameters '${JSON.stringify(mainParameters)}'
     `);
@@ -31,10 +31,10 @@ export default class NodeFilesGenerator extends Generator {
     exec(command);
   }
 
-  /**Create `*.credentials.ts`.*/
-  createOAuth2CredentialsFile() {
+  /**Generate `*.credentials.ts`.*/
+  generateOAuth2CredentialsFile() {
     const command = this.formatCommand(`
-    gen create${metaParameters.auth}Credential
+    gen generate${metaParameters.auth}Credential
       --name \"${metaParameters.serviceName}\"
       --serviceCredential ${this.getServiceCredential()}
   `);
@@ -42,11 +42,11 @@ export default class NodeFilesGenerator extends Generator {
     exec(command);
   }
 
-  /** In complex node generation, create one extra file per resource.*/
-  createResourceDescriptionFile() {
+  /** In complex node generation, generate one extra file per resource.*/
+  generateResourceDescriptionFile() {
     for (let resourceName in mainParameters) {
       const command = this.formatCommand(`
-      gen createResourceDescription
+      gen generateResourceDescription
         --resourceName ${resourceName}
         --resourceObject '${JSON.stringify(mainParameters[resourceName])}'
     `);

@@ -3,9 +3,9 @@ import Generator from "./Generator";
 import { docsParameters, mainParameters, metaParameters } from "../parameters";
 
 export default class NodeDocsGenerator extends Generator {
-  public createNodeMainDocs() {
+  public generateNodeMainDocs() {
     const command = this.formatCommand(`
-    gen createNodeMainDocs
+    gen generateNodeMainDocs
       --name '${metaParameters.serviceName}'
       --docsParameters '${JSON.stringify(docsParameters)}'
       --nodeOperations '${JSON.stringify(this.getNodeOperations())}'
@@ -29,9 +29,9 @@ export default class NodeDocsGenerator extends Generator {
     return nodeOperations;
   }
 
-  public createNodeCredentialDocs() {
+  public generateNodeCredentialDocs() {
     const command = this.formatCommand(`
-    gen createNodeCredentialDocs
+    gen generateNodeCredentialDocs
       --name '${metaParameters.serviceName}'
       --docsParameters '${JSON.stringify(docsParameters)}'
       --metaParameters '${JSON.stringify(metaParameters)}'

@@ -3,9 +3,8 @@ import { metaParameters } from "../parameters";
 
 const docsGenerator = new NodeDocsGenerator();
 
-docsGenerator.createNodeMainDocs();
+docsGenerator.generateNodeMainDocs();
 
 if (metaParameters.auth !== "") {
-  console.log("here");
-  docsGenerator.createNodeCredentialDocs();
+  docsGenerator.generateNodeCredentialDocs();
 }

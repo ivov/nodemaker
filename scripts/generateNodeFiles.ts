@@ -2,6 +2,8 @@ import { metaParameters } from "../parameters";
 import NodeFilesGenerator from "../generators/NodeFilesGenerator";
 import inquirer from "inquirer";
 
+// In the context of "generateNodeFiles", "files" means functionality-related node files, i.e. "*.node.ts", "*.credentials.ts" and node resource description files (if appropriate), as opposed to docs files and the package.json file.
+
 inquirer
   .prompt([
     {
@@ -15,14 +17,14 @@ inquirer
   .then(({ nodeGenerationType }) => {
     const generator = new NodeFilesGenerator();
 
-    generator.createMainNodeFile(nodeGenerationType);
-    generator.createGenericFunctionsFile();
+    generator.generateMainNodeFile(nodeGenerationType);
+    generator.generateGenericFunctionsFile();
 
     if (nodeGenerationType === "complex") {
-      generator.createResourceDescriptionFile();
+      generator.generateResourceDescriptionFile();
     }
 
     if (metaParameters.auth === "OAuth2") {
-      generator.createOAuth2CredentialsFile();
+      generator.generateOAuth2CredentialsFile();
     }
   });
