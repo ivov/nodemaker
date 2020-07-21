@@ -1,6 +1,5 @@
 import inquirer from "inquirer";
 import { NodeGenerationType } from "../utils/enums";
-import { FilesToPlace } from "../utils/enums";
 
 export default class Prompter {
   private static nodeGenerationPrompt = [
@@ -48,9 +47,7 @@ export default class Prompter {
   }
 
   static async forPlacement() {
-    return inquirer.prompt<{ filesToPlace: FilesToPlace }>(
-      this.placementPrompt
-    );
+    return inquirer.prompt<{ filesToPlace: string }>(this.placementPrompt);
   }
 
   static async forIconGeneration() {

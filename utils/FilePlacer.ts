@@ -14,8 +14,11 @@ export default class FilePlacer {
   // dir /output/icon-candidates at nodemaker
   private iconCandidatesDir: string;
 
-  // files in /output in nodemaker
+  // files at /output in nodemaker
   private sourceFilenames: string[];
+
+  // files at dir /output/icon-candidates
+  private iconCandidates: string[];
 
   // dir /packages/nodes-base/ at n8n
   private destinationNodesBaseDir: string;
@@ -39,6 +42,7 @@ export default class FilePlacer {
     this.sourceDir = join(__dirname, "..", "..", "output");
     this.iconCandidatesDir = join(this.sourceDir, "icon-candidates");
     this.sourceFilenames = fs.readdirSync(this.sourceDir);
+    this.iconCandidates = fs.readdirSync(this.iconCandidatesDir);
     this.destinationNodesBaseDir = join(
       __dirname,
       "..",
@@ -73,7 +77,7 @@ export default class FilePlacer {
     );
   }
 
-  /**Places a documentation file (either main documentation file or credential documentation file) in n8n-docs repo.*/
+  /**Places a documentation file (main doc file or credential doc file) in n8n-docs repo.*/
   public async placeDocFile(docfile: NodeDocFile) {
     const getMainDocFilename = (file: string) =>
       file.endsWith(".md") && !file.endsWith("Credentials.md");
@@ -112,6 +116,36 @@ export default class FilePlacer {
     await this.placePackageJson();
     await this.placeCredentialFile();
     await this.placeNodeFiles();
+    await this.placeIconFile();
+  }
+
+  public placeDocumentationFiles() {
+    [NodeDocFile.main, NodeDocFile.credential].forEach((file) =>
+      this.placeDocFile(file)
+    );
+  }
+
+  private async placeIconFile() {
+    const iconFilename = this.iconCandidates.find(
+      (file) => !file.startsWith("icon-candidate")
+    );
+
+    if (!iconFilename) {
+      throw Error("No source icon file found!");
+    }
+
+    const destinationDir = join(
+      this.destinationNodesDir,
+      this.getNodeDestinationDirname()
+    );
+
+    if (!fs.existsSync(destinationDir)) {
+      fs.mkdirSync(destinationDir);
+    }
+
+    const source = join(this.iconCandidatesDir, iconFilename);
+    const fileDestination = join(destinationDir, iconFilename);
+    await relocate(source, fileDestination);
   }
 
   /**Place `output/package.json` at `/packages/nodes-base/package.json` in the n8n repo, overwriting it.*/

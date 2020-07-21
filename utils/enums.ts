@@ -17,11 +17,3 @@ export enum NodeGenerationType {
   simple,
   complex,
 }
-
-/**Files to be placed may be:
- * - Node functionality files to be placed at n8n repo
- * - Node documentation files to be placed at n8n-docs repo.*/
-export enum FilesToPlace {
-  nodeFunctionalityFiles,
-  nodeDocumentationFiles,
-}
