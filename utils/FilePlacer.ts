@@ -11,6 +11,9 @@ export default class FilePlacer {
   // dir /output at nodemaker
   private sourceDir: string;
 
+  // dir /output/icon-candidates at nodemaker
+  private iconCandidatesDir: string;
+
   // files in /output in nodemaker
   private sourceFilenames: string[];
 
@@ -34,6 +37,7 @@ export default class FilePlacer {
 
   constructor() {
     this.sourceDir = join(__dirname, "..", "..", "output");
+    this.iconCandidatesDir = join(this.sourceDir, "icon-candidates");
     this.sourceFilenames = fs.readdirSync(this.sourceDir);
     this.destinationNodesBaseDir = join(
       __dirname,
@@ -186,9 +190,8 @@ export default class FilePlacer {
   }
 
   private getDocFileDestinationDirname() {
-    const docsFilename = this.sourceFilenames.find((file) =>
-      // TODO: Change this endsWith check when docs credentials generation functionality is added.
-      file.endsWith(".md")
+    const docsFilename = this.sourceFilenames.find(
+      (file) => file.endsWith(".md") && !file.endsWith("Credentials.md")
     );
 
     if (!docsFilename) {
