@@ -2,7 +2,7 @@
  * A node documentation file may be:
  * - Main: The node functionality documentation file to be placed at docs/nodes/nodes-library/nodes at the n8n-docs repo.
  * - Credentials: The node credentials documentation file to be placed at docs/nodes/credentials at the n8n-docs repo.
- * */
+ */
 export enum NodeDocFile {
   main,
   credential,
