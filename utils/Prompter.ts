@@ -1,5 +1,4 @@
 import inquirer from "inquirer";
-import { NodeGenerationType } from "../utils/enums";
 
 /**Responsible for prompting the user to select choices or enter input for four generation operations. Only static fields and methods allowed.*/
 export default class Prompter {
@@ -42,7 +41,7 @@ export default class Prompter {
   ];
 
   static async forNodeGeneration() {
-    return inquirer.prompt<{ nodeGenerationType: NodeGenerationType }>(
+    return inquirer.prompt<{ nodeGenerationType: string }>(
       this.nodeGenerationPrompt
     );
   }

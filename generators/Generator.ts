@@ -7,7 +7,7 @@ export default class Generator {
     const formattedCommand =
       `env HYGEN_OVERWRITE=1
       node node_modules/hygen/dist/bin.js
-      ` + command;
+       ` + command;
 
     return formattedCommand.replace(/\s{2}/g, "").trim();
   }

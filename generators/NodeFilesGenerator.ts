@@ -11,7 +11,7 @@ import { NodeGenerationType } from "../utils/enums";
  */
 export default class NodeFilesGenerator extends Generator {
   /**Generate `*.node.ts`, with a different version for simple or complex node generation.*/
-  generateMainNodeFile(nodeGenerationType: NodeGenerationType) {
+  generateMainNodeFile(nodeGenerationType: string) {
     const command = this.formatCommand(`
     gen generateNode${nodeGenerationType}
       --name \"${metaParameters.serviceName}\"

@@ -12,6 +12,7 @@ export default class NodeDocsGenerator extends Generator {
       --docsParameters '${JSON.stringify(docsParameters)}'
       --nodeOperations '${JSON.stringify(this.getNodeOperations())}'
     `);
+
     exec(command);
   }
 
@@ -23,6 +24,7 @@ export default class NodeDocsGenerator extends Generator {
       --docsParameters '${JSON.stringify(docsParameters)}'
       --metaParameters '${JSON.stringify(metaParameters)}'
     `);
+
     exec(command);
   }
 
