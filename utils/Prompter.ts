@@ -1,6 +1,7 @@
 import inquirer from "inquirer";
 import { NodeGenerationType } from "../utils/enums";
 
+/**Responsible for prompting the user to select choices or enter input for four generation operations. Only static fields and methods allowed.*/
 export default class Prompter {
   private static nodeGenerationPrompt = [
     {
