@@ -1,8 +1,9 @@
 import fs from "fs";
 import dotenv from "dotenv";
 
-if (!fs.existsSync("config/.env"))
+if (!fs.existsSync("config/.env")) {
   throw Error("No .env file found at /config dir");
+}
 
 dotenv.config({ path: "config/.env" });
 
@@ -12,8 +13,9 @@ const requiredEnvVars = [
 ];
 
 requiredEnvVars.forEach((envVar) => {
-  if (!process.env[envVar])
+  if (!process.env[envVar]) {
     throw Error("Env var missing in .env file: " + process.env[envVar]);
+  }
 });
 
 export default {
