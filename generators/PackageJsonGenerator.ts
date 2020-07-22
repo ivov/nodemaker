@@ -43,7 +43,7 @@ export default class PackageJsonGenerator extends Generator {
 
   /**Find the credential right after which the new node credential is to be inserted in `package.json`.*/
   public findCredentialSpot() {
-    const serviceCredential = this.getServiceCredential();
+    const serviceCredential = this.deriveServiceCredentialName();
     for (let credential of this.packageJsonData.n8n.credentials) {
       const relevantString = credential.slice(17);
       if (relevantString[0] < serviceCredential[0]) {
@@ -78,7 +78,7 @@ export default class PackageJsonGenerator extends Generator {
   public insertCredential() {
     const command = this.formatCommand(`
     gen updateCredentialPackageJson
-      --serviceCredential ${this.getServiceCredential()}
+      --serviceCredential ${this.deriveServiceCredentialName()}
       --credentialSpot ${this.findCredentialSpot()}
     `);
 
