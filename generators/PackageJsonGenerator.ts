@@ -15,10 +15,34 @@ export default class PackageJsonGenerator extends Generator {
     this.localPackageJsonPath = join("output", "package.json");
   }
 
-  /**Download `package.json` from `packages/nodes-base` from official repo and store it in /output dir.*/
+  /**Download `package.json` from `packages/nodes-base` from official repo and store it at `/output` dir.*/
   public async retrievePackageJson() {
     const packageJsonData = await this.fetchPackageJson();
     this.savePackageJson(packageJsonData);
+  }
+
+  /**Insert the new node credential at their appropriate location in `package.json`.*/
+  public insertCredentialPathIntoPackageJson() {
+    const command = this.formatCommand(`
+    gen updateCredentialPackageJson
+      --serviceCredential ${this.deriveServiceCredentialName()}
+      --credentialSpot ${this.findCredentialSpot()}
+    `);
+
+    exec(command);
+  }
+
+  /**Insert the new node at their appropriate location in `package.json`.*/
+  public insertNodePathIntoPackageJson() {
+    const formattedServiceName = metaParameters.serviceName.replace(/\s/, "");
+
+    const command = this.formatCommand(`
+    gen updateNodePackageJson
+      --serviceName ${formattedServiceName}
+      --nodeSpot ${this.findNodeSpot()}
+    `);
+
+    exec(command);
   }
 
   /**Get contents of `package.json` from `packages/nodes-base` from official repo.*/
@@ -42,7 +66,7 @@ export default class PackageJsonGenerator extends Generator {
   }
 
   /**Find the credential right after which the new node credential is to be inserted in `package.json`.*/
-  public findCredentialSpot() {
+  private findCredentialSpot() {
     const serviceCredential = this.deriveServiceCredentialName();
     for (let credential of this.packageJsonData.n8n.credentials) {
       const relevantString = credential.slice(17);
@@ -52,11 +76,11 @@ export default class PackageJsonGenerator extends Generator {
       return relevantString.replace(".credentials.js", "");
     }
 
-    throw Error("No spot found!");
+    throw Error("No spot for node credential path insertion found!");
   }
 
   /**Find the node right after which the new node is to be inserted in `package.json`.*/
-  public findNodeSpot() {
+  private findNodeSpot() {
     for (let node of this.packageJsonData.n8n.nodes) {
       const pathMatch = node.match(/dist\/nodes\/(.*)\.node\.js/);
 
@@ -71,30 +95,6 @@ export default class PackageJsonGenerator extends Generator {
       }
       return relevantString.replace(".node.js", "");
     }
-    throw Error("No spot found!");
-  }
-
-  /**Insert the new node credential at their appropriate location in `package.json`.*/
-  public insertCredential() {
-    const command = this.formatCommand(`
-    gen updateCredentialPackageJson
-      --serviceCredential ${this.deriveServiceCredentialName()}
-      --credentialSpot ${this.findCredentialSpot()}
-    `);
-
-    exec(command);
-  }
-
-  /**Insert the new node at their appropriate location in `package.json`.*/
-  public insertService() {
-    const formattedServiceName = metaParameters.serviceName.replace(/\s/, "");
-
-    const command = this.formatCommand(`
-    gen updateNodePackageJson
-      --serviceName ${formattedServiceName}
-      --nodeSpot ${this.findNodeSpot()}
-    `);
-
-    exec(command);
+    throw Error("No spot for node path insertion found!");
   }
 }

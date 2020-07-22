@@ -1,16 +1,14 @@
 import PackageJsonGenerator from "../generators/PackageJsonGenerator";
 import sleep from "../utils/sleep";
 
-const main = async () => {
+(async () => {
   const generator = new PackageJsonGenerator();
 
   await generator.retrievePackageJson();
 
-  generator.insertCredential();
+  generator.insertCredentialPathIntoPackageJson();
 
   await sleep(1000); // to ensure both insertions succeed
 
-  generator.insertService();
-};
-
-main();
+  generator.insertNodePathIntoPackageJson();
+})();
