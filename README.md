@@ -2,26 +2,63 @@
 
 Proof of concept for n8n node generator.
 
-**Functionality**:
+Autogenerate node files and place them in the n8n repos!
 
-- Generate main node files: `*.node.ts` and `GenericFunctions.ts`
-- Generate extra node files: `*Description.ts`
-- Generate node credentials file: `*.credentials.ts`
-- Generate an updated `package.json`
-- Generate icon candidates: `/icon-candidates`
-- Place generated node files in the n8n repo
-- Generate main docs file for node
-- Place generated main docs in the n8n docs repo
+**Features**:
 
-**More functionality to be added:**
+- File generation
+  - Node functionality files
+    - `*.node.ts`
+    - `GenericFunctions.ts`
+    - `*Description.ts` (optional)
+    - `*.credentials.ts`
+    - `package.json`
+  - Node documentation files
+    - `README.md` (node)
+    - `README.md` (credential)
+  - Five icon candidates
+- Resizing of selected icon candidate
+- Placement of generated files in repos
+  - Node functionality files in `n8n` repo
+  - Node documentation files in `n8n-docs` repo
 
-- See [roadmap](https://github.com/ivov/nodemaker/issues/1)
+[Roadmap for next steps](https://github.com/ivov/nodemaker/issues/1)
 
 ## Installation
 
 1. Clone repo.
 2. Install dependencies: `npm i`
-3. Ensure `nodemaker` is alongside the `n8n` and `n8n-docs` repos.
+
+## Operation
+
+1. Enter node params in `parameters.js`. More info on editing params below.
+2. Run one of the following scripts:
+
+```
+$ npm run [script]
+```
+
+| Script    | Action                                                                                                                      |
+| --------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts` and `*Description.ts` (optional), and `*.credentials.ts`.                       |
+| `packgen` | Generate a `package.json` updated with node path and credential path insertions.                                            |
+| `docsgen` | Generate a node functionality doc file and a node credential doc file in markdown.                                          |
+| `icongen` | Generate five images as icon candidates. For **pre-requisite**, see below.                                                  |
+| `empty`   | Clear the `/output` dir                                                                                                     |
+| `place`   | Move files at `/output` to their appropriate locations in the `n8n` and `n8n-docs` repos. For **pre-requisite**, see below. |
+
+### Notes
+
+- All output files are generated at `nodemaker/output` dir.
+- Generated files may contain `// TODO:` lines, for adding in custom logic.
+- `nodegen` prompts for node generation type. In **simple node generation**, the output node has its resources in a single file. In **complex node generation**, the output node has its resources in separate `*Description.ts` files.
+- `nodegen` generates no credential file if `metaParameters.auth` is an empty string.
+- `packgen` retrieves the `package.json` at runtime from the official repo.
+
+### Pre-requisites
+
+- `icongen` [requires credentials](#icon-generation-credentials) for image search.
+- `place` requires `nodemaker` to sit alongside the `n8n` and `n8n-docs` repos.
 
 ```bash
 .
@@ -30,44 +67,16 @@ Proof of concept for n8n node generator.
 └── nodemaker
 ```
 
-## Operation
-
-1. Enter node params in `parameters.js`. (This is also a functional example.) More info on editing params below.
-2. Run one of the following scripts:
-
-```
-$ npm run [script]
-```
-
-| Script    | Action                                                                                     |
-| --------- | ------------------------------------------------------------------------------------------ |
-| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts` and `*Description.ts` files (with prompt)      |
-| `packgen` | Generate an updated `package.json` with node and node credential insertions                |
-| `icongen` | Generate five images as icon candidates in `/output/icon-candidates`                       |
-| `docsgen` | Generate main node docs file in markdown                                                   |
-| `empty`   | Clear the `/output` dir                                                                    |
-| `place`   | Move files in `/output` to their locations in the `n8n` and `n8n-docs` repos (with prompt) |
-
-### Notes
-
-- All output files are generated in the `/output` dir. Same-name files are overwritten.
-- In "simple" node generation, the output node has its resources in a single file. In "complex" node generation, the output node has its resources in separate `*Description.ts` files.
-- When node files are placed in the n8n repo, `output/package.json` will overwrite `/packages/nodes-base/package.json`.
-- The `package.json` used for file generation is retrieved at runtime from the official repo.
-- No credential file will be generated if `metaParameters.auth` is an empty string.
-- Some generated files contain `// TODO:` lines, for the developer to add in custom logic.
-- Icon candidate generation [requires credentials](#icon-generation-credentials).
-
-### Editing params
+## Editing params
 
 Node params are divided into:
 
 - `metaParameters` (service-related)
 - `mainParameters` (resource-related)
 
-Types for both sets of parameters are defined in `globals.d.ts`. Wrong parameters trigger TypeScript error messages.
+Types for both sets of parameters are defined in `globals.d.ts`. Wrong parameters trigger TypeScript type error messages.
 
-#### `metaParameters`
+### `metaParameters`
 
 ```js
 const metaParameters = {
@@ -78,7 +87,7 @@ const metaParameters = {
 };
 ```
 
-#### `mainParameters`
+### `mainParameters`
 
 `mainParameters` is a big object containing resource names as properties pointing to arrays of operations.
 
@@ -138,7 +147,7 @@ const mainParameters = {
 
 Field display restrictions are inferred from the object structure, but if you have an additional field display restriction, you can add it with `extraDisplayRestriction: { fieldName: boolean }`.
 
-### Icon generation credentials
+## Icon generation credentials
 
 Icon candidate generation uses Google's Custom Search Engine, which requires credentials. Please note that Google's Custom Search Engine is limited to 100 free requests a day. Credentials are to be placed in a `.env` file in `/config`, containing:
 
