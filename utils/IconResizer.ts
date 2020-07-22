@@ -15,6 +15,7 @@ export default class ImageResizer {
     "icon-candidates"
   );
 
+  /**Resize the selected icon candidate into a 60×60 px PNG icon.*/
   public static async resize(number: string) {
     const filename = join(
       this.iconCandidatesDir,
