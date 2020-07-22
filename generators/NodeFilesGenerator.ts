@@ -1,7 +1,6 @@
 import { exec } from "child_process";
 import { mainParameters, metaParameters } from "../parameters";
 import Generator from "./Generator";
-import { NodeGenerationType } from "../utils/enums";
 
 /**Responsible for generating all node functionality files at `/output`:
  * - `*.node.ts`
@@ -38,7 +37,7 @@ export default class NodeFilesGenerator extends Generator {
     gen generate${metaParameters.auth}Credential
       --name \"${metaParameters.serviceName}\"
       --serviceCredential ${this.deriveServiceCredentialName()}
-  `);
+    `);
 
     exec(command);
   }
@@ -50,7 +49,7 @@ export default class NodeFilesGenerator extends Generator {
       gen generateResourceDescription
         --resourceName ${resourceName}
         --resourceObject '${JSON.stringify(mainParameters[resourceName])}'
-    `);
+      `);
 
       exec(command);
     }
