@@ -38,14 +38,15 @@ Autogenerate node files and place them in the n8n repos!
 $ npm run [script]
 ```
 
-| Script    | Action                                                                                                |
-| --------- | ----------------------------------------------------------------------------------------------------- |
-| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts` and `*Description.ts` (optional), and `*.credentials.ts`. |
-| `packgen` | Generate a `package.json` updated with node path and credential path insertions.                      |
-| `docsgen` | Generate a node functionality doc file and a node credential doc file in markdown.                    |
-| `icongen` | Generate five images as icon candidates. For **pre-requisite**, see below.                            |
-| `place`   | Move files at `/output` to the `n8n` and `n8n-docs` repos. For **pre-requisite**, see below.          |
-| `empty`   | Clear the `/output` dir                                                                               |
+| Script    | Action                                                                                             |
+| --------- | -------------------------------------------------------------------------------------------------- |
+| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts`, `*Description.ts` (optional), and `*.credentials.ts`. |
+| `packgen` | Generate a `package.json` updated with node path and credential path insertions.                   |
+| `docsgen` | Generate a node functionality doc file and a node credential doc file in markdown.                 |
+| `icongen` | Generate five images as icon candidates. For **pre-requisite**, see below.                         |
+| `resize`  | Resize one of the generated icon candidates to a 60×60 px PNG file.                                |
+| `place`   | Move files at `/output` to the `n8n` and `n8n-docs` repos. For **pre-requisite**, see below.       |
+| `empty`   | Clear the `/output` dir                                                                            |
 
 ### Notes
 
