@@ -3,14 +3,14 @@ import { mainParameters, metaParameters } from "../parameters";
 import Generator from "./Generator";
 import { NodeGenerationType } from "../utils/enums";
 
-/**Responsible for generating all node-related files in /output:
+/**Responsible for generating all node functionality files at `/output`:
  * - `*.node.ts`
  * - `GenericFunctions.ts`
  * - `.credentials.ts`
- * - `*Description.ts` (if complex node generation)
+ * - one or more `*Description.ts` files (in complex node generation)
  */
 export default class NodeFilesGenerator extends Generator {
-  /**Generate `*.node.ts`. Different version based on simple or complex node generation.*/
+  /**Generate `*.node.ts`, with a different version for simple or complex node generation.*/
   generateMainNodeFile(nodeGenerationType: NodeGenerationType) {
     const command = this.formatCommand(`
     gen generateNode${nodeGenerationType}
@@ -21,7 +21,7 @@ export default class NodeFilesGenerator extends Generator {
     exec(command);
   }
 
-  /**Generate `GenericFunctions.ts` with `*ApiRequest` and `*ApiRequestAllItems`.*/
+  /**Generate `GenericFunctions.ts`.*/
   generateGenericFunctionsFile() {
     const command = this.formatCommand(`
     gen generateGenericFunctions
@@ -43,7 +43,7 @@ export default class NodeFilesGenerator extends Generator {
     exec(command);
   }
 
-  /** In complex node generation, generate one extra file per resource.*/
+  /** In complex node generation, generate one additional file per resource.*/
   generateResourceDescriptionFile() {
     for (let resourceName in mainParameters) {
       const command = this.formatCommand(`
