@@ -5,7 +5,7 @@ import { N8N_HOMEPAGE_URL } from "./constants";
 /**Responsible for logging into the n8n website and creating a workflow.*/
 export default class WorkflowCreator {
   private static browser: puppeteer.Browser;
-  private static page: puppeteer.Page;
+  private static page: puppeteer.Page; // browser tab
 
   public static async init() {
     WorkflowCreator.browser = await puppeteer.launch({ headless: false });
@@ -13,16 +13,19 @@ export default class WorkflowCreator {
   }
 
   public static async doLogin() {
+    const { username, password } = config.n8n;
+    const usernameSelector = 'input[placeholder="Username or email address"]';
+    const passwordSelector = 'input[placeholder="password"]';
+
     await WorkflowCreator.page.goto(N8N_HOMEPAGE_URL);
-    await WorkflowCreator.page.waitForNavigation();
-    await WorkflowCreator.page.click("button.el-button--success");
+    await WorkflowCreator.page.click("a[title='Login']");
 
-    // await Promise.all([
+    await WorkflowCreator.page.type(usernameSelector, username);
+    await WorkflowCreator.page.type(passwordSelector, password);
+  }
 
-    // ]);
-
-    // const { username, password } = config.n8n;
-    // await WebScraper.page.type("input[name='username']", email);
-    // await WebScraper.page.type("input[name='password']", password);
+  public static async close() {
+    await WorkflowCreator.page.close();
+    await WorkflowCreator.browser.close();
   }
 }

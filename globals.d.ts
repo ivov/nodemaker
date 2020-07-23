@@ -1,4 +1,17 @@
 // ----------------------------------
+//         Env vars
+// ----------------------------------
+
+declare namespace NodeJS {
+  export interface ProcessEnv {
+    GOOGLE_IMAGE_SEARCH_ENGINE_ID: string;
+    GOOGLE_PROJECT_API_KEY: string;
+    N8N_LOGIN_USERNAME: string;
+    N8N_LOGIN_PASSWORD: string;
+  }
+}
+
+// ----------------------------------
 //         Meta parameters
 // ----------------------------------
 
