@@ -14,8 +14,8 @@ export default class ImageFetcher {
     const endpoint = `
     ${CUSTOM_SEARCH_API_URL}?
     q="${query}"&
-    cx=${config.searchEngineId}&
-    key=${config.projectApiKey}&
+    cx=${config.googleImageSearch.engineId}&
+    key=${config.googleImageSearch.apiKey}&
     searchType=image&
     imgSize=medium&
     filetype=png&

@@ -10,6 +10,8 @@ dotenv.config({ path: "config/.env" });
 const requiredEnvVars = [
   "GOOGLE_IMAGE_SEARCH_ENGINE_ID",
   "GOOGLE_PROJECT_API_KEY",
+  "N8N_LOGIN_USERNAME",
+  "N8N_LOGIN_PASSWORD",
 ];
 
 requiredEnvVars.forEach((envVar) => {
@@ -19,6 +21,12 @@ requiredEnvVars.forEach((envVar) => {
 });
 
 export default {
-  searchEngineId: process.env.GOOGLE_IMAGE_SEARCH_ENGINE_ID,
-  projectApiKey: process.env.GOOGLE_PROJECT_API_KEY,
+  googleImageSearch: {
+    engineId: process.env.GOOGLE_IMAGE_SEARCH_ENGINE_ID,
+    apiKey: process.env.GOOGLE_PROJECT_API_KEY,
+  },
+  n8n: {
+    username: process.env.N8N_LOGIN_USERNAME,
+    password: process.env.N8N_LOGIN_PASSWORD,
+  },
 };

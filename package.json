@@ -10,6 +10,7 @@
     "docsgen": "tsc && node build/scripts/generateNodeDocs.js",
     "place": "tsc && node build/scripts/placeFiles.js",
     "resize": "tsc && node build/scripts/resizeIcon.js",
+    "flowgen": "tsc && node build/scripts/createWorkflow.js",
     "empty": "rm -rfv output/*"
   },
   "keywords": [
@@ -23,12 +24,14 @@
     "hygen": "^5.0.3",
     "inquirer": "^7.3.1",
     "node-fetch": "^2.6.0",
+    "puppeteer": "^5.2.1",
     "sharp": "^0.25.4"
   },
   "devDependencies": {
     "@types/inquirer": "^6.5.0",
     "@types/node": "^14.0.20",
     "@types/node-fetch": "^2.5.7",
+    "@types/puppeteer": "^3.0.1",
     "typescript": "^3.9.6"
   }
 }
