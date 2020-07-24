@@ -15,12 +15,13 @@ export default class WorkflowCreator {
 
   public static async doLogin() {
     const { username, password } = config.n8n;
+    const homepageLoginButtonSelector = "a[title='Login']";
     const usernameSelector = 'input[placeholder="Username or email address"]';
     const passwordSelector = 'input[placeholder="Password"]';
     const loginButtonSelector = 'button[type="submit"]';
 
     await WorkflowCreator.page.goto(N8N_HOMEPAGE_URL);
-    await WorkflowCreator.page.click("a[title='Login']");
+    await WorkflowCreator.page.click(homepageLoginButtonSelector);
 
     await WorkflowCreator.page.waitForNavigation();
 
