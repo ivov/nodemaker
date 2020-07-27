@@ -7,18 +7,24 @@ if (!fs.existsSync("config/.env")) {
 
 dotenv.config({ path: "config/.env" });
 
-const requiredEnvVars = [
-  "GOOGLE_IMAGE_SEARCH_ENGINE_ID",
-  "GOOGLE_PROJECT_API_KEY",
-];
-
-requiredEnvVars.forEach((envVar) => {
-  if (!process.env[envVar]) {
-    throw Error("Env var missing in .env file: " + process.env[envVar]);
+[
+  process.env.GOOGLE_IMAGE_SEARCH_ENGINE_ID,
+  process.env.GOOGLE_PROJECT_API_KEY,
+  process.env.N8N_LOGIN_USERNAME,
+  process.env.N8N_LOGIN_PASSWORD,
+].forEach((envVar) => {
+  if (envVar === undefined) {
+    throw Error("Missing required environment variable! Check for: " + envVar);
   }
 });
 
 export default {
-  searchEngineId: process.env.GOOGLE_IMAGE_SEARCH_ENGINE_ID,
-  projectApiKey: process.env.GOOGLE_PROJECT_API_KEY,
+  googleImageSearch: {
+    engineId: process.env.GOOGLE_IMAGE_SEARCH_ENGINE_ID,
+    apiKey: process.env.GOOGLE_PROJECT_API_KEY,
+  },
+  n8n: {
+    username: process.env.N8N_LOGIN_USERNAME,
+    password: process.env.N8N_LOGIN_PASSWORD,
+  },
 };

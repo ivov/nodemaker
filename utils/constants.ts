@@ -3,3 +3,7 @@ export const PACKAGE_JSON_URL =
 
 export const CUSTOM_SEARCH_API_URL =
   "https://www.googleapis.com/customsearch/v1";
+
+export const N8N_HOMEPAGE_URL = "https://n8n.io";
+
+export const N8N_APP_LOCALHOST = "http://localhost:5678/workflow";
