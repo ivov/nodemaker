@@ -2,6 +2,7 @@
 /output/*.ts
 /output/*.json
 /output/*.md
+/output/*.png
 /output/icon-candidates
 /output/icon-candidates/*.png
 /build
