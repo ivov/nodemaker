@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 
 export default class Requester {
-  public request<T>(channel: string, argument?: string): Promise<T> {
+  public request<T>(channel: string, argument?: string): Promise<string> {
     ipcRenderer.send(channel, argument);
 
     return new Promise((resolve) => {
@@ -9,5 +9,7 @@ export default class Requester {
         resolve(response);
       });
     });
+
+    //return new Promise((resolve) => resolve("hello world"));
   }
 }
