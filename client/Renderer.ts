@@ -11,7 +11,7 @@ const exampleResponseContainer = document.getElementById(
 
 exampleButton.addEventListener("click", async () => {
   const response = await requester.request<string>(
-    "prototype-channel",
+    "example-channel",
     "optional argument goes here"
   );
   exampleResponseContainer.innerHTML = `The following is being retrieved from the backend via the example channel:<br><br>${response}`;
