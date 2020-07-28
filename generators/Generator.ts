@@ -16,7 +16,9 @@ export default class Generator {
   deriveServiceCredentialName() {
     const serviceName = metaParameters.serviceName.replace(/\s/g, "");
     return (
-      serviceName + (metaParameters.auth === "OAuth2" ? "OAuth2" : "") + "Api"
+      serviceName +
+      (metaParameters.authType === "OAuth2" ? "OAuth2" : "") +
+      "Api"
     );
   }
 }

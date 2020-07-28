@@ -53,7 +53,7 @@ $ npm run [script]
 - All output files are generated at `nodemaker/output` dir.
 - Generated files may contain `// TODO:` lines, for adding in custom logic.
 - `nodegen` prompts for node generation type. In **simple node generation**, the output node has its resources in a single file. In **complex node generation**, the output node has its resources in separate `*Description.ts` files.
-- `nodegen` generates no credential file if `metaParameters.auth` is an empty string.
+- `nodegen` generates no credential file if `metaParameters.authType` is `"None"`.
 - `packgen` retrieves the `package.json` at runtime from the official repo.
 
 ### Pre-requisites

@@ -17,12 +17,12 @@ declare namespace NodeJS {
 
 type MetaParameters = {
   serviceName: string;
-  auth: Auth;
+  authType: AuthType;
   nodeColor: string;
   apiUrl: string;
 };
 
-type Auth = "OAuth2" | "Key" | "";
+type AuthType = "OAuth2" | "API Key" | "None";
 
 // ----------------------------------
 //         Docs parameters
