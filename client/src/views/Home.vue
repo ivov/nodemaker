@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld v-bind:msg="name" /> 
+    <HelloWorld v-bind:msg="name" />
     <h2>{{name2}}</h2>
   </div>
 </template>
@@ -23,12 +23,12 @@ import Requester from '../../Requester';
     }
   },
   computed: {
-    name2: () => {
-      // const requester = new Requester();
-      // const response = await requester.request<string>(
-      //   "prototype-channel"
-      // );
-      // console.log(response);
+    name2: async () => {
+      const requester = new Requester();
+      const response = await requester.request<string>(
+        "prototype-channel"
+      );
+      console.log(response);
       return "hello world";
     }
   }
