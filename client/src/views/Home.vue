@@ -25,8 +25,9 @@ import Requester from '../../Requester';
   computed: {
     name2: async () => {
       const requester = new Requester();
-      const response = await requester.request<string>(
-        "prototype-channel"
+
+      const response = requester.request(
+        "example-channel"
       );
       console.log(response);
       return "hello world";
