@@ -1,0 +1,35 @@
+<!DOCTYPE html lang="en">
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nodemaker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+  </head>
+
+  <body>
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100%;
+        background-color: lightblue;
+      "
+    >
+      <div style="margin-bottom: 1em;">UI goes here</div>
+      <div style="margin-bottom: 1em;">
+        <button id="example-button">Retrieve a parameter from the backend</button>
+      </div>
+      <div id="example-response-container" style="text-align: center;"></div>
+    </div>
+
+    <script>
+      require("../build/client/Renderer.js");
+    </script>
+  </body>
+</html>
