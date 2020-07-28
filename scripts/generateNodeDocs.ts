@@ -5,6 +5,6 @@ const docsGenerator = new NodeDocsGenerator();
 
 docsGenerator.generateNodeMainDocs();
 
-if (metaParameters.auth !== "") {
+if (metaParameters.authType !== "None") {
   docsGenerator.generateNodeCredentialDocs();
 }

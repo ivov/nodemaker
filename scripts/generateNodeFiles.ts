@@ -1,8 +1,7 @@
 import { metaParameters } from "../parameters";
 import NodeFilesGenerator from "../generators/NodeFilesGenerator";
 import Prompter from "../utils/Prompter";
-
-// In the context of "generateNodeFiles", "files" means functionality-related node files, i.e. "*.node.ts", "*.credentials.ts" and node resource description files (if appropriate), as opposed to docs files and the package.json file.
+import { NodeGenerationType, AuthType } from "../utils/enums";
 
 (async () => {
   const { nodeGenerationType } = await Prompter.forNodeGeneration();
@@ -12,11 +11,11 @@ import Prompter from "../utils/Prompter";
   generator.generateMainNodeFile(nodeGenerationType);
   generator.generateGenericFunctionsFile();
 
-  if (nodeGenerationType === "complex") {
+  if (nodeGenerationType === NodeGenerationType.Complex) {
     generator.generateResourceDescriptionFile();
   }
 
-  if (metaParameters.auth === "OAuth2") {
+  if (metaParameters.authType === AuthType.OAuth2) {
     generator.generateOAuth2CredentialsFile();
   }
 })();

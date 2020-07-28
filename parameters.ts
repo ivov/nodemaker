@@ -1,6 +1,6 @@
 export const metaParameters: MetaParameters = {
   serviceName: "Hacker News",
-  auth: "OAuth2",
+  authType: "OAuth2",
   nodeColor: "#ff6600",
   apiUrl: "http://hn.algolia.com/api/v1/",
 };
