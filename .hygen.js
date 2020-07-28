@@ -16,10 +16,8 @@ module.exports = {
       });
       return result.join("");
     },
-    hasGetAll: (mainParameters) => {
-      const [operations] = Object.values(mainParameters);
-      return operations.some((operation) => operation.name === "Get All");
-    },
+    hasGetAll: (operations) =>
+      operations.some((operation) => operation.name === "Get All"),
     getCredentialsString: (name, auth) =>
       name + (auth === "OAuth2" ? "OAuth2" : "") + "Api",
     isRetrieval: (operation) => operation.requestMethod === "GET",
