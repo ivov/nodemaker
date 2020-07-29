@@ -1,56 +1,64 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld v-bind:msg="name" />
-    <button v-on:click="name2">test 1</button>
-    <button v-on:click="sample">test 2</button>
-    <h3>{{name3}}</h3>
+    <button @click="example()">call example</button>
+    <Instructions 
+      header="Welcome to the nodemaker."
+      subtitle="This tool is designed to help developers create their own n8n nodes."
+      instructions="To get started, enter in your node’s name, authorization method, color, and API base url."
+     />
+    <h4>{{tester}}</h4>
   </div>
 </template>
 
 <script lang="ts">
 /* eslint no-unused-vars: "warn" */
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '../components/HelloWorld.vue';
+
+import Instructions from '../components/SharedComponents/Instructions';
 
 import Requester from '../../Requester';
 
-function resolveAfter2Seconds() {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('resolved');
-    }, 2000);
-  });
-}
-
 @Component({
+  name: 'Home',
   components: {
-    HelloWorld,
+    Instructions
   },
-  data: () => {
+  data: function() {
     return {
       name: "erin123",
-      name3: "erin456"
+      tester: ""
     }
   },
   methods: {
-    name2: async () => {
+    example() {
       const requester = new Requester();
-      console.log(requester);
-
-      const response = await requester.request(
-          "example-channel"
-        );
-      
-      console.log(response);
+      const response = requester.request("example-channel");
+      response.then((res:string) => {
+        console.log(res);
+        this.tester = res;
+      });
+    }
+  },
+  computed: {
+    name2: function() {
+      const requester = new Requester();
+      const response = requester.request("example-channel");
+      response.then((res) => {
+        console.log(res);
+        return res;
+      });
     },
-    sample: async () => {
-      const response = await resolveAfter2Seconds();
-
-      console.log(response);
+    date: function() {
+      return Date.now();
     }
   }
 })
 
 export default class App extends Vue {}
 </script>
+
+<style scoped>
+ .home {
+   bottom: 10px;
+ }
+</style>
