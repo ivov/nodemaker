@@ -1,9 +1,11 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
+import IpcChannel from "../channels/IpcChannel.interface";
+import ExampleChannel from "../channels/ExampleChannel";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -13,6 +15,17 @@ let win: any;
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
+
+function registerIpcChannels() {
+  const ipcChannels: IpcChannel[] = [new ExampleChannel()];
+
+  ipcChannels.forEach((channel) =>
+    ipcMain.on(channel.name, (
+      event,
+      argument?: string // TODO - generalize arg type
+    ) => channel.handle(event, argument))
+  );
+}
 
 function createWindow() {
   // Create the browser window.
@@ -71,6 +84,7 @@ app.on("ready", async () => {
     }
   }
   createWindow();
+  registerIpcChannels();
 });
 
 // Exit cleanly on request from parent process in development mode.
