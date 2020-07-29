@@ -23,13 +23,10 @@ import Requester from '../../Requester';
     }
   },
   computed: {
-    name2: async () => {
+    name2: () => {
       const requester = new Requester();
-
-      const response = requester.request(
-        "example-channel"
-      );
-      console.log(response);
+      const response = requester.request("example-channel");
+      response.then(console.log);
       return "hello world";
     }
   }
