@@ -1,4 +1,5 @@
-import { ipcRenderer } from "electron";
+// import { ipcRenderer } from "electron";
+const { ipcRenderer } = window.require("electron");
 
 export default class Requester {
   public request<T>(channel: string, argument?: string): Promise<T> {
@@ -9,5 +10,7 @@ export default class Requester {
         resolve(response);
       });
     });
+
+    //return new Promise((resolve) => resolve("hello world"));
   }
 }
