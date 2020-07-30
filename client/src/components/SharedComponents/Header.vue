@@ -1,4 +1,4 @@
-:<template>
+<template>
   <div id="header">
       <img id="headerImg" src="../../assets/n8n_copy.png" />
       <h1 id="headerText">nodemaker</h1>
