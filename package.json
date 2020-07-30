@@ -15,7 +15,7 @@
     "runapp": "cd ../n8n && npm run start",
     "shotgen": "tsc && node build/scripts/takeScreenshot.js",
     "empty": "rm -rfv output/*",
-    "desktop": "tsc-watch --onSuccess \"electron build/client/startup.js\""
+    "desktop": "cd client && npm run electron:serve"
   },
   "keywords": [
     "n8n"
