@@ -7,7 +7,7 @@ export default class ParametersChannel implements IpcChannel {
   public name = "parameters-channel";
 
   // TODO - deduplicate this method, see generateNodeFiles in backend
-  private async generateNodeFiles(paramsBundle: ParamsBundle) {
+  private generateNodeFiles(paramsBundle: ParamsBundle) {
     try {
       const { nodeGenerationType, metaParameters } = paramsBundle;
 
@@ -25,6 +25,7 @@ export default class ParametersChannel implements IpcChannel {
       }
       return { success: true };
     } catch (error) {
+      console.log(error);
       return { success: false };
     }
   }

@@ -9,14 +9,14 @@
 import { Component, Vue } from "vue-property-decorator";
 import Requester from "../../Requester";
 
-const metaParamsSample: MetaParameters = {
+const metaParameters: MetaParameters = {
   serviceName: "Hacker News",
   authType: "OAuth2",
   nodeColor: "#fffff",
   apiUrl: "https://api.whatever.com",
 };
 
-const mainParamsSample: MainParameters = {
+const mainParameters: MainParameters = {
   Article: [
     {
       name: "Get",
@@ -157,8 +157,8 @@ const mainParamsSample: MainParameters = {
     async example() {
       const requester = new Requester();
       const paramsBundle = {
-        metaParamsSample,
-        mainParamsSample,
+        metaParameters,
+        mainParameters,
         nodeGenerationType: "simple",
       };
 
