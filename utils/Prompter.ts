@@ -41,7 +41,7 @@ export default class Prompter {
   ];
 
   static async forNodeGeneration() {
-    return inquirer.prompt<{ nodeGenerationType: string }>(
+    return inquirer.prompt<{ nodeGenerationType: "simple" | "complex" }>(
       this.nodeGenerationPrompt
     );
   }

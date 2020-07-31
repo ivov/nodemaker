@@ -3,6 +3,7 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import IpcChannel from "../channels/IpcChannel.interface";
 import ExampleChannel from "../channels/ExampleChannel";
+import ParametersChannel from "../channels/ParametersChannel";
 
 // Vue boilerplate
 protocol.registerSchemesAsPrivileged([
@@ -60,7 +61,10 @@ class Client {
 
   /**Registers all the IPC channels for handling requests from the renderer process.*/
   private registerIpcChannels() {
-    const ipcChannels: IpcChannel[] = [new ExampleChannel()];
+    const ipcChannels: IpcChannel[] = [
+      new ExampleChannel(),
+      new ParametersChannel(),
+    ];
 
     // TODO - generalize argument string type
     ipcChannels.forEach((channel) =>
