@@ -1,7 +1,12 @@
 <template>
   <div class="input">
       <label>{{label}}: </label>
-      <input type="text" :placeholder="placeholder" />
+      <input 
+        type="text" 
+        ref="text_input"
+        :placeholder="placeholder" 
+        :value="value"
+        @input="input" />
   </div>
 </template>
 
@@ -12,7 +17,12 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
   name: 'InputField',
-  props: ["label", "placeholder"]
+  props: ["label", "placeholder", "value"],
+  methods: {
+    input() {
+      this.$emit('input', this.$refs.text_input.value)
+    }
+  }
 })
 
 export default class App extends Vue {}

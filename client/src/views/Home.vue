@@ -12,34 +12,44 @@
           class="input"
           label="Name"
           placeholder="Hacker News" 
+          :value=name
+          v-model=name
         />
         <Dropdown 
           class="input"
           label="Auth" 
           v-bind:options="['No Auth', 'Access Token', 'OAuth 1', 'OAuth 2']" 
+          :value=auth
+          v-model=auth
         />
         <InputField 
           class="input"
           label="Color"
           placeholder="#ffffff" 
+          :value=color
+          v-model=color
         />
         <InputField 
           class="input"
           label="API Base URL"
           placeholder="http://hn.algolia.com/api" 
+          :value=baseURL
+          v-model=baseURL
         />
       </div>
       <div class="centerButton">
-        <ForwardButton 
-          @click.native="helloworld()" 
-          text="Select Your Resources" 
-        />
+        <router-link to="/resources">
+          <ForwardButton 
+            text="Select Your Resources" 
+          />
+        </router-link>
       </div>
-      <!-- <AddButton text="Add this ext" /> -->
-      <!-- <BackwardButton @click.native="helloworld()" text="Edit the previous selections" /> -->
-      <!-- <GenericButton @click.native="helloworld()" text="Generate *.node.ts, GenericFunctions.ts, *.Description.ts (optional), and *.credentials.ts." /> -->
-      <!-- <button @click="example()">call example</button> -->
-      <!-- <h4>{{tester}}</h4> -->
+    </div>
+    <div id="previewBox">
+      <Instructions
+        class="instructions"
+        header="A preview of your node will show up here as you create." 
+      />
     </div>
   </div>
 </template>
@@ -50,11 +60,9 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import Instructions from '../components/SharedComponents/Instructions';
 import ForwardButton from '../components/SharedComponents/ForwardButton';
-import BackwardButton from '../components/SharedComponents/BackwardButton';
-import GenericButton from '../components/SharedComponents/GenericButton';
 import InputField from '../components/SharedComponents/InputField';
 import Dropdown from '../components/SharedComponents/Dropdown';
-import AddButton from '../components/SharedComponents/AddButton';
+
 import Requester from '../../Requester';
 
 @Component({
@@ -62,20 +70,20 @@ import Requester from '../../Requester';
   components: {
     Instructions,
     ForwardButton,
-    BackwardButton,
-    GenericButton,
     InputField,
     Dropdown,
-    AddButton
   },
   data: function() {
     return {
-      name: "erin123",
+      name: "",
+      auth: "",
+      color: "",
+      baseURL: "",
       tester: ""
     }
   },
   methods: {
-    example() {
+    sampleCall() {
       const requester = new Requester();
       const response = requester.request("example-channel");
       response.then((res:string) => {
@@ -83,12 +91,9 @@ import Requester from '../../Requester';
         this.tester = res;
       });
     },
-    helloworld() {
-      console.log("clicked");
-    }
   },
   computed: {
-    name2: function() {
+    requester: function() {
       const requester = new Requester();
       const response = requester.request("example-channel");
       response.then((res) => {
@@ -96,17 +101,19 @@ import Requester from '../../Requester';
         return res;
       });
     },
-    date: function() {
-      return Date.now();
-    }
-  }
+  },
 })
 
 export default class App extends Vue {}
 </script>
 
 <style scoped>
-#optionsBox {
+.home {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+#optionsBox, #previewBox {
     background-color: white;
     width: 35rem;
     margin: 2rem;

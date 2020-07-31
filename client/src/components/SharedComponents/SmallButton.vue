@@ -1,8 +1,8 @@
 <template>
     <button>
         <div class="button">
-            <div>{{text}}</div>
-            <i class="fas fa-plus-circle icon"></i>
+            <i class="fas fa-times-circle icon" v-if="cancel"></i>
+            <i class="fas fa-plus-circle icon" v-else></i>
         </div>
     </button>
 </template>
@@ -11,8 +11,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
-  name: 'AddButton',
-  props: ["text"]
+  name: 'SmallButton',
+  props: ["cancel"]
 })
 
 export default class App extends Vue {}
@@ -28,7 +28,7 @@ button {
     border-radius: 30px;
     color: white;
     font-weight: bold;
-    width: 15rem;
+    margin-left: .2rem;
 }
 
 .button {
