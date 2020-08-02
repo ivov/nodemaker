@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync } from "fs";
 export default class ScreenshotTaker {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page; // browser tab
-  private imageSavePath = join("output", "screenshot.png");
+  private imageSavePath = join("output", "workflow.png");
   private urlSavePath = join("output", "image-upload-url.txt");
 
   constructor(private metaParameters: MetaParameters) {}
