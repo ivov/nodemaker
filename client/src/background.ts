@@ -4,8 +4,6 @@ import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import IpcChannel from "../channels/IpcChannel.interface";
-import ExampleChannel from "../channels/ExampleChannel";
-import ParametersChannel from "../channels/ParametersChannel";
 
 // Vue boilerplate
 protocol.registerSchemesAsPrivileged([

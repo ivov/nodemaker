@@ -162,10 +162,7 @@ const mainParameters: MainParameters = {
         nodeGenerationType: "Simple",
       };
 
-      const result = await requester.request(
-        "parameters-channel",
-        paramsBundle
-      );
+      const result = await requester.request("nodegen-channel", paramsBundle);
       console.log(result);
       // @ts-ignore
       this.tester = result;

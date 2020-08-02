@@ -1,11 +1,11 @@
 import NodeDocsGenerator from "../generators/NodeDocsGenerator";
 import { metaParameters } from "../parameters";
-import { AuthType } from "../utils/enums";
+import { AuthEnum } from "../utils/enums";
 
 const docsGenerator = new NodeDocsGenerator();
 
 docsGenerator.generateNodeMainDocs();
 
-if (metaParameters.authType !== AuthType.None) {
+if (metaParameters.authType !== AuthEnum.None) {
   docsGenerator.generateNodeCredentialDocs();
 }

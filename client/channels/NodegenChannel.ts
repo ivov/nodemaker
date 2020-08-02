@@ -1,13 +1,14 @@
 import { IpcMainEvent } from "electron";
 import IpcChannel from "./IpcChannel.interface";
-import { generateNodeFiles } from "../../scripts/generateNodeFiles";
+import NodeFilesGenerator from "../../generators/NodeFilesGenerator";
 
-export default class ParametersChannel implements IpcChannel {
-  public name = "parameters-channel";
+export default class NodegenChannel implements IpcChannel {
+  public name = "nodegen-channel";
 
   public async handle(event: IpcMainEvent, paramsBundle: ParamsBundle) {
     process.chdir("..");
-    const result = await generateNodeFiles(paramsBundle);
+    const generator = new NodeFilesGenerator(paramsBundle);
+    const result = await generator.run();
     process.chdir("client");
 
     event.sender.send(this.name, result);
