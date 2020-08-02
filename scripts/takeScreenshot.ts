@@ -1,6 +1,7 @@
 import ScreenshotTaker from "../services/ScreenshotTaker";
 
 (async () => {
-  await ScreenshotTaker.init();
-  await ScreenshotTaker.run();
+  const taker = new ScreenshotTaker();
+  await taker.init();
+  await taker.run();
 })();
