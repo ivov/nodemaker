@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer";
-import { N8N_APP_LOCALHOST } from "./constants";
+import { N8N_APP_LOCALHOST } from "../utils/constants";
 import { docsParameters } from "../parameters";
 import { join } from "path";
 

@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import config from "../config";
-import { N8N_HOMEPAGE_URL } from "./constants";
+import { N8N_HOMEPAGE_URL } from "../utils/constants";
 import { docsParameters } from "../parameters";
 
 /**Responsible for logging into the n8n website and creating a workflow.*/

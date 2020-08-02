@@ -1,6 +1,6 @@
-// ----------------------------------
-//         Env vars
-// ----------------------------------
+// **********************************
+//         Env vars-related
+// **********************************
 
 declare namespace NodeJS {
   export interface ProcessEnv {
@@ -10,6 +10,33 @@ declare namespace NodeJS {
     N8N_LOGIN_PASSWORD: string;
   }
 }
+
+// **********************************
+//         Channel-related
+// **********************************
+
+type NodemakerResult = SuccessfulNodemakerResult | FailedNodemakerResult;
+
+type SuccessfulNodemakerResult = { error: false };
+
+type FailedNodemakerResult = {
+  error: true;
+  errorMessage: any;
+};
+
+type ParamsBundle = {
+  metaParameters: MetaParameters;
+  mainParameters: MainParameters;
+  nodeGenerationType: NodeGenerationType;
+};
+
+type NodeGenerationType = "Simple" | "Complex";
+
+// **********************************
+//         Params-related
+// **********************************
+
+type NodemakerParameters = MetaParameters | MainParameters | DocsParameters;
 
 // ----------------------------------
 //         Meta parameters

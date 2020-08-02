@@ -4,8 +4,8 @@
  * - Complex: Output node with resource operations and fields in separate files.
  */
 export enum NodeGenerationType {
-  Simple = "simple",
-  Complex = "complex",
+  Simple = "Simple",
+  Complex = "Complex",
 }
 
 /**The API auth type may be:

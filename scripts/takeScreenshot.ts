@@ -1,4 +1,4 @@
-import ScreenshotTaker from "../utils/ScreenshotTaker";
+import ScreenshotTaker from "../services/ScreenshotTaker";
 
 (async () => {
   await ScreenshotTaker.init();

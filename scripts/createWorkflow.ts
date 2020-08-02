@@ -1,4 +1,4 @@
-import WorkflowCreator from "../utils/WorkflowCreator";
+import WorkflowCreator from "../services/WorkflowCreator";
 
 (async () => {
   await WorkflowCreator.init();
