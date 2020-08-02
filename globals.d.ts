@@ -15,8 +15,13 @@ declare namespace NodeJS {
 //         Channel-related
 // **********************************
 
-type NodemakerResult = {
-  success: boolean;
+type NodemakerResult = SuccessfulNodemakerResult | FailedNodemakerResult;
+
+type SuccessfulNodemakerResult = { error: false };
+
+type FailedNodemakerResult = {
+  error: true;
+  errorMessage: any;
 };
 
 type ParamsBundle = {

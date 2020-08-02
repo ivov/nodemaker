@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { execSync as exec } from "child_process"; // sync to facilitate subsequent verification
 import Generator from "./Generator";
 
 /**Responsible for generating all node functionality files at `/output`:
@@ -41,8 +41,8 @@ export default class NodeFilesGenerator extends Generator {
     exec(command);
   }
 
-  /**Generate `*.credentials.ts`.*/
-  public generateOAuth2CredentialsFile() {
+  /**Generate `*.credentials.ts` for OAuth2 or API Key.*/
+  public generateCredentialsFile() {
     const command = this.formatCommand(`
     gen generate${this.metaParameters.authType}Credential
       --name \"${this.metaParameters.serviceName}\"
