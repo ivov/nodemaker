@@ -1,7 +1,9 @@
 import ScreenshotTaker from "../services/ScreenshotTaker";
+import { metaParameters } from "../parameters";
 
 (async () => {
-  const taker = new ScreenshotTaker();
-  await taker.init();
-  await taker.run();
+  const taker = new ScreenshotTaker(metaParameters);
+  // await taker.init();
+  // await taker.run();
+  await taker.uploadImage();
 })();
