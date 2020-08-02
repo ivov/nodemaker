@@ -1,6 +1,5 @@
 import { IpcMainEvent } from "electron";
 import IpcChannel from "./IpcChannel.interface";
-import { metaParameters } from "../../parameters";
 
 export default class ExampleChannel implements IpcChannel {
   public name = "example-channel";

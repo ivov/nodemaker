@@ -1,12 +1,9 @@
-import fs from "fs";
 import { join } from "path";
-import { promisify } from "util";
 import NodeFilesGenerator from "../generators/NodeFilesGenerator";
 import { NodeGenerationType, AuthType } from "../utils/enums";
 import { mainParameters, metaParameters } from "../parameters";
 import Prompter from "../services/Prompter";
-
-const readdir = promisify(fs.readdir);
+import readdir from "../utils/readdir";
 
 export const generateNodeFiles = async (
   paramsBundle: ParamsBundle
@@ -52,12 +49,12 @@ const verifyGeneratedFiles = async (paramsBundle: ParamsBundle) => {
 };
 
 // used by CLI
-(async () => {
-  const { nodeGenerationType } = await Prompter.forNodeGeneration();
-  const result = await generateNodeFiles({
-    mainParameters,
-    metaParameters,
-    nodeGenerationType,
-  });
-  console.log(result);
-})();
+// (async () => {
+//   const { nodeGenerationType } = await Prompter.forNodeGeneration();
+//   const result = await generateNodeFiles({
+//     mainParameters,
+//     metaParameters,
+//     nodeGenerationType,
+//   });
+//   console.log(result);
+// })();

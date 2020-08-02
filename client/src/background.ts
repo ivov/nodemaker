@@ -1,3 +1,5 @@
+import { readdirSync } from "fs";
+import { join } from "path";
 import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
@@ -15,10 +17,10 @@ class Client {
   mainWindow: BrowserWindow | null; // first renderer process
 
   constructor() {
-    app.on("ready", () => {
+    app.on("ready", async () => {
       this.installVueDevTools();
       this.createMainWindow();
-      this.registerIpcChannels();
+      await this.registerIpcChannels();
     });
     app.on("window-all-closed", app.quit);
     app.allowRendererProcessReuse = true;
@@ -60,17 +62,24 @@ class Client {
   }
 
   /**Registers all the IPC channels for handling requests from the renderer process.*/
-  private registerIpcChannels() {
-    const ipcChannels: IpcChannel[] = [
-      new ExampleChannel(),
-      new ParametersChannel(),
-    ];
+  private async registerIpcChannels() {
+    const ipcChannels: IpcChannel[] = [];
 
-    // TODO - generalize argument string type
+    for (let module of this.getChannelModules()) {
+      const ChannelClass = require(`../channels/${module}`).default; // dynamic import
+      ipcChannels.push(new ChannelClass());
+    }
+
     ipcChannels.forEach((channel) =>
-      ipcMain.on(channel.name, (event, argument?: string) =>
+      ipcMain.on(channel.name, (event, argument?: any) =>
         channel.handle(event, argument)
       )
+    );
+  }
+
+  private getChannelModules() {
+    return readdirSync(join("channels")).filter(
+      (channel) => !channel.endsWith(".interface.ts")
     );
   }
 }
