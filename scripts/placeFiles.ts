@@ -1,5 +1,5 @@
-import FilePlacer from "../utils/FilePlacer";
-import Prompter from "../utils/Prompter";
+import FilePlacer from "../services/FilePlacer";
+import Prompter from "../services/Prompter";
 
 (async () => {
   const { filesToPlace } = await Prompter.forPlacement();

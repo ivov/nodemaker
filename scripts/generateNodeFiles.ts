@@ -4,7 +4,7 @@ import { promisify } from "util";
 import NodeFilesGenerator from "../generators/NodeFilesGenerator";
 import { NodeGenerationType, AuthType } from "../utils/enums";
 import { mainParameters, metaParameters } from "../parameters";
-import Prompter from "../utils/Prompter";
+import Prompter from "../services/Prompter";
 
 const readdir = promisify(fs.readdir);
 

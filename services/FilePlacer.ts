@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import { promisify } from "util";
-import { NodeDocFile } from "./enums";
+import { NodeDocFile } from "../utils/enums";
 
 const relocate = promisify(fs.rename);
 
