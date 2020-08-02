@@ -7,3 +7,5 @@ export const CUSTOM_SEARCH_API_URL =
 export const N8N_HOMEPAGE_URL = "https://n8n.io";
 
 export const N8N_APP_LOCALHOST = "http://localhost:5678/workflow";
+
+export const IMGBB_API_URL = "https://api.imgbb.com/1/upload";

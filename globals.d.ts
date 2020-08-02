@@ -8,6 +8,7 @@ declare namespace NodeJS {
     GOOGLE_PROJECT_API_KEY: string;
     N8N_LOGIN_USERNAME: string;
     N8N_LOGIN_PASSWORD: string;
+    IMGBB_API_KEY: string;
   }
 }
 
