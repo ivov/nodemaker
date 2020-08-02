@@ -8,7 +8,7 @@ export default class Prompter {
       type: "list",
       message:
         "Node generation type?\n  - Simple: Node resources in single file.\n  - Complex: Node resources in Description files.\n",
-      choices: ["simple", "complex"],
+      choices: ["Simple", "Complex"], // TODO - Replace with enum
     },
   ];
 
@@ -41,7 +41,7 @@ export default class Prompter {
   ];
 
   static async forNodeGeneration() {
-    return inquirer.prompt<{ nodeGenerationType: "simple" | "complex" }>(
+    return inquirer.prompt<{ nodeGenerationType: "Simple" | "Complex" }>(
       this.nodeGenerationPrompt
     );
   }

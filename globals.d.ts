@@ -22,8 +22,10 @@ type NodemakerResult = {
 type ParamsBundle = {
   metaParameters: MetaParameters;
   mainParameters: MainParameters;
-  nodeGenerationType: "simple" | "complex";
+  nodeGenerationType: NodeGenerationType;
 };
+
+type NodeGenerationType = "Simple" | "Complex";
 
 // **********************************
 //         Params-related

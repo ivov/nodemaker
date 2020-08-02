@@ -12,8 +12,8 @@ import Requester from "../../Requester";
 const metaParameters: MetaParameters = {
   serviceName: "Hacker News",
   authType: "OAuth2",
-  nodeColor: "#fffff",
-  apiUrl: "https://api.whatever.com",
+  nodeColor: "#ff6600",
+  apiUrl: "http://hn.algolia.com/api/v1/",
 };
 
 const mainParameters: MainParameters = {
@@ -159,7 +159,7 @@ const mainParameters: MainParameters = {
       const paramsBundle = {
         metaParameters,
         mainParameters,
-        nodeGenerationType: "simple",
+        nodeGenerationType: "Simple",
       };
 
       const result = await requester.request(

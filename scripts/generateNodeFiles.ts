@@ -1,21 +1,22 @@
-import { metaParameters } from "../parameters";
 import NodeFilesGenerator from "../generators/NodeFilesGenerator";
-import Prompter from "../utils/Prompter";
 import { NodeGenerationType, AuthType } from "../utils/enums";
+import { mainParameters, metaParameters } from "../parameters";
+import Prompter from "../utils/Prompter";
 
-(async () => {
-  const { nodeGenerationType } = await Prompter.forNodeGeneration();
-
-  const generator = new NodeFilesGenerator();
-
-  generator.generateMainNodeFile(nodeGenerationType);
+export const generateNodeFiles = (paramsBundle: ParamsBundle) => {
+  const generator = new NodeFilesGenerator(paramsBundle);
+  generator.generateMainNodeFile();
   generator.generateGenericFunctionsFile();
 
-  if (nodeGenerationType === NodeGenerationType.Complex) {
+  if (paramsBundle.nodeGenerationType === NodeGenerationType.Complex)
     generator.generateResourceDescriptionFile();
-  }
 
-  if (metaParameters.authType === AuthType.OAuth2) {
+  if (paramsBundle.metaParameters.authType === AuthType.OAuth2)
     generator.generateOAuth2CredentialsFile();
-  }
+};
+
+// used by CLI
+(async () => {
+  const { nodeGenerationType } = await Prompter.forNodeGeneration();
+  generateNodeFiles({ mainParameters, metaParameters, nodeGenerationType });
 })();

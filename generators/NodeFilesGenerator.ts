@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-import { mainParameters, metaParameters } from "../parameters";
 import Generator from "./Generator";
 
 /**Responsible for generating all node functionality files at `/output`:
@@ -9,33 +8,44 @@ import Generator from "./Generator";
  * - one or more `*Description.ts` files (in complex node generation)
  */
 export default class NodeFilesGenerator extends Generator {
+  private mainParameters: MainParameters;
+  private metaParameters: MetaParameters;
+  private nodeGenerationType: NodeGenerationType;
+
+  constructor(paramsBundle: ParamsBundle) {
+    super();
+    this.mainParameters = paramsBundle.mainParameters;
+    this.metaParameters = paramsBundle.metaParameters;
+    this.nodeGenerationType = paramsBundle.nodeGenerationType;
+  }
+
   /**Generate `*.node.ts`, with a different version for simple or complex node generation.*/
-  generateMainNodeFile(nodeGenerationType: string) {
+  public generateMainNodeFile() {
     const command = this.formatCommand(`
-    gen generateNode${nodeGenerationType}
-      --name \"${metaParameters.serviceName}\"
-      --metaParameters '${JSON.stringify(metaParameters)}'
-      --mainParameters '${JSON.stringify(mainParameters)}'
+    gen generateNode${this.nodeGenerationType}
+      --name \"${this.metaParameters.serviceName}\"
+      --metaParameters '${JSON.stringify(this.metaParameters)}'
+      --mainParameters '${JSON.stringify(this.mainParameters)}'
     `);
     exec(command);
   }
 
   /**Generate `GenericFunctions.ts`.*/
-  generateGenericFunctionsFile() {
+  public generateGenericFunctionsFile() {
     const command = this.formatCommand(`
     gen generateGenericFunctions
-      --metaParameters '${JSON.stringify(metaParameters)}'
-      --mainParameters '${JSON.stringify(mainParameters)}'
+      --metaParameters '${JSON.stringify(this.metaParameters)}'
+      --mainParameters '${JSON.stringify(this.mainParameters)}'
     `);
 
     exec(command);
   }
 
   /**Generate `*.credentials.ts`.*/
-  generateOAuth2CredentialsFile() {
+  public generateOAuth2CredentialsFile() {
     const command = this.formatCommand(`
-    gen generate${metaParameters.authType}Credential
-      --name \"${metaParameters.serviceName}\"
+    gen generate${this.metaParameters.authType}Credential
+      --name \"${this.metaParameters.serviceName}\"
       --serviceCredential ${this.deriveServiceCredentialName()}
     `);
 
@@ -43,12 +53,12 @@ export default class NodeFilesGenerator extends Generator {
   }
 
   /** In complex node generation, generate one additional file per resource.*/
-  generateResourceDescriptionFile() {
-    for (let resourceName in mainParameters) {
+  public generateResourceDescriptionFile() {
+    for (let resourceName in this.mainParameters) {
       const command = this.formatCommand(`
       gen generateResourceDescription
         --resourceName ${resourceName}
-        --resourceObject '${JSON.stringify(mainParameters[resourceName])}'
+        --resourceObject '${JSON.stringify(this.mainParameters[resourceName])}'
       `);
 
       exec(command);
