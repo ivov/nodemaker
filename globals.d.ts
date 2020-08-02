@@ -15,22 +15,31 @@ declare namespace NodeJS {
 //         Channel-related
 // **********************************
 
-type NodemakerResult = SuccessfulNodemakerResult | FailedNodemakerResult;
+// node generation or docs generation
 
-type SuccessfulNodemakerResult = { error: false };
+type GenResult = SuccessfulGenResult | FailedGenResult;
 
-type FailedNodemakerResult = {
+type SuccessfulGenResult = { completed: boolean; error: false };
+
+type FailedGenResult = {
+  completed: boolean;
   error: true;
   errorMessage: any;
 };
 
-type ParamsBundle = {
+type NodegenParamsBundle = {
   metaParameters: MetaParameters;
   mainParameters: MainParameters;
   nodeGenerationType: NodeGenerationType;
 };
 
 type NodeGenerationType = "Simple" | "Complex";
+
+type DocsgenParamsBundle = {
+  metaParameters: MetaParameters;
+  mainParameters: MainParameters;
+  docsParameters: DocsParameters;
+};
 
 // **********************************
 //         Params-related
