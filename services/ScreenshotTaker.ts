@@ -6,6 +6,7 @@ import { join } from "path";
 import { IMGBB_API_URL } from "../utils/constants";
 import config from "../config";
 import { readFileSync, writeFileSync } from "fs";
+import { down } from "inquirer/lib/utils/readline";
 
 /**Responsible for running n8n and taking a screenshot for the docs.*/
 export default class ScreenshotTaker {
@@ -25,9 +26,8 @@ export default class ScreenshotTaker {
     await this.page.goto(N8N_APP_LOCALHOST);
     await this.placeNewNodeOnCanvas();
     await this.connectStartToNewNode();
-    await this.page.screenshot({
-      path: this.imageSavePath,
-    });
+    await this.page.screenshot({ path: this.imageSavePath });
+    await this.downloadNodeCode();
   }
 
   private async placeNewNodeOnCanvas() {
@@ -78,5 +78,21 @@ export default class ScreenshotTaker {
   /**TODO - Temporary function to save image upload URL to a TXT file. To be adjusted once UI needs are clear.*/
   private saveUrlToDisk(url: string) {
     writeFileSync(this.urlSavePath, url, "utf8");
+  }
+
+  private async downloadNodeCode() {
+    // await this.page.exposeFunction("findNodeBySelectorAndRegex", findNodeBySelectorAndRegex);
+
+    await this.page.evaluate(() => {
+      const findNodeBySelectorAndRegex = (selector: string, regexp: RegExp) => {
+        const elements = Array.from(
+          document.querySelectorAll<HTMLElement>(selector)
+        );
+        const matches = elements.filter((e) => e.innerText.match(regexp));
+        return matches[0];
+      };
+
+      findNodeBySelectorAndRegex("span", /Download/).click();
+    });
   }
 }
