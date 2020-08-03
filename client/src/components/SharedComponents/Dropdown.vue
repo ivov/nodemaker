@@ -4,7 +4,11 @@
       <div class="group">
         <select @input="input" ref="dropdown">
           <option value="">Please select one</option>
-          <option v-bind:key="option" v-for="option in options" v-bind:value="option">
+          <option 
+            v-bind:key="option" 
+            v-for="option in options" 
+            :value="option" 
+            :selected="$attrs.value === option">
               {{ option }}
           </option>
         </select>

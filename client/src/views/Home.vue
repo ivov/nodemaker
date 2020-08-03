@@ -12,35 +12,36 @@
           class="input"
           label="Name"
           placeholder="Hacker News" 
-          :value=name
-          v-model=name
+          :value=basicInfo.name
+          v-model=basicInfo.name
         />
         <Dropdown 
           class="input"
           label="Auth" 
-          v-bind:options="['No Auth', 'Access Token', 'OAuth 1', 'OAuth 2']" 
-          :value=auth
-          v-model=auth
+          v-bind:options="['No Auth', 'Access Token', 'OAuth1', 'OAuth2']" 
+          :option=basicInfo.auth
+          v-model=basicInfo.auth
         />
         <InputField 
           class="input"
           label="Color"
           placeholder="#ffffff" 
-          :value=color
-          v-model=color
+          :value=basicInfo.color
+          v-model=basicInfo.color
         />
         <InputField 
           class="input"
           label="API Base URL"
           placeholder="http://hn.algolia.com/api" 
-          :value=baseURL
-          v-model=baseURL
+          :value=basicInfo.baseURL
+          v-model=basicInfo.baseURL
         />
       </div>
       <div class="centerButton">
         <router-link to="/resources">
           <ForwardButton 
             text="Select Your Resources" 
+            @click.native="submitBasicInfo(basicInfo)"
           />
         </router-link>
       </div>
@@ -55,7 +56,6 @@
 </template>
 
 <script lang="ts">
-/* eslint no-unused-vars: "warn" */
 import { Component, Vue } from 'vue-property-decorator';
 
 import Instructions from '../components/SharedComponents/Instructions';
@@ -63,7 +63,9 @@ import ForwardButton from '../components/SharedComponents/ForwardButton';
 import InputField from '../components/SharedComponents/InputField';
 import Dropdown from '../components/SharedComponents/Dropdown';
 
-import Requester from '../../Requester';
+import { mapGetters, mapActions } from 'vuex';
+
+// import Requester from '../../Requester';
 
 @Component({
   name: 'Home',
@@ -73,35 +75,28 @@ import Requester from '../../Requester';
     InputField,
     Dropdown,
   },
-  data: function() {
-    return {
-      name: "",
-      auth: "",
-      color: "",
-      baseURL: "",
-      tester: ""
-    }
-  },
-  methods: {
-    sampleCall() {
-      const requester = new Requester();
-      const response = requester.request("example-channel");
-      response.then((res:string) => {
-        console.log(res);
-        this.tester = res;
-      });
-    },
-  },
-  computed: {
-    requester: function() {
-      const requester = new Requester();
-      const response = requester.request("example-channel");
-      response.then((res) => {
-        console.log(res);
-        return res;
-      });
-    },
-  },
+  computed: mapGetters(['basicInfo']),
+  methods: mapActions(['submitBasicInfo']),
+  // methods: {
+  //   sampleCall() {
+  //     const requester = new Requester();
+  //     const response = requester.request("example-channel");
+  //     response.then((res:string) => {
+  //       console.log(res);
+  //       this.tester = res;
+  //     });
+  //   },
+  // },
+  // computed: {
+  //   requester: function() {
+  //     const requester = new Requester();
+  //     const response = requester.request("example-channel");
+  //     response.then((res) => {
+  //       console.log(res);
+  //       return res;
+  //     });
+  //   },
+  // },
 })
 
 export default class App extends Vue {}

@@ -1,12 +1,16 @@
 <template>
   <div class="input">
       <label>{{label}}: </label>
-      <input 
-        type="text" 
-        ref="text_input"
-        :placeholder="placeholder" 
-        :value="value"
-        @input="input" />
+      <div class="group">
+        <input 
+          type="text" 
+          ref="text_input"
+          :placeholder="placeholder" 
+          :value="value"
+          @input="input" />
+          <SmallButton v-if="add" @click.native="$emit('plus')" />
+          <SmallButton v-if="cancel" @click.native="$emit('del')" cancel=true />
+        </div>
   </div>
 </template>
 
@@ -14,13 +18,17 @@
 /* eslint no-unused-vars: "warn" */
 import { Component, Vue } from 'vue-property-decorator';
 
+import SmallButton from './SmallButton';
 
 @Component({
   name: 'InputField',
-  props: ["label", "placeholder", "value"],
+  components: {
+    SmallButton
+  },
+  props: ["label", "placeholder", "value", "add", "cancel"],
   methods: {
     input() {
-      this.$emit('input', this.$refs.text_input.value)
+      this.$emit('input', this.$refs.text_input.value);
     }
   }
 })
@@ -33,6 +41,11 @@ export default class App extends Vue {}
     display: flex;
     justify-content: space-between;
     vertical-align: middle;
+}
+
+.group {
+  display: flex;
+  justify-content: end;
 }
 
 input {

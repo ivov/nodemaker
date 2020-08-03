@@ -7,43 +7,50 @@
         subtitle="Each operations is connected to a resource"
         instructions="Enter in each operations resource, name, description, endpoint, and request method."
       />
-      <div class="inputContainer" v-bind:key="operation.key" v-for="operation in operations">
-        <Dropdown 
-          class="input"
-          label="Resource" 
-          v-bind:options="['No Auth', 'Access Token', 'OAuth 1', 'OAuth 2']" 
-          :value=operation.resource
-          v-model=operation.resource
-        />
-        <InputField 
-          class="input"
-          label="Operation Name"
-          placeholder="Get" 
-          :value=operation.name
-          v-model=operation.name
-        />
-        <InputField 
-          class="input"
-          label="Description"
-          placeholder="Get a Hacker News article." 
-          :value=operation.description
-          v-model=operation.description
-        />
-        <InputField 
-          class="input"
-          label="Endpoint"
-          placeholder="/article/{id}" 
-          :value=operation.endpoint
-          v-model=operation.endpoint
-        />
-        <Dropdown 
-          class="input"
-          label="Request Method" 
-          v-bind:options="['GET', 'POST', 'PATCH', 'PUT', 'DELETE']" 
-          :value=operation.requestMethod
-          v-model=operation.requestMethod
-        />
-        <hr>
+      <div class="box" v-bind:key="operation.key" v-for="operation in operations">
+        <div class="inputContainer">
+          <Dropdown 
+            class="input"
+            label="Resource" 
+            v-bind:options="resourceNames" 
+            :value=operation.resource
+            v-model=operation.resource
+          />
+          <InputField 
+            class="input"
+            label="Operation Name"
+            placeholder="Get" 
+            :value=operation.name
+            v-model=operation.name
+          />
+          <InputField 
+            class="input"
+            label="Description"
+            placeholder="Get a Hacker News article." 
+            :value=operation.description
+            v-model=operation.description
+          />
+          <InputField 
+            class="input"
+            label="Endpoint"
+            placeholder="/article/{id}" 
+            :value=operation.endpoint
+            v-model=operation.endpoint
+          />
+          <Dropdown 
+            class="input"
+            label="Request Method" 
+            v-bind:options="['GET', 'POST', 'PATCH', 'PUT', 'DELETE']" 
+            :value=operation.requestMethod
+            v-model=operation.requestMethod
+          />
+          <hr>
+        </div>
+        <SmallButton 
+          class="delete" 
+          v-if="operation.cancel"
+          @click.native="removeOperation(operation.key)" 
+          :cancel=operation.cancel />
       </div>
       <div class="centerButton">
           <AddButton 
@@ -55,6 +62,7 @@
         <router-link to="/fields">
             <ForwardButton 
                 text="Select Your Fields" 
+                @click.native="submitOperations(operations)"
             />
         </router-link>
       </div>
@@ -68,6 +76,7 @@
         <router-link to="/resources">
           <BackwardButton 
             text="Edit the previous selections" 
+            @click.native="submitOperations(operations)"
           />
         </router-link>
       </div>
@@ -84,6 +93,9 @@ import BackwardButton from '../components/SharedComponents/BackwardButton';
 import InputField from '../components/SharedComponents/InputField';
 import Dropdown from '../components/SharedComponents/Dropdown';
 import AddButton from '../components/SharedComponents/AddButton';
+import SmallButton from '../components/SharedComponents/SmallButton';
+
+import { mapGetters, mapActions} from 'vuex';
 
 @Component({
   name: 'Operations',
@@ -93,23 +105,12 @@ import AddButton from '../components/SharedComponents/AddButton';
     BackwardButton,
     InputField,
     Dropdown,
-    AddButton
+    AddButton,
+    SmallButton
   },
-  data: () => {
-      return {
-          operations: [
-            {
-                key: 0,
-                resource: "",
-                name: "",
-                description: "",
-                endpoint: "",
-                requestMethod: ""
-            }
-          ]
-      }
-  },
+  computed: mapGetters(['resourceNames', 'operations']),
   methods: {
+    ...mapActions(['submitOperations']),
     addOperation() {
         this.operations.push({
             key: this.operations.length,
@@ -117,8 +118,14 @@ import AddButton from '../components/SharedComponents/AddButton';
             name: "",
             description: "",
             endpoint: "",
-            requestMethod: ""
+            requestMethod: "",
+            cancel: true
         });
+
+        this.$store.commit('submitOperations', this.operations);
+    },
+    removeOperation(operationKey) {
+      this.$store.commit('submitOperations', this.operations.filter(operation => operation.key !== operationKey));
     }
   }
 })
@@ -150,6 +157,15 @@ export default class App extends Vue {}
 
 .inputContainer {
   width: 25rem;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+}
+
+.delete {
+  margin-left: 3rem;
 }
 
 .centerButton {

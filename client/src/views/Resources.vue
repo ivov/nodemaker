@@ -7,14 +7,21 @@
         subtitle="These can be users, articles, files, emails, etc."
         instructions="Enter in each resource name."
       />
-      <div class="inputContainer" v-bind:key="resource.key" v-for="resource in resources">
-        <InputField 
-          class="input"
-          label="Resource"
-          placeholder="Article"
-          :value=resource.text
-          v-model=resource.text
-        />
+      <div class="box" v-bind:key="resource.key" v-for="resource in resources">
+        <div class="inputContainer">
+          <InputField 
+            class="input"
+            label="Resource"
+            placeholder="Article"
+            :value=resource.text
+            v-model=resource.text
+          />
+        </div>
+        <SmallButton 
+          class="delete" 
+          v-if="resource.cancel"
+          @click.native="removeResource(resource.key)" 
+          :cancel=resource.cancel />
       </div>
       <div class="centerButton">
           <AddButton @click.native="addResource()" text="Add another resource" />
@@ -22,7 +29,8 @@
       <div class="centerButton finalButton">
         <router-link to="/operations">
           <ForwardButton 
-            text="Select Your Operations" 
+            text="Select Your Operations"
+            @click.native="submitResources(resources)" 
           />
          </router-link>
       </div>
@@ -36,6 +44,7 @@
         <router-link to="/">
           <BackwardButton 
             text="Edit the previous selections" 
+            @click.native="submitResources(resources)"
           />
         </router-link>
       </div>
@@ -51,6 +60,9 @@ import ForwardButton from '../components/SharedComponents/ForwardButton';
 import BackwardButton from '../components/SharedComponents/BackwardButton';
 import InputField from '../components/SharedComponents/InputField';
 import AddButton from '../components/SharedComponents/AddButton';
+import SmallButton from '../components/SharedComponents/SmallButton';
+
+import { mapGetters, mapActions} from 'vuex';
 
 @Component({
   name: 'Resources',
@@ -59,25 +71,24 @@ import AddButton from '../components/SharedComponents/AddButton';
     ForwardButton,
     BackwardButton,
     InputField,
-    AddButton
+    AddButton,
+    SmallButton
   },
-  data: () => {
-    return {
-      resources: [ 
-        {
-          key: 0,
-          text: ""
-        }
-      ]
-    }
-  },
+  computed: mapGetters(['resources']),
   methods: {
+    ...mapActions(['submitResources']),
     addResource() {
       this.resources.push({
         key: this.resources.length,
-        text: ""
+        text: "",
+        cancel: true
       });
-    }
+
+      this.$store.commit('submitResources', this.resources);
+    },
+    removeResource(resourceKey) {
+      this.$store.commit('submitResources', this.resources.filter(resource => resource.key !== resourceKey));
+    },
   }
 })
 
@@ -103,11 +114,20 @@ export default class App extends Vue {}
 }
 
 .input {
-  margin: 1.5rem 0rem;
+  margin: 1rem 0rem;
 }
 
 .inputContainer {
-  width: 21rem;
+  width: 25rem;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+}
+
+.delete {
+  margin-left: 3rem;
 }
 
 .centerButton {

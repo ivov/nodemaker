@@ -10,6 +10,7 @@
           <GenericButton 
             class="input"
             text="Generate *.node.ts, GenericFunctions.ts, *Description.ts (optional), and *.credentials.ts." 
+            @click.native="example()"
           />
           <GenericButton 
             class="input"
@@ -52,6 +53,10 @@ import InputField from '../components/SharedComponents/InputField';
 import Dropdown from '../components/SharedComponents/Dropdown';
 import AddButton from '../components/SharedComponents/AddButton';
 
+import Requester from '../../Requester';
+
+import { mapGetters } from 'vuex';
+
 @Component({
   name: 'Fields',
   components: {
@@ -62,6 +67,72 @@ import AddButton from '../components/SharedComponents/AddButton';
     InputField,
     Dropdown,
     AddButton
+  },
+  computed: mapGetters(['basicInfo', 'resources', 'operations', 'fields']),
+  methods: {
+    buildMetaParameters() {
+      const { name, auth, color, baseURL } = this.basicInfo;
+      return {
+        serviceName: name,
+        auth,
+        nodeColor: color,
+        apiURL: baseURL
+      };
+    },
+    buildMainParameters() {
+      let mainParameters = {};
+      this.resources.forEach(resource => {
+        mainParameters[resource.text] = [];
+      });
+
+      this.operations.forEach(operation => {
+        mainParameters[operation.resource].push({
+          name: operation.name,
+          description: operation.description,
+          endpoint: operation.endpoint,
+          requestMethod: operation.requestMethod,
+          fields: []
+        })
+      });
+
+      this.fields.forEach(field => {
+        const fieldObj = {
+          name: field.name,
+          description: field.description,
+          type: field.type,
+          default: field.default
+        };
+
+        field.resourceOperation.forEach(resourceOp => {
+          const [ operation, resource ] = resourceOp.value.split(" : ");
+          const operationToUpdate = mainParameters[resource].findIndex(op => op.name === operation);   
+          mainParameters[resource][operationToUpdate].fields.push(fieldObj);
+        });
+      });
+
+      return mainParameters;
+    },
+    async example() {
+      const requester = new Requester();
+      const paramsBundle = {
+        metaParameters: this.buildMetaParameters(),
+        mainParameters: this.buildMainParameters(),
+        nodeGenerationType: "simple",
+      };
+
+      console.log(paramsBundle);
+      // const response = requester.request("parameters-channel", paramsBundle);
+
+      // response.then((res:string) => {
+      //   console.log(res);
+      // });
+
+      const result = await requester.request(
+        "parameters-channel",
+        paramsBundle
+      );
+      console.log(result);
+    },
   },
 })
 

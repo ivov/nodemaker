@@ -7,62 +7,56 @@
         subtitle="If an operation has an associated set of fields, add those in here."
         instructions="Choose the field type, enter in the nessecary additional infomation, and choose the operations to associate them with."
       />
-      <div class="inputContainer" v-bind:key="field.key" v-for="field in fields">
-        <div v-bind:key="resource.key" v-for="resource in field.resources">
+      <div class="box" v-bind:key="field.key" v-for="field in fields">
+        <div class="inputContainer">
+          <div v-bind:key="resourceOperation.key" v-for="resourceOperation in field.resourceOperation">
+            <Dropdown 
+              class="input"
+              label="Resource/Operation" 
+              :add=resourceOperation.add
+              :cancel=resourceOperation.cancel
+              v-on:plus="addResourceOperation(field.key)"
+              v-on:del="removeResourceOperation(field.key, resourceOperation.key)"
+              v-bind:options="operationWithResourceNames" 
+              :value=resourceOperation.value
+              v-model=resourceOperation.value
+            />
+          </div>
           <Dropdown 
             class="input"
-            label="Resource" 
-            :add=resource.add
-            :cancel=resource.cancel
-            v-on:plus="addResource(field.key)"
-            v-on:del="removeResource(field.key, resource.key)"
-            v-bind:options="['No Auth', 'Access Token', 'OAuth 1', 'OAuth 2']" 
-            :value=resource.value
-            v-model=resource.value
+            label="Type" 
+            v-bind:options="['String', 'Options', 'Multioptions', 'Boolean', 'Number', 'Collection', 'Fixed Collection']" 
+            :value=field.type
+            v-model=field.type
           />
-        </div>
-        <div v-bind:key="operation.key" v-for="operation in field.operations">
-          <Dropdown 
+          <InputField 
             class="input"
-            label="Operation" 
-            :add=operation.add
-            :cancel=operation.cancel
-            v-on:plus="addOperation(field.key)"
-            v-on:del="removeOperation(field.key, operation.key)"
-            v-bind:options="['No Auth', 'Access Token', 'OAuth 1', 'OAuth 2']" 
-            :value=operation.value
-            v-model=operation.value
+            label="Field Name"
+            placeholder="Article id" 
+            :value=field.name
+            v-model=field.name
           />
+          <InputField 
+            class="input"
+            label="Description"
+            placeholder="The id of the article to get." 
+            :value=field.description
+            v-model=field.description
+          />
+          <InputField 
+            class="input"
+            label="Default"
+            placeholder="123" 
+            :value=field.default
+            v-model=field.default
+          />
+          <hr>
         </div>
-        <Dropdown 
-          class="input"
-          label="Type" 
-          v-bind:options="['String', 'Options', 'Multioptions', 'Boolean', 'Number', 'Collection', 'Fixed Collection']" 
-          :value=field.type
-          v-model=field.type
-        />
-        <InputField 
-          class="input"
-          label="Field Name"
-          placeholder="Article id" 
-          :value=field.name
-          v-model=field.name
-        />
-        <InputField 
-          class="input"
-          label="Description"
-          placeholder="The id of the article to get." 
-          :value=field.description
-          v-model=field.description
-        />
-        <InputField 
-          class="input"
-          label="Default"
-          placeholder="123" 
-          :value=field.default
-          v-model=field.default
-        />
-        <hr>
+        <SmallButton 
+          class="delete" 
+          v-if="field.cancel"
+          @click.native="removeField(field.key)" 
+          :cancel=field.cancel />
       </div>
       <div class="centerButton">
           <AddButton 
@@ -73,7 +67,8 @@
       <div class="centerButton finalButton">
         <router-link to="/complete">
             <ForwardButton 
-            text="Generate your node" 
+              text="Generate your node" 
+              @click.native="submitFields(fields)"
             />
         </router-link>
       </div>
@@ -87,6 +82,7 @@
         <router-link to="/operations">
           <BackwardButton 
             text="Edit the previous selections" 
+            @click.native="submitFields(fields)"
           />
         </router-link>
       </div>
@@ -103,6 +99,9 @@ import BackwardButton from '../components/SharedComponents/BackwardButton';
 import InputField from '../components/SharedComponents/InputField';
 import Dropdown from '../components/SharedComponents/Dropdown';
 import AddButton from '../components/SharedComponents/AddButton';
+import SmallButton from '../components/SharedComponents/SmallButton';
+
+import { mapGetters, mapActions} from 'vuex';
 
 @Component({
   name: 'Fields',
@@ -112,53 +111,21 @@ import AddButton from '../components/SharedComponents/AddButton';
     BackwardButton,
     InputField,
     Dropdown,
-    AddButton
+    AddButton,
+    SmallButton
   },
-  data: () => {
-    return {
-      fields: [
-        {
-          key: 0,
-          resources: [
-            {
-              key: 0,
-              value: "",
-              add: true,
-              cancel: false
-            }
-          ],
-          operations: [
-            {
-              key: 0,
-              value: "",
-              add: true,
-              cancel: false
-            }
-          ],
-          type: "",
-          name: "",
-          description: "",
-          default: ""
-        }
-      ]
-    }
-  },
+  computed: mapGetters(['operationWithResourceNames', 'fields']),
   methods: {
+    ...mapActions(['submitFields']),
     addField() {
-      this.fields.push({
+      this.$store.commit('pushToFields', {
           key: this.fields.length,
-          resources: [
+          resourceOperation: [
             {
               key: 0,
               value: "",
-              add: true,
-              cancel: false
-            }
-          ],
-          operations: [
-            {
-              key: 0,
-              value: "",
+              resource: "",
+              operation: "",
               add: true,
               cancel: false
             }
@@ -166,36 +133,28 @@ import AddButton from '../components/SharedComponents/AddButton';
           type: "",
           name: "",
           description: "",
-          default: ""
+          default: "",
+          cancel: true
         });
     },
-    addResource(key) {
-      this.fields[key].resources.push({
-        key: this.fields[key].resources.length,
+    addResourceOperation(key) {
+      const newObj = {
+        key: this.fields[key].resourceOperation.length,
         text: "",
         add: false,
         cancel: true
-      });
+      };
+
+      this.$store.commit('pushToResourceOperation', { newObj, key });
     },
-    addOperation(key) {
-        this.fields[key].operations.push({
-            key: this.fields[key].operations.length,
-            resource: "",
-            name: "",
-            description: "",
-            endpoint: "",
-            requestMethod: "",
-            add: false,
-            cancel: true
-        });
+    removeField(fieldKey) {
+      this.$store.commit('submitFields', this.fields.filter(field => field.key !== fieldKey));
     },
-    removeResource(fieldKey, resourceKey) {
-      this.fields[fieldKey].resources = this.fields[fieldKey].resources.filter(resource => resource.key !== resourceKey);
+    removeResourceOperation(fieldKey, resourceKey) {
+      const newObj = this.fields[fieldKey].resourceOperation.filter(resource => resource.key !== resourceKey);
+      this.$store.commit('submitResourceOperation', { newObj, fieldKey});
     },
-    removeOperation(fieldKey, operationKey) {
-      this.fields[fieldKey].operations = this.fields[fieldKey].operations.filter(operation => operation.key !== operationKey);
-    }
-  }
+  },
 })
 
 export default class App extends Vue {}
@@ -223,8 +182,17 @@ export default class App extends Vue {}
   margin: 1.5rem 0rem;
 }
 
+.delete {
+  margin-left: 3rem;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+}
+
 .inputContainer {
-  width: 25rem;
+  width: 30rem;
 }
 
 .centerButton {
