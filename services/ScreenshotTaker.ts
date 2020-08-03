@@ -11,8 +11,8 @@ import { readFileSync, writeFileSync } from "fs";
 export default class ScreenshotTaker {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page; // browser tab
-  private imageSavePath = join("output", "workflow.png");
-  private urlSavePath = join("output", "image-upload-url.txt");
+  private pngSavePath = join("output", "workflow.png"); // in-app screenshot
+  private urlSavePath = join("output", "image-upload-url.txt"); // uploaded image URL
 
   constructor(private metaParameters: MetaParameters) {}
 
@@ -25,9 +25,8 @@ export default class ScreenshotTaker {
     await this.page.goto(N8N_APP_LOCALHOST);
     await this.placeNewNodeOnCanvas();
     await this.connectStartToNewNode();
-    await this.page.screenshot({
-      path: this.imageSavePath,
-    });
+    await this.page.screenshot({ path: this.pngSavePath });
+    await this.getJsonNodeCode();
   }
 
   private async placeNewNodeOnCanvas() {
@@ -58,7 +57,7 @@ export default class ScreenshotTaker {
 
   /**Upload image to https://imgbb.com and return URL.*/
   public async uploadImage() {
-    const imageFile = readFileSync(this.imageSavePath, { encoding: "base64" });
+    const imageFile = readFileSync(this.pngSavePath, { encoding: "base64" });
     const formData = new FormData();
     formData.append("image", imageFile);
 
@@ -78,5 +77,34 @@ export default class ScreenshotTaker {
   /**TODO - Temporary function to save image upload URL to a TXT file. To be adjusted once UI needs are clear.*/
   private saveUrlToDisk(url: string) {
     writeFileSync(this.urlSavePath, url, "utf8");
+  }
+
+  private async getJsonNodeCode() {
+    await this.setDownloadDirectory();
+    await this.downloadJsonNodeCode();
+  }
+
+  private async setDownloadDirectory() {
+    // @ts-ignore
+    await this.page._client.send("Page.setDownloadBehavior", {
+      behavior: "allow",
+      downloadPath: join(__dirname, "..", "..", "output"),
+    });
+  }
+
+  private async downloadJsonNodeCode() {
+    await this.page.evaluate(() => {
+      const findNodeBySelectorAndRegex = (selector: string, regexp: RegExp) => {
+        const elements = Array.from(
+          document.querySelectorAll<HTMLElement>(selector)
+        );
+        const matches = elements.filter((e) => e.innerText.match(regexp));
+        return matches[0];
+      };
+
+      findNodeBySelectorAndRegex("span", /Download/).click();
+    });
+
+    await this.page.waitFor(2000);
   }
 }

@@ -1,39 +1,50 @@
 import puppeteer from "puppeteer";
 import config from "../config";
 import { N8N_HOMEPAGE_URL } from "../utils/constants";
-import { docsParameters } from "../parameters";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 /**Responsible for logging into the n8n website and creating a workflow.*/
 export default class WorkflowCreator {
-  private static browser: puppeteer.Browser;
-  private static page: puppeteer.Page; // browser tab
+  private browser: puppeteer.Browser;
+  private page: puppeteer.Page; // browser tab
+  private nodeCodeSavePath = join("output", "unsaved_workflow.json");
 
-  public static async init() {
-    WorkflowCreator.browser = await puppeteer.launch({ headless: false });
-    WorkflowCreator.page = await WorkflowCreator.browser.newPage();
+  constructor(private docsParameters: DocsParameters) {}
+
+  public async run() {
+    await this.init();
+    await this.doLogin();
+    await this.createWorkflow();
+    // await this.close() // TODO - uncomment once all functionality works
   }
 
-  public static async doLogin() {
+  private async init() {
+    this.browser = await puppeteer.launch({ headless: false });
+    this.page = await this.browser.newPage();
+  }
+
+  private async doLogin() {
     const { username, password } = config.n8n;
     const homepageLoginButtonSelector = "a[title='Login']";
     const usernameSelector = 'input[placeholder="Username or email address"]';
     const passwordSelector = 'input[placeholder="Password"]';
     const loginButtonSelector = 'button[type="submit"]';
 
-    await WorkflowCreator.page.goto(N8N_HOMEPAGE_URL);
-    await WorkflowCreator.page.click(homepageLoginButtonSelector);
+    await this.page.goto(N8N_HOMEPAGE_URL);
+    await this.page.click(homepageLoginButtonSelector);
 
-    await WorkflowCreator.page.waitForNavigation();
+    await this.page.waitFor(usernameSelector);
 
-    await WorkflowCreator.page.type(usernameSelector, username);
-    await WorkflowCreator.page.type(passwordSelector, password);
-    await WorkflowCreator.page.click(loginButtonSelector);
+    await this.page.type(usernameSelector, username);
+    await this.page.type(passwordSelector, password);
+    await this.page.click(loginButtonSelector);
 
-    await WorkflowCreator.page.waitForNavigation({ waitUntil: "networkidle0" }); // due to auth redirection
+    await this.page.waitForNavigation({ waitUntil: "networkidle0" }); // due to auth redirection
   }
 
-  public static async enterWorkflowDetails() {
-    await WorkflowCreator.page.click('a[href="/workflows/edit"]');
+  private async createWorkflow() {
+    await this.page.click('a[href="/workflows/edit"]');
 
     const nameSelector =
       'input[placeholder="The name the workflow should be published as"]';
@@ -46,38 +57,50 @@ export default class WorkflowCreator {
     const capitalizeFirstLetter = (string: string) =>
       string[0].toUpperCase() + string.slice(1);
 
-    const workflowTitle = capitalizeFirstLetter(docsParameters.exampleUsage);
+    const workflowTitle = capitalizeFirstLetter(
+      this.docsParameters.exampleUsage
+    );
 
-    await WorkflowCreator.page.waitFor(nameSelector);
-    await WorkflowCreator.page.type(nameSelector, workflowTitle);
+    await this.page.waitFor(nameSelector);
+    await this.page.type(nameSelector, workflowTitle);
 
-    await WorkflowCreator.clearTextArea(codeAreaSelector);
-    await WorkflowCreator.page.type(codeAreaSelector, "ABC"); // TODO - insert node JSON once node is created
+    await this.clearTextArea(codeAreaSelector);
+    await this.page.type(codeAreaSelector, this.readNodeCode());
 
-    await WorkflowCreator.page.evaluate(() => {
+    await this.page.evaluate(() => {
       const dropdownButtons = document.querySelectorAll(".dropdown-item");
       const imageLinkButton = dropdownButtons[6] as HTMLElement;
       imageLinkButton.click();
     });
 
-    await WorkflowCreator.page.type(imageLinkTextInputSelector, "Workflow");
-    await WorkflowCreator.page.type(imageLinkUrlInputSelector, "ABC"); // TODO - insert image URL once image is uploaded
+    await this.page.type(imageLinkTextInputSelector, "Workflow");
+    await this.page.type(imageLinkUrlInputSelector, this.readUrlFromDisk());
 
-    await WorkflowCreator.page.click(imageLinkUrlSubmissionButtonSelector);
+    await this.page.click(imageLinkUrlSubmissionButtonSelector);
 
-    // await WorkflowCreator.page.click(workflowSubmissionButtonSelector); // TODO - uncomment once above TODOs are done
+    // await this.page.click(workflowSubmissionButtonSelector); // TODO - uncomment once all functionality works
   }
 
-  private static async clearTextArea(textArea: string) {
-    await WorkflowCreator.page.focus(textArea);
-    await WorkflowCreator.page.keyboard.down("Control");
-    await WorkflowCreator.page.keyboard.press("A");
-    await WorkflowCreator.page.keyboard.up("Control");
-    await WorkflowCreator.page.keyboard.press("Backspace");
+  /**TODO - Temporary function to read image upload URL from a TXT file. To be adjusted once UI needs are clear.*/
+  private readUrlFromDisk() {
+    const source = join("output", "image-upload-url.txt");
+    return readFileSync(source, "utf-8");
   }
 
-  public static async close() {
-    await WorkflowCreator.page.close();
-    await WorkflowCreator.browser.close();
+  private async clearTextArea(textArea: string) {
+    await this.page.focus(textArea);
+    await this.page.keyboard.down("Control");
+    await this.page.keyboard.press("A");
+    await this.page.keyboard.up("Control");
+    await this.page.keyboard.press("Backspace");
+  }
+
+  private readNodeCode() {
+    return readFileSync(this.nodeCodeSavePath).toString();
+  }
+
+  private async close() {
+    await this.page.close();
+    await this.browser.close();
   }
 }
