@@ -1,18 +1,18 @@
 module.exports = {
   helpers: {
     /**Format a string as a class name, uppercase for each initial and no whitespace.*/
-    classify: (name: string) => name.replace(/\s/g, ""),
+    classify: (name) => name.replace(/\s/g, ""),
     /**Format a string as a lowercase single word, or a lowercase first word
      * and uppercase initial + lowercase rest for following words.*/
-    camelify: (input: string) => {
+    camelify: (input) => {
       const isSingleWord = input.split(" ").length === 1;
-      const uppercaseInitialLowercaseRest = (input: string) =>
+      const uppercaseInitialLowercaseRest = (input) =>
         input[0].toUpperCase() + input.slice(1);
 
       if (isSingleWord) return input.toLowerCase();
 
       // multi-word
-      let result: string[] = [];
+      let result = [];
       input.split(" ").forEach((word, index) => {
         index === 0
           ? result.push(word.toLowerCase())
@@ -21,23 +21,22 @@ module.exports = {
       return result.join("");
     },
     /**Check if operations array has a Get All operation.*/
-    hasGetAll: (operations: Operation[]) =>
+    hasGetAll: (operations) =>
       operations.some((operation) => operation.name === "Get All"),
     /**Check if a particular operation is a GET request.*/
-    isRetrieval: (operation: Operation) => operation.requestMethod === "GET",
+    isRetrieval: (operation) => operation.requestMethod === "GET",
     /**Check if a particular operation has any associated additional fields.*/
-    hasAdditionalFields: (operation: Operation) =>
+    hasAdditionalFields: (operation) =>
       operation.fields.filter((field) => field.name === "Additional Fields"),
     /**Create the credential string for based on auth type.*/
-    getCredentialsString: (name: string, auth: string) =>
+    getCredentialsString: (name, auth) =>
       name + (auth === "OAuth2" ? "OAuth2" : "") + "Api",
     /**Check if the endpoint has an extractable variable.*/
-    hasEndpointVariable: (endpoint: string) => endpoint.split("").includes("$"),
+    hasEndpointVariable: (endpoint) => endpoint.split("").includes("$"),
     /**Extract the variable from the endpoint.*/
-    getVariableFromEndpoint: (endpoint: string) =>
-      endpoint.match(/\$\$(.*)\$\$/)![1],
+    getVariableFromEndpoint: (endpoint) => endpoint.match(/\$\$(.*)\$\$/)[1],
     /**Reformat endpoint without variable boundary markers.*/
-    fixEndpoint: (endpoint: string) =>
+    fixEndpoint: (endpoint) =>
       endpoint
         .replace(/\/\$\$/, "/${")
         .replace(/\$\$$/, "}")

@@ -2,7 +2,6 @@
 	"exclude": [ "output" ],
 	"include": [
 		"**/*.ts",
-		".hygen.ts",
 		"*.d.ts"
   ],
 	"compilerOptions": {
