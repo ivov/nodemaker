@@ -117,7 +117,7 @@ import { mapGetters } from 'vuex';
       const paramsBundle = {
         metaParameters: this.buildMetaParameters(),
         mainParameters: this.buildMainParameters(),
-        nodeGenerationType: "simple",
+        nodeGenerationType: "Simple",
       };
 
       console.log(paramsBundle);
@@ -128,7 +128,7 @@ import { mapGetters } from 'vuex';
       // });
 
       const result = await requester.request(
-        "parameters-channel",
+        "nodegen-channel",
         paramsBundle
       );
       console.log(result);
