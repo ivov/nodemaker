@@ -8,6 +8,7 @@ import { join } from "path";
 export default class WorkflowCreator {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page; // browser tab
+  private nodeCodeSavePath = join("output", "unsaved_workflow.json");
 
   constructor(private docsParameters: DocsParameters) {}
 
@@ -15,7 +16,7 @@ export default class WorkflowCreator {
     await this.init();
     await this.doLogin();
     await this.createWorkflow();
-    // await this.close()
+    // await this.close() // TODO - uncomment once all functionality works
   }
 
   private async init() {
@@ -64,7 +65,7 @@ export default class WorkflowCreator {
     await this.page.type(nameSelector, workflowTitle);
 
     await this.clearTextArea(codeAreaSelector);
-    await this.page.type(codeAreaSelector, "ABC"); // TODO - insert node JSON once node is created
+    await this.page.type(codeAreaSelector, this.readNodeCode());
 
     await this.page.evaluate(() => {
       const dropdownButtons = document.querySelectorAll(".dropdown-item");
@@ -73,15 +74,15 @@ export default class WorkflowCreator {
     });
 
     await this.page.type(imageLinkTextInputSelector, "Workflow");
-    await this.page.type(imageLinkUrlInputSelector, this.getUrlFromDisk());
+    await this.page.type(imageLinkUrlInputSelector, this.readUrlFromDisk());
 
     await this.page.click(imageLinkUrlSubmissionButtonSelector);
 
-    // await this.page.click(workflowSubmissionButtonSelector); // TODO - uncomment once above TODOs are done
+    // await this.page.click(workflowSubmissionButtonSelector); // TODO - uncomment once all functionality works
   }
 
   /**TODO - Temporary function to read image upload URL from a TXT file. To be adjusted once UI needs are clear.*/
-  private getUrlFromDisk() {
+  private readUrlFromDisk() {
     const source = join("output", "image-upload-url.txt");
     return readFileSync(source, "utf-8");
   }
@@ -92,6 +93,10 @@ export default class WorkflowCreator {
     await this.page.keyboard.press("A");
     await this.page.keyboard.up("Control");
     await this.page.keyboard.press("Backspace");
+  }
+
+  private readNodeCode() {
+    return readFileSync(this.nodeCodeSavePath).toString();
   }
 
   private async close() {
