@@ -1,8 +1,7 @@
 import WorkflowCreator from "../services/WorkflowCreator";
+import { docsParameters } from "../parameters";
 
 (async () => {
-  const creator = new WorkflowCreator();
-  await creator.init();
-  await creator.doLogin();
-  await creator.enterWorkflowDetails();
+  const creator = new WorkflowCreator(docsParameters);
+  await creator.run();
 })();

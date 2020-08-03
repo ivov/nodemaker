@@ -1,19 +1,29 @@
 import puppeteer from "puppeteer";
 import config from "../config";
 import { N8N_HOMEPAGE_URL } from "../utils/constants";
-import { docsParameters } from "../parameters";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 /**Responsible for logging into the n8n website and creating a workflow.*/
 export default class WorkflowCreator {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page; // browser tab
 
-  public async init() {
+  constructor(private docsParameters: DocsParameters) {}
+
+  public async run() {
+    await this.init();
+    await this.doLogin();
+    await this.createWorkflow();
+    // await this.close()
+  }
+
+  private async init() {
     this.browser = await puppeteer.launch({ headless: false });
     this.page = await this.browser.newPage();
   }
 
-  public async doLogin() {
+  private async doLogin() {
     const { username, password } = config.n8n;
     const homepageLoginButtonSelector = "a[title='Login']";
     const usernameSelector = 'input[placeholder="Username or email address"]';
@@ -23,7 +33,7 @@ export default class WorkflowCreator {
     await this.page.goto(N8N_HOMEPAGE_URL);
     await this.page.click(homepageLoginButtonSelector);
 
-    await this.page.waitForNavigation();
+    await this.page.waitFor(usernameSelector);
 
     await this.page.type(usernameSelector, username);
     await this.page.type(passwordSelector, password);
@@ -32,7 +42,7 @@ export default class WorkflowCreator {
     await this.page.waitForNavigation({ waitUntil: "networkidle0" }); // due to auth redirection
   }
 
-  public async enterWorkflowDetails() {
+  private async createWorkflow() {
     await this.page.click('a[href="/workflows/edit"]');
 
     const nameSelector =
@@ -46,7 +56,9 @@ export default class WorkflowCreator {
     const capitalizeFirstLetter = (string: string) =>
       string[0].toUpperCase() + string.slice(1);
 
-    const workflowTitle = capitalizeFirstLetter(docsParameters.exampleUsage);
+    const workflowTitle = capitalizeFirstLetter(
+      this.docsParameters.exampleUsage
+    );
 
     await this.page.waitFor(nameSelector);
     await this.page.type(nameSelector, workflowTitle);
@@ -61,11 +73,17 @@ export default class WorkflowCreator {
     });
 
     await this.page.type(imageLinkTextInputSelector, "Workflow");
-    await this.page.type(imageLinkUrlInputSelector, "ABC"); // TODO - insert image URL once image is uploaded
+    await this.page.type(imageLinkUrlInputSelector, this.getUrlFromDisk());
 
     await this.page.click(imageLinkUrlSubmissionButtonSelector);
 
     // await this.page.click(workflowSubmissionButtonSelector); // TODO - uncomment once above TODOs are done
+  }
+
+  /**TODO - Temporary function to read image upload URL from a TXT file. To be adjusted once UI needs are clear.*/
+  private getUrlFromDisk() {
+    const source = join("output", "image-upload-url.txt");
+    return readFileSync(source, "utf-8");
   }
 
   private async clearTextArea(textArea: string) {
@@ -76,7 +94,7 @@ export default class WorkflowCreator {
     await this.page.keyboard.press("Backspace");
   }
 
-  public async close() {
+  private async close() {
     await this.page.close();
     await this.browser.close();
   }
