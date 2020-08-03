@@ -6,6 +6,7 @@ metaParameters: <%= metaParameters %>
 <%_
  mainParameters = JSON.parse(mainParameters);
  metaParameters = JSON.parse(metaParameters);
+ [operations] = Object.values(mainParameters);
 _%>
 import {
 	IExecuteFunctions,
@@ -20,7 +21,7 @@ import {
 
 import {
 	<%= h.camelify(metaParameters.serviceName) %>ApiRequest,
-	<%_ if (h.hasGetAll(mainParameters)) { _%>
+	<%_ if (h.hasGetAll(operations)) { _%>
 	<%= h.camelify(name) %>ApiRequestAllItems,
 	<%_ } _%>
 } from './GenericFunctions';

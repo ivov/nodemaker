@@ -1,103 +1,85 @@
-"use strict";
-
+import { readdirSync } from "fs";
+import { join } from "path";
 import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-const isDevelopment = process.env.NODE_ENV !== "production";
 import IpcChannel from "../channels/IpcChannel.interface";
-import ExampleChannel from "../channels/ExampleChannel";
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let win: any;
-
-// Scheme must be registered before the app is ready
+// Vue boilerplate
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
 
-function registerIpcChannels() {
-  const ipcChannels: IpcChannel[] = [new ExampleChannel()];
+/**Responsible for managing the Electron app (main process), the various windows (renderer processes), and IPC channels.*/
+class Client {
+  mainWindow: BrowserWindow | null; // first renderer process
 
-  ipcChannels.forEach((channel) =>
-    ipcMain.on(channel.name, (
-      event,
-      argument?: string // TODO - generalize arg type
-    ) => channel.handle(event, argument))
-  );
-}
-
-function createWindow() {
-  // Create the browser window.
-  win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: true,
-    },
-  });
-
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST) win.webContents.openDevTools();
-  } else {
-    createProtocol("app");
-    // Load the index.html when not in development
-    win.loadURL("app://./index.html");
+  constructor() {
+    app.on("ready", async () => {
+      this.installVueDevTools();
+      this.createMainWindow();
+      await this.registerIpcChannels();
+    });
+    app.on("window-all-closed", app.quit);
+    app.allowRendererProcessReuse = true;
   }
 
-  win.on("closed", () => {
-    win = null;
-  });
-}
-
-// Quit when all windows are closed.
-app.on("window-all-closed", () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-
-app.on("activate", () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
-    createWindow();
-  }
-});
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on("ready", async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
-      console.error("Vue Devtools failed to install:", e.toString());
+  // Vue boilerplate
+  private installVueDevTools() {
+    if (process.env.NODE_ENV !== "production" && !process.env.IS_TEST) {
+      try {
+        installExtension(VUEJS_DEVTOOLS);
+      } catch (error) {
+        console.error("Vue Devtools failed to install: ", error.toString());
+      }
     }
   }
-  createWindow();
-  registerIpcChannels();
-});
 
-// Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
-  if (process.platform === "win32") {
-    process.on("message", (data) => {
-      if (data === "graceful-exit") {
-        app.quit();
-      }
+  private createMainWindow() {
+    this.mainWindow = new BrowserWindow({
+      width: 1000,
+      height: 600,
+      resizable: false,
+      webPreferences: { nodeIntegration: true },
     });
-  } else {
-    process.on("SIGTERM", () => {
-      app.quit();
+
+    // Vue boilerplate
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      this.mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+      if (!process.env.IS_TEST) {
+        this.mainWindow.webContents.openDevTools();
+      }
+    } else {
+      createProtocol("app");
+      this.mainWindow.loadURL("app://./index.html");
+    }
+
+    this.mainWindow.on("closed", () => {
+      this.mainWindow = null;
     });
   }
+
+  /**Registers all the IPC channels for handling requests from the renderer process.*/
+  private async registerIpcChannels() {
+    const ipcChannels: IpcChannel[] = [];
+
+    for (let module of this.getChannelModules()) {
+      const ChannelClass = require(`../channels/${module}`).default; // dynamic import
+      ipcChannels.push(new ChannelClass());
+    }
+
+    ipcChannels.forEach((channel) =>
+      ipcMain.on(channel.name, (event, argument?: any) =>
+        channel.handle(event, argument)
+      )
+    );
+  }
+
+  private getChannelModules() {
+    return readdirSync(join("channels")).filter(
+      (channel) => !channel.endsWith(".interface.ts")
+    );
+  }
 }
+
+new Client();

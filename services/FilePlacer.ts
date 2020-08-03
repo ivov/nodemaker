@@ -1,9 +1,7 @@
 import fs from "fs";
 import { join } from "path";
-import { promisify } from "util";
-import { NodeDocFile } from "./enums";
-
-const relocate = promisify(fs.rename);
+import { NodeDocFileEnum } from "../utils/enums";
+import relocate from "../utils/relocate";
 
 /**Responsible for placing the output files located in `nodemaker/output` in their appropriate dirs in the `n8n` and `n8n-docs` repos.*/
 export default class FilePlacer {
@@ -101,7 +99,7 @@ export default class FilePlacer {
    * - a node functionality documentation file, or
    * - a node credential documentation file.
    */
-  public async placeDocFile(nodeDocFile: NodeDocFile) {
+  public async placeDocFile(nodeDocFile: NodeDocFileEnum) {
     const getMainDocFilename = (file: string) =>
       file.endsWith(".md") && !file.endsWith("Credentials.md");
 
@@ -109,18 +107,18 @@ export default class FilePlacer {
       file.endsWith("Credentials.md");
 
     const sourceFilename =
-      nodeDocFile === NodeDocFile.main
+      nodeDocFile === NodeDocFileEnum.main
         ? this.outputFiles.find(getMainDocFilename)
         : this.outputFiles.find(getCredentialDocFilename);
 
     if (sourceFilename === undefined) {
       throw Error(
-        `No ${NodeDocFile[nodeDocFile]} documentation file found. Generate it before placement.`
+        `No ${NodeDocFileEnum[nodeDocFile]} documentation file found. Generate it before placement.`
       );
     }
 
     const destinationDir = join(
-      nodeDocFile === NodeDocFile.main
+      nodeDocFile === NodeDocFileEnum.main
         ? this.docsFunctionalityDir
         : this.docsCredentialsDir,
       this.deriveDocDestinationDirname()
@@ -140,7 +138,7 @@ export default class FilePlacer {
    * - the node credential documentation file.
    */
   public placeDocumentationFiles() {
-    [NodeDocFile.main, NodeDocFile.credential].forEach((file) =>
+    [NodeDocFileEnum.main, NodeDocFileEnum.credential].forEach((file) =>
       this.placeDocFile(file)
     );
   }

@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import fetch from "node-fetch";
-import { CUSTOM_SEARCH_API_URL } from "./constants";
+import { CUSTOM_SEARCH_API_URL } from "../utils/constants";
 import config from "../config";
 
 /**Responsible for finding, fetching and saving to disk images for the icon candidates.*/

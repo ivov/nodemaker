@@ -1,9 +1,4 @@
 /node_modules
-/output/*.ts
-/output/*.json
-/output/*.md
-/output/*.png
-/output/icon-candidates
-/output/icon-candidates/*.png
+/output/*
 /build
 /config/.env

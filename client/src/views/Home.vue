@@ -98,7 +98,6 @@ import { mapGetters, mapActions } from 'vuex';
   //   },
   // },
 })
-
 export default class App extends Vue {}
 </script>
 

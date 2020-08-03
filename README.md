@@ -16,6 +16,7 @@ Autogenerate node files and place them in the n8n repos!
   - Node documentation files
     - `README.md` (node)
     - `README.md` (credential)
+    - In-app screenshot of node
   - Five icon candidates
 - Resizing of selected icon candidate
 - Placement of generated files in repos
@@ -43,6 +44,7 @@ $ npm run [script]
 | `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts`, `*Description.ts` (optional), and `*.credentials.ts`. |
 | `packgen` | Generate a `package.json` updated with node path and credential path insertions.                   |
 | `docsgen` | Generate a node functionality doc file and a node credential doc file in markdown.                 |
+| `shotgen` | Generate an in-app screenshot of the node for the docs. For **pre-requisite**, see below.          |
 | `icongen` | Generate five images as icon candidates. For **pre-requisite**, see below.                         |
 | `resize`  | Resize one of the generated icon candidates to a 60×60 px PNG file.                                |
 | `place`   | Move files at `/output` to the `n8n` and `n8n-docs` repos. For **pre-requisite**, see below.       |
@@ -53,11 +55,12 @@ $ npm run [script]
 - All output files are generated at `nodemaker/output` dir.
 - Generated files may contain `// TODO:` lines, for adding in custom logic.
 - `nodegen` prompts for node generation type. In **simple node generation**, the output node has its resources in a single file. In **complex node generation**, the output node has its resources in separate `*Description.ts` files.
-- `nodegen` generates no credential file if `metaParameters.auth` is an empty string.
+- `nodegen` generates no credential file if `metaParameters.authType` is `"None"`.
 - `packgen` retrieves the `package.json` at runtime from the official repo.
 
 ### Pre-requisites
 
+- `shotgen` [requires credentials](#screenshot-generation-credentials) for image hosting.
 - `icongen` [requires credentials](#icon-generation-credentials) for image search.
 - `place` requires `nodemaker` to sit alongside the `n8n` and `n8n-docs` repos.
 
@@ -147,6 +150,21 @@ const mainParameters = {
 ```
 
 Field display restrictions are inferred from the object structure, but if you have an additional field display restriction, you can add it with `extraDisplayRestriction: { fieldName: boolean }`.
+
+## Screenshot generation credentials
+
+The generated screenshot is hosted at Imgbb, which requires an API Key, to be placed in a `.env` file in `/config`, containing:
+
+```bash
+IMGBB_API_KEY="6d17c6..."
+```
+
+To generate your own Imgbb API Key:
+
+1. Visit [Imgbb](https://imgbb.com/).
+2. Create an account or sign in with one of the services offered.
+3. While logged in, visit the [Imgbb API docs](https://api.imgbb.com/).
+4. Click on `Get API key` and use it for `IMGBB_API_KEY` in the `.env` file.
 
 ## Icon generation credentials
 

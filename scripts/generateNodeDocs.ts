@@ -1,10 +1,9 @@
 import NodeDocsGenerator from "../generators/NodeDocsGenerator";
-import { metaParameters } from "../parameters";
+import { mainParameters, metaParameters, docsParameters } from "../parameters";
 
-const docsGenerator = new NodeDocsGenerator();
-
-docsGenerator.generateNodeMainDocs();
-
-if (metaParameters.auth !== "") {
-  docsGenerator.generateNodeCredentialDocs();
-}
+(async () => {
+  const paramsBundle = { mainParameters, metaParameters, docsParameters };
+  const generator = new NodeDocsGenerator(paramsBundle);
+  const result = await generator.run();
+  console.log(result);
+})();

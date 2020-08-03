@@ -1,5 +1,5 @@
-import ImageFetcher from "../utils/ImageFetcher";
-import Prompter from "../utils/Prompter";
+import ImageFetcher from "../services/ImageFetcher";
+import Prompter from "../services/Prompter";
 
 (async () => {
   const { imageQuery } = await Prompter.forIconGeneration();

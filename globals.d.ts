@@ -1,6 +1,6 @@
-// ----------------------------------
-//         Env vars
-// ----------------------------------
+// **********************************
+//         Env vars-related
+// **********************************
 
 declare namespace NodeJS {
   export interface ProcessEnv {
@@ -8,8 +8,45 @@ declare namespace NodeJS {
     GOOGLE_PROJECT_API_KEY: string;
     N8N_LOGIN_USERNAME: string;
     N8N_LOGIN_PASSWORD: string;
+    IMGBB_API_KEY: string;
   }
 }
+
+// **********************************
+//         Channel-related
+// **********************************
+
+// node generation or docs generation
+
+type GenResult = SuccessfulGenResult | FailedGenResult;
+
+type SuccessfulGenResult = { completed: boolean; error: false };
+
+type FailedGenResult = {
+  completed: boolean;
+  error: true;
+  errorMessage: any;
+};
+
+type NodegenParamsBundle = {
+  metaParameters: MetaParameters;
+  mainParameters: MainParameters;
+  nodeGenerationType: NodeGenerationType;
+};
+
+type NodeGenerationType = "Simple" | "Complex";
+
+type DocsgenParamsBundle = {
+  metaParameters: MetaParameters;
+  mainParameters: MainParameters;
+  docsParameters: DocsParameters;
+};
+
+// **********************************
+//         Params-related
+// **********************************
+
+type NodemakerParameters = MetaParameters | MainParameters | DocsParameters;
 
 // ----------------------------------
 //         Meta parameters
@@ -17,12 +54,12 @@ declare namespace NodeJS {
 
 type MetaParameters = {
   serviceName: string;
-  auth: Auth;
+  authType: AuthType;
   nodeColor: string;
   apiUrl: string;
 };
 
-type Auth = "OAuth2" | "Key" | "";
+type AuthType = "OAuth2" | "API Key" | "None";
 
 // ----------------------------------
 //         Docs parameters
