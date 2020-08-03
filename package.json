@@ -1,11 +1,10 @@
 {
   "name": "nodemaker",
   "version": "1.0.0",
-  "description": "Quick proof of concept for n8n node generator",
+  "description": "Proof of concept for n8n node generator",
   "main": "index.js",
   "scripts": {
-    "whoa": "tsc && node build/scripts/generateNodeFiles.js",
-    "nodegen": "cp .hygen.js build/.hygen.js && tsc && node build/scripts/generateNodeFiles.js",
+    "nodegen": "tsc && node build/scripts/generateNodeFiles.js",
     "packgen": "tsc && node build/scripts/generatePackageJson.js",
     "icongen": "tsc && node build/scripts/generateIconCandidates.js",
     "docsgen": "tsc && node build/scripts/generateNodeDocs.js",
