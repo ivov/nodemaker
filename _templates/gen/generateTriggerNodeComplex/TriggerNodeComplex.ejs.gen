@@ -1,6 +1,0 @@
----
-to: output/<%= name.replace(/\s/g, "") %>.node.ts
-mainParameters: <%= mainParameters %>
-metaParameters: <%= metaParameters %>
----
-trigger node (complex) goes here

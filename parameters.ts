@@ -5,7 +5,7 @@ export const metaParameters: MetaParameters = {
   apiUrl: "http://hn.algolia.com/api/v1/",
 };
 
-export const mainParameters: RegularNodeParameters = {
+export const regularNodeParameters: RegularNodeParameters = {
   Article: [
     {
       name: "Get",
