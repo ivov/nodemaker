@@ -1,6 +1,6 @@
-// **********************************
-//         Env vars-related
-// **********************************
+// ********************************************************************
+//                         Env vars-related
+// ********************************************************************
 
 declare namespace NodeJS {
   export interface ProcessEnv {
@@ -12,9 +12,9 @@ declare namespace NodeJS {
   }
 }
 
-// **********************************
-//         Channel-related
-// **********************************
+// ********************************************************************
+//                         Generator-related
+// ********************************************************************
 
 type GenResult = SuccessfulGenResult | FailedGenResult;
 
@@ -25,6 +25,10 @@ type FailedGenResult = {
   error: true;
   errorMessage: any;
 };
+
+// ********************************************************************
+//                         Bundle-related
+// ********************************************************************
 
 type NodegenParamsBundle = {
   metaParameters: MetaParameters;
@@ -45,11 +49,9 @@ type DocsgenParamsBundle = {
 
 type IconCandidate = "1" | "2" | "3" | "4" | "5";
 
-// **********************************
-//         Params-related
-// **********************************
-
-type NodemakerParameters = MetaParameters | MainParameters | DocsParameters;
+// ********************************************************************
+//                         Parameters-related
+// ********************************************************************
 
 // ----------------------------------
 //         Meta parameters
@@ -77,15 +79,13 @@ type DocsParameters = {
 };
 
 // ----------------------------------
-//         Trigger parameters
-//          (trigger node)
+//         Main parameters
 // ----------------------------------
 
 type MainParameters = RegularNodeParameters | TriggerNodeParameters;
 
 // ----------------------------------
-//         Trigger parameters
-//          (trigger node)
+//      Trigger node parameters
 // ----------------------------------
 
 type TriggerNodeParameters = {
@@ -115,8 +115,7 @@ type WebhookPropertyOptionField = OperationField & {
 };
 
 // ----------------------------------
-//         Main parameters
-//          (regular node)
+//      Regular node parameters
 // ----------------------------------
 
 type RegularNodeParameters = { [key: string]: Resource };
