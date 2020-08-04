@@ -5,6 +5,8 @@ import { AuthEnum } from "../utils/enums";
 import readdir from "../utils/readdir";
 import { areTriggerNodeParameters } from "../utils/typeGuards";
 
+// IMPORTANT! Currently only for regular nodes, not trigger nodes.
+
 /**Responsible for generating the node functionality documentation file and the node credential documentation file.*/
 export default class NodeDocsGenerator extends Generator {
   private docsParameters: DocsParameters;
@@ -61,6 +63,7 @@ export default class NodeDocsGenerator extends Generator {
     const nodeOperations: { [key: string]: string[] } = {};
 
     Object.keys(this.mainParameters).forEach((resource) => {
+      // TODO - temporary
       if (areTriggerNodeParameters(this.mainParameters)) {
         throw Error("Node operations cannot be generated for trigger nodes!");
       }
