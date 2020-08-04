@@ -1,7 +1,301 @@
 ---
-to: output/<%= name.replace(/\s/g, "") %>.node.ts
+to: output/<%= name.replace(/\s/g, "") %>Trigger.node.ts
 mainParameters: <%= mainParameters %>
 metaParameters: <%= metaParameters %>
 ---
 
-trigger node (simple) goes here
+<%_
+ mainParameters = JSON.parse(mainParameters);
+ metaParameters = JSON.parse(metaParameters);
+ [operations] = Object.values(mainParameters);
+_%>
+import {
+	IExecuteFunctions,
+} from 'n8n-core';
+
+import {
+	INodeExecutionData,
+	INodeType,
+	INodeTypeDescription,
+	IDataObject,
+} from 'n8n-workflow';
+
+import {
+	<%= h.camelify(metaParameters.serviceName) %>ApiRequest,
+	<%_ if (h.hasGetAll(operations)) { _%>
+	<%= h.camelify(name) %>ApiRequestAllItems,
+	<%_ } _%>
+} from './GenericFunctions';
+
+export class <%= h.classify(metaParameters.serviceName) %> implements INodeType {
+	description: INodeTypeDescription = {
+		displayName: '<%= metaParameters.serviceName %>',
+		name: '<%= h.camelify(metaParameters.serviceName) %>',
+		icon: 'file:<%= h.camelify(metaParameters.serviceName) %>.png',
+		group: ['transform'],
+		version: 1,
+		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+		description: 'Consume <%= metaParameters.serviceName %> API',
+		defaults: {
+			name: '<%= metaParameters.serviceName %>',
+			color: '<%= metaParameters.nodeColor %>',
+		},
+		inputs: [],
+    outputs: ['main'],
+		credentials: [
+			{
+				name: '<%= h.getCredentialsString(h.camelify(metaParameters.serviceName), metaParameters.authType) %>',
+				required: true,
+			}
+    ],
+		webhooks: [
+			{
+				name: 'default',
+				httpMethod: 'POST',
+				responseMode: 'onReceived',
+				path: 'webhook',
+			},
+		],
+		properties: [
+			// ----------------------------------
+			//         Resources
+			// ----------------------------------
+			{
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				options: [
+					<%_ for (let resource of Object.keys(mainParameters)) { _%>
+					{
+						name: '<%= resource %>',
+						value: '<%= h.camelify(resource) %>',
+					},
+					<%_ } _%>
+				],
+				default: '<%= Object.keys(mainParameters)[0].toLowerCase() %>',
+				description: 'Resource to consume',
+			},
+			// ----------------------------------
+			//         Operations
+			// ----------------------------------
+			<%_ Object.keys(mainParameters).forEach((resource) => { _%>
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: [
+							'<%= resource.toLowerCase() %>',
+						],
+					},
+				},
+				options: [
+					<%_ for (let operation of mainParameters[resource]) { _%>
+					{
+						name: '<%= operation.name %>',
+						value: '<%= h.camelify(operation.name) %>',
+						description: '<%= operation.description %>',
+					},
+					<%_ } _%>
+				],
+				default: '<%= h.camelify(mainParameters[resource][0].name) %>',
+				description: 'Operation to perform',
+			},
+			<% }); %>
+			// ----------------------------------
+			//         Fields
+			// ----------------------------------
+			<%_ Object.keys(mainParameters).forEach((resource) => { _%>
+				<%_ for (let operation of mainParameters[resource]) { _%>
+					<%_ for (let field of operation.fields) { _%>
+			{
+				displayName: '<%= field.name %>',
+				name: '<%= field.name %>',
+				<%_ if (field.name !== 'Additional Fields') { _%>
+				description: '<%= field.description %>',
+				<%_ } _%>
+				type: '<%= field.type %>',
+				required: <%= field.name !== 'additionalFields' ? true : false %>,
+				default: <%_ if (field.default === true || field.default === false || typeof field.default === "number") { _%>
+				<%_ %> <%= field.default _%>,
+				<%_ } else if (typeof field.default === 'object' && field.default !== null) { _%>
+				<%_ %> <%= JSON.stringify(field.default) _%>,
+				<%_ } else { _%>
+				<%_ %> '<%= field.default _%>',
+				<%_ } _%>
+				displayOptions: {
+					show: {
+						resource: [
+							'<%= h.camelify(resource) %>',
+						],
+						operation: [
+							'<%= h.camelify(operation.name) %>',
+						],
+						<%_ if (field.extraDisplayRestriction) { _%>
+						<%= h.camelify(Object.keys(field.extraDisplayRestriction).toString()) %>: [
+							<%= Object.values(field.extraDisplayRestriction) %>,
+						]
+						<%_ } _%>
+					},
+				},
+				<%_ if (field.name === 'Additional Fields' && (field.type === 'collection' || field.type === 'multiOptions')) { _%>
+				options: [
+				<%_ for (let option of field.options) { _%>
+					{
+						name: '<%= option.name %>',
+						description: '<%= option.description %>',
+						type: '<%= option.type %>',
+						default: <%_ if (typeof option.default === "boolean" || typeof option.default === "number") { _%>
+						<%_ %> <%= option.default %>,
+						<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
+						<%_ %> <%= JSON.stringify(option.default) %>,
+						<%_ } else { _%>
+						<%_ %> '<%= option.default _%>',
+						<%_ } _%>
+						<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+						options: [
+							<%_ for (let option of field.options) { _%>
+							{
+								name: '<%= option.name %>',
+								description: '<%= option.description %>',
+								type: '<%= option.type %>',
+								default: <%_ if (typeof option.default === "boolean" || typeof option.default === "number") { _%>
+								<%_ %> <%= option.default %>,
+								<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
+								<%_ %> <%= JSON.stringify(option.default) %>,
+								<%_ } else { _%>
+								<%_ %> '<%= option.default %>',
+								<%_ } _%>
+								<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+								options: [
+									<%_ for (let nestedOption of option.options) { _%>
+									{
+										name: '<%= nestedOption.name %>',
+										description: '<%= nestedOption.description %>',
+									},
+									<%_ } _%>
+								],
+							<%_ } _%>
+							},
+						<%_ } _%>
+						],
+					<%_ } _%>
+					},
+				<%_ } _%>
+				],
+		<%_ } _%>
+			},
+	<%_ } _%>
+	<%_ } _%>
+<%_ }); _%>
+		],
+  };
+
+  // @ts-ignore (because of request)
+	webhookMethods = {
+		default: {
+			async checkExists(this: IHookFunctions): Promise<boolean> {
+				const webhookData = this.getWorkflowStaticData('node');
+
+				if (webhookData.webhookId === undefined) {
+          // No webhook id is set, so no webhook can exist
+					return false;
+        }
+
+        // webhook was created before, so check if it still exists
+				const endpoint = `webhooks/${webhookData.webhookId}`; // ..............
+
+				try {
+					await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, 'GET', endpoint, {});
+				} catch (error) {
+					if (error.statusCode === 404) {
+						// webhook does not exist
+						delete webhookData.webhookId;
+						return false;
+					}
+
+					// some error occured
+					throw error;
+				}
+
+				// if no error, then the webhook exists
+				return true;
+			},
+
+			async create(this: IHookFunctions): Promise<boolean> {
+				let webhook;
+				const webhookUrl = this.getNodeWebhookUrl('default');
+				const event = this.getNodeParameter('event', 0); // ....................
+				const endpoint = '/automations/hooks'; // ....................
+
+				const qs: IDataObject = {};
+
+        // start ....................
+
+				try {
+					qs.target_url = webhookUrl;
+
+					if (event === 'subscriberActivated') {
+						qs.event = {
+							name: 'subscriber.subscriber_activate',
+						};
+					} else if (event === 'linkClicked') {
+						const link = this.getNodeParameter('link', 0) as string;
+						qs.event = {
+							name: 'subscriber.link_click',
+							initiator_value: link,
+						};
+					}
+					webhook = await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, 'POST', endpoint, {}, qs);
+				} catch (error) {
+					throw error;
+				}
+
+				if (webhook.rule.id === undefined) {
+					return false;
+        }
+
+        // end ....................
+
+				const webhookData = this.getWorkflowStaticData('node'); // ?? .................
+				webhookData.webhookId = webhook.rule.id as string; // .................
+				webhookData.events = event; // .................
+				return true;
+			},
+
+			async delete(this: IHookFunctions): Promise<boolean> {
+        const webhookData = this.getWorkflowStaticData('node');
+
+				if (webhookData.webhookId !== undefined) {
+          const endpoint = `/automations/hooks/${webhookData.webhookId}`;
+
+					try {
+						await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, 'DELETE', endpoint, {}, {});
+					} catch (error) {
+						return false;
+          }
+
+          // Remove properties from static workflow data to
+          // make it clear that no webhooks are registred anymore
+					delete webhookData.webhookId;
+					delete webhookData.events;
+				}
+				return true;
+			},
+		},
+	};
+
+	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
+		const returnData: IDataObject[] = [];
+		returnData.push(this.getBodyData());
+
+		return {
+			workflowData: [
+				this.helpers.returnJsonArray(returnData),
+			],
+		};
+	}
+}
+
+
