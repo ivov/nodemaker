@@ -3,6 +3,7 @@ import { join } from "path";
 import Generator from "./Generator";
 import { NodeGenerationEnum, AuthEnum } from "../utils/enums";
 import { readdirSync } from "fs";
+import { areTriggerNodeParameters } from "../utils/typeGuards";
 
 /**Responsible for generating all node functionality files at `/output`:
  * - `*.node.ts`
@@ -11,8 +12,8 @@ import { readdirSync } from "fs";
  * - one or more `*Description.ts` files (in complex node generation)
  */
 export default class NodeFilesGenerator extends Generator {
-  private mainParameters: MainParameters;
   private metaParameters: MetaParameters;
+  private mainParameters: MainParameters;
   private nodeGenerationType: NodeGenerationType;
   private nodeType: NodeType;
 
@@ -79,6 +80,10 @@ export default class NodeFilesGenerator extends Generator {
 
   /** In complex node generation, generate one additional file per resource.*/
   private generateResourceDescriptionFile() {
+    if (areTriggerNodeParameters(this.mainParameters)) {
+      throw Error("Descriptions cannot be generated for trigger nodes!");
+    }
+
     for (let resourceName in this.mainParameters) {
       const command = this.formatCommand(`
       gen generateResourceDescription

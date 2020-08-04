@@ -5,7 +5,7 @@ export const metaParameters: MetaParameters = {
   apiUrl: "http://hn.algolia.com/api/v1/",
 };
 
-export const mainParameters: MainParameters = {
+export const mainParameters: RegularNodeParameters = {
   Article: [
     {
       name: "Get",
@@ -142,4 +142,42 @@ export const docsParameters: DocsParameters = {
     "a social news website focusing on computer science and entrepreneurship",
   exampleUsage: "get an article from Hacker News",
   workflowNumber: "123",
+};
+
+export const triggerNodeParameters: TriggerNodeParameters = {
+  webhookProperties: [
+    {
+      displayName: "Event",
+      name: "event",
+      type: "options",
+      required: true,
+      default: "subscriberActivated",
+      description:
+        "The events that can trigger the webhook and whether they are enabled.",
+      options: [
+        {
+          name: "Subscriber Activated",
+          value: "subscriberActivated",
+          description:
+            "Whether the webhook is triggered when a subscriber is activated.",
+        },
+        {
+          name: "Link Clicked",
+          value: "linkClicked",
+          description:
+            "Whether the webhook is triggered when a link is clicked.",
+          fields: [
+            {
+              displayName: "Initiating Link",
+              name: "link",
+              type: "string",
+              required: true,
+              default: "",
+              description: "The URL of the initiating link",
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };

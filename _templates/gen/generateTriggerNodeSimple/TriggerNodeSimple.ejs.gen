@@ -29,13 +29,13 @@ import {
 
 export class <%= h.classify(metaParameters.serviceName) %> implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: '<%= metaParameters.serviceName %>',
-		name: '<%= h.camelify(metaParameters.serviceName) %>',
+		displayName: '<%= metaParameters.serviceName %> Trigger',
+		name: '<%= h.camelify(metaParameters.serviceName) %>Trigger',
 		icon: 'file:<%= h.camelify(metaParameters.serviceName) %>.png',
-		group: ['transform'],
+		group: ['trigger'],
 		version: 1,
-		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Consume <%= metaParameters.serviceName %> API',
+		subtitle: '={{$parameter["event"]}}',
+		description: 'Handle <%= metaParameters.serviceName %> events via webhooks',
 		defaults: {
 			name: '<%= metaParameters.serviceName %>',
 			color: '<%= metaParameters.nodeColor %>',

@@ -3,6 +3,7 @@ import { join } from "path";
 import Generator from "./Generator";
 import { AuthEnum } from "../utils/enums";
 import readdir from "../utils/readdir";
+import { areTriggerNodeParameters } from "../utils/typeGuards";
 
 /**Responsible for generating the node functionality documentation file and the node credential documentation file.*/
 export default class NodeDocsGenerator extends Generator {
@@ -60,6 +61,10 @@ export default class NodeDocsGenerator extends Generator {
     const nodeOperations: { [key: string]: string[] } = {};
 
     Object.keys(this.mainParameters).forEach((resource) => {
+      if (areTriggerNodeParameters(this.mainParameters)) {
+        throw Error("Node operations cannot be generated for trigger nodes!");
+      }
+
       nodeOperations[resource] = this.mainParameters[resource].map(
         (operation) => operation.description
       );

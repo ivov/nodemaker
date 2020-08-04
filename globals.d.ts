@@ -77,10 +77,49 @@ type DocsParameters = {
 };
 
 // ----------------------------------
-//         Main parameters
+//         Trigger parameters
+//          (trigger node)
 // ----------------------------------
 
-type MainParameters = { [key: string]: Resource };
+type MainParameters = RegularNodeParameters | TriggerNodeParameters;
+
+// ----------------------------------
+//         Trigger parameters
+//          (trigger node)
+// ----------------------------------
+
+type TriggerNodeParameters = {
+  webhookProperties: WebhookProperty[];
+};
+
+type WebhookProperty = {
+  displayName: string;
+  name: string;
+  required: boolean;
+  description: string;
+  type: FieldType;
+  default: FieldDefault;
+  options?: WebhookPropertyOption[];
+};
+
+type WebhookPropertyOption = {
+  name: string;
+  description: string;
+  value: string;
+  fields?: WebhookPropertyOptionField[];
+};
+
+type WebhookPropertyOptionField = OperationField & {
+  displayName: string;
+  required: boolean;
+};
+
+// ----------------------------------
+//         Main parameters
+//          (regular node)
+// ----------------------------------
+
+type RegularNodeParameters = { [key: string]: Resource };
 
 type Resource = Operation[];
 
