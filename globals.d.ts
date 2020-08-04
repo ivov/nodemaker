@@ -32,9 +32,12 @@ type NodegenParamsBundle = {
   metaParameters: MetaParameters;
   mainParameters: MainParameters;
   nodeGenerationType: NodeGenerationType;
+  nodeType: NodeType;
 };
 
 type NodeGenerationType = "Simple" | "Complex";
+
+type NodeType = "Regular" | "Trigger";
 
 type DocsgenParamsBundle = {
   metaParameters: MetaParameters;
