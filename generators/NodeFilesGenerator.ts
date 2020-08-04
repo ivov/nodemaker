@@ -1,7 +1,7 @@
 import { execSync as exec } from "child_process"; // sync to facilitate subsequent verification
 import { join } from "path";
 import Generator from "./Generator";
-import { NodeGenerationEnum, AuthEnum, NodeTypeEnum } from "../utils/enums";
+import { NodeGenerationEnum, AuthEnum } from "../utils/enums";
 import { readdirSync } from "fs";
 
 /**Responsible for generating all node functionality files at `/output`:
@@ -24,11 +24,9 @@ export default class NodeFilesGenerator extends Generator {
     this.nodeType = paramsBundle.nodeType;
   }
 
-  /**Generate node functionality files.*/
+  /**Generate all node functionality files.*/
   async run(): Promise<GenResult> {
-    this.nodeType === NodeTypeEnum.Regular
-      ? this.generateRegularNodeFile()
-      : this.generateTriggerNodeFile();
+    this.generateMainNodeFile();
 
     this.generateGenericFunctionsFile();
 
@@ -46,26 +44,15 @@ export default class NodeFilesGenerator extends Generator {
     }
   }
 
-  /**Generate `*.node.ts` (regular node), with a different version for simple or complex node generation.*/
-  private generateRegularNodeFile() {
+  /**Generate `*.node.ts` (regular node) or `*Trigger.node.ts` (trigger node), with a different version for simple or complex node generation.*/
+  private generateMainNodeFile() {
     const command = this.formatCommand(`
-    gen generateRegularNode${this.nodeGenerationType}
+    gen generate${this.nodeType}Node${this.nodeGenerationType}
       --name \"${this.metaParameters.serviceName}\"
       --metaParameters '${JSON.stringify(this.metaParameters)}'
       --mainParameters '${JSON.stringify(this.mainParameters)}'
     `);
     exec(command);
-  }
-
-  /**Generate `*Trigger.node.ts` (trigger node), with a different version for simple or complex node generation.*/
-  private generateTriggerNodeFile() {
-    // const command = this.formatCommand(`
-    // gen generateRegularNode${this.nodeGenerationType}
-    //   --name \"${this.metaParameters.serviceName}\"
-    //   --metaParameters '${JSON.stringify(this.metaParameters)}'
-    //   --mainParameters '${JSON.stringify(this.mainParameters)}'
-    // `);
-    // exec(command);
   }
 
   /**Generate `GenericFunctions.ts`.*/

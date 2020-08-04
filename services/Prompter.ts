@@ -69,8 +69,8 @@ export default class Prompter {
   }
 
   static async forIconResizing() {
-    return await inquirer.prompt<{
-      iconToResize: "1" | "2" | "3" | "4" | "5";
-    }>(this.iconNumberPrompt);
+    return await inquirer.prompt<{ iconToResize: IconCandidate }>(
+      this.iconNumberPrompt
+    );
   }
 }

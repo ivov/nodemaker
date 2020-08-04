@@ -16,8 +16,6 @@ declare namespace NodeJS {
 //         Channel-related
 // **********************************
 
-// node generation or docs generation
-
 type GenResult = SuccessfulGenResult | FailedGenResult;
 
 type SuccessfulGenResult = { completed: boolean; error: false };
@@ -44,6 +42,8 @@ type DocsgenParamsBundle = {
   mainParameters: MainParameters;
   docsParameters: DocsParameters;
 };
+
+type IconCandidate = "1" | "2" | "3" | "4" | "5";
 
 // **********************************
 //         Params-related
