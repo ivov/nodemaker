@@ -55,12 +55,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import Instructions from '../components/SharedComponents/Instructions';
-import ForwardButton from '../components/SharedComponents/ForwardButton';
-import BackwardButton from '../components/SharedComponents/BackwardButton';
-import InputField from '../components/SharedComponents/InputField';
-import AddButton from '../components/SharedComponents/AddButton';
-import SmallButton from '../components/SharedComponents/SmallButton';
+import Instructions from '../components/SharedComponents/Instructions.vue';
+import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
+import BackwardButton from '../components/SharedComponents/BackwardButton.vue';
+import InputField from '../components/SharedComponents/InputField.vue';
+import AddButton from '../components/SharedComponents/AddButton.vue';
+import SmallButton from '../components/SharedComponents/SmallButton.vue';
 
 import { mapGetters, mapActions} from 'vuex';
 

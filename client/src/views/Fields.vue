@@ -25,31 +25,184 @@
           <Dropdown 
             class="input"
             label="Type" 
+            @change.native="adjustFieldParams(field.key, field.type)"
             v-bind:options="['String', 'Options', 'Multioptions', 'Boolean', 'Number', 'Collection', 'Fixed Collection']" 
             :value=field.type
             v-model=field.type
           />
-          <InputField 
-            class="input"
-            label="Field Name"
-            placeholder="Article id" 
-            :value=field.name
-            v-model=field.name
-          />
-          <InputField 
-            class="input"
-            label="Description"
-            placeholder="The id of the article to get." 
-            :value=field.description
-            v-model=field.description
-          />
-          <InputField 
-            class="input"
-            label="Default"
-            placeholder="123" 
-            :value=field.default
-            v-model=field.default
-          />
+          <div v-if="field.type === 'String'">
+            <InputField 
+              class="input"
+              label="Field Name"
+              placeholder="Article id" 
+              :value=field.name
+              v-model=field.name
+            />
+            <InputField 
+              class="input"
+              label="Description"
+              placeholder="The id of the article to get." 
+              :value=field.description
+              v-model=field.description
+            />
+            <InputField 
+              class="input"
+              label="Default"
+              placeholder="123" 
+              :value=field.default
+              v-model=field.default
+            />
+          </div>
+          <div v-if="field.type === 'Boolean'">
+            <InputField 
+              class="input"
+              label="Field Name"
+              placeholder="Return All" 
+              :value=field.name
+              v-model=field.name
+            />
+            <InputField 
+              class="input"
+              label="Description"
+              placeholder="Whether to return all results or only up to a limit." 
+              :value=field.description
+              v-model=field.description
+            />
+            <InputField 
+              class="input"
+              label="Default"
+              placeholder="false" 
+              :value=field.default
+              v-model=field.default
+            />
+          </div>
+          <div v-if="field.type === 'Number'">
+            <InputField 
+              class="input"
+              label="Field Name"
+              placeholder="Limit" 
+              :value=field.name
+              v-model=field.name
+            />
+            <InputField 
+              class="input"
+              label="Description"
+              placeholder="Limit of Hacker News articles to be returned for the query." 
+              :value=field.description
+              v-model=field.description
+            />
+            <InputField 
+              class="input"
+              label="Default"
+              placeholder="20" 
+              :value=field.default
+              v-model=field.default
+            />
+          </div>
+          <div v-if="field.type === 'Options'">
+            <InputField 
+              class="input"
+              label="Field Name"
+              placeholder="Tags" 
+              :value=field.name
+              v-model=field.name
+            />
+            <InputField 
+              class="input"
+              label="Description"
+              placeholder="Tags for filtering the results of the query." 
+              :value=field.description
+              v-model=field.description
+            />
+            <InputField 
+              class="input"
+              label="Default"
+              placeholder="{}" 
+              :value=field.default
+              v-model=field.default
+            />
+            <strong>Options:</strong>
+            <div class="box" v-bind:key="option.key" v-for="option in field.options">
+              <div class="option">
+                <InputField 
+                  class="input"
+                  label="Option Name"
+                  placeholder="Comment" 
+                  :value=option.name
+                  v-model=option.name
+                />
+                <InputField 
+                  class="input"
+                  label="Description"
+                  placeholder="Returns query results filtered by comment tag." 
+                  :value=option.description
+                  v-model=option.description
+                />
+              </div>
+              <SmallButton 
+                class="delete" 
+                v-if="option.add"
+                @click.native="addOption(field.key)" 
+                :cancel=option.cancel />
+              <SmallButton 
+                class="delete" 
+                v-if="option.cancel"
+                @click.native="removeOption(field.key, option.key)" 
+                :cancel=option.cancel />
+            </div>
+          </div>
+          <div v-if="field.type === 'Multioptions'">
+            <InputField 
+              class="input"
+              label="Field Name"
+              placeholder="Tags" 
+              :value=field.name
+              v-model=field.name
+            />
+            <InputField 
+              class="input"
+              label="Description"
+              placeholder="Tags for filtering the results of the query." 
+              :value=field.description
+              v-model=field.description
+            />
+            <InputField 
+              class="input"
+              label="Default"
+              placeholder="{}" 
+              :value=field.default
+              v-model=field.default
+            />
+            <strong>Options:</strong>
+            <div class="box" v-bind:key="option.key" v-for="option in field.options">
+              <div class="option">
+                <InputField 
+                  class="input"
+                  label="Option Name"
+                  placeholder="Comment" 
+                  :value=option.name
+                  v-model=option.name
+                />
+                <InputField 
+                  class="input"
+                  label="Description"
+                  placeholder="Returns query results filtered by comment tag." 
+                  :value=option.description
+                  v-model=option.description
+                />
+              </div>
+              <SmallButton 
+                class="delete" 
+                v-if="option.add"
+                @click.native="addOption(field.key)" 
+                :cancel=option.cancel />
+              <SmallButton 
+                class="delete" 
+                v-if="option.cancel"
+                @click.native="removeOption(field.key, option.key)" 
+                :cancel=option.cancel />
+            </div>
+          </div>
           <hr>
         </div>
         <SmallButton 
@@ -93,13 +246,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import Instructions from '../components/SharedComponents/Instructions';
-import ForwardButton from '../components/SharedComponents/ForwardButton';
-import BackwardButton from '../components/SharedComponents/BackwardButton';
-import InputField from '../components/SharedComponents/InputField';
-import Dropdown from '../components/SharedComponents/Dropdown';
-import AddButton from '../components/SharedComponents/AddButton';
-import SmallButton from '../components/SharedComponents/SmallButton';
+import Instructions from '../components/SharedComponents/Instructions.vue';
+import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
+import BackwardButton from '../components/SharedComponents/BackwardButton.vue';
+import InputField from '../components/SharedComponents/InputField.vue';
+import Dropdown from '../components/SharedComponents/Dropdown.vue';
+import AddButton from '../components/SharedComponents/AddButton.vue';
+import SmallButton from '../components/SharedComponents/SmallButton.vue';
 
 import { mapGetters, mapActions} from 'vuex';
 
@@ -114,9 +267,32 @@ import { mapGetters, mapActions} from 'vuex';
     AddButton,
     SmallButton
   },
-  computed: mapGetters(['operationWithResourceNames', 'fields']),
+  computed: {
+    ...mapGetters(['operationWithResourceNames', 'fields']),
+  },
   methods: {
-    ...mapActions(['submitFields']),
+    ...mapActions(['submitFields', 'createOption']),
+    adjustFieldParams(fieldKey, type) {
+      console.log(type);
+      if(type === "Options" || type === "Multioptions") {
+        this.createOption(fieldKey);
+      }
+    },
+    addOption(fieldKey) {
+      const option = {
+        name: "",
+        description: "",
+        key: this.fields[fieldKey].options.length,
+        add: false,
+        cancel: true
+      };
+
+      this.$store.commit('pushOption', { fieldKey, option })
+    },
+    removeOption(fieldKey, optionKey) {
+      const newObj = this.fields[fieldKey].options.filter(option => option.key !== optionKey);
+      this.$store.commit('submitOptions', { fieldKey, newObj});
+    },
     addField() {
       this.$store.commit('pushToFields', {
           key: this.fields.length,
@@ -184,6 +360,10 @@ export default class App extends Vue {}
 
 .delete {
   margin-left: 3rem;
+}
+
+.option {
+  min-width: 20rem;
 }
 
 .box {

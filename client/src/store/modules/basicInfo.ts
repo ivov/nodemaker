@@ -9,7 +9,7 @@ const state = {
 };
 
 const getters = {
-    basicInfo: (state: any) => {return state.basicInfo}
+    basicInfo: (state: any) => {return state.basicInfo;}
 };
 
 const actions = {

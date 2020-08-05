@@ -58,14 +58,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import Instructions from '../components/SharedComponents/Instructions';
-import ForwardButton from '../components/SharedComponents/ForwardButton';
-import InputField from '../components/SharedComponents/InputField';
-import Dropdown from '../components/SharedComponents/Dropdown';
+import Instructions from '../components/SharedComponents/Instructions.vue';
+import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
+import InputField from '../components/SharedComponents/InputField.vue';
+import Dropdown from '../components/SharedComponents/Dropdown.vue';
 
 import { mapGetters, mapActions } from 'vuex';
-
-// import Requester from '../../Requester';
 
 @Component({
   name: 'Home',
@@ -77,26 +75,6 @@ import { mapGetters, mapActions } from 'vuex';
   },
   computed: mapGetters(['basicInfo']),
   methods: mapActions(['submitBasicInfo']),
-  // methods: {
-  //   sampleCall() {
-  //     const requester = new Requester();
-  //     const response = requester.request("example-channel");
-  //     response.then((res:string) => {
-  //       console.log(res);
-  //       this.tester = res;
-  //     });
-  //   },
-  // },
-  // computed: {
-  //   requester: function() {
-  //     const requester = new Requester();
-  //     const response = requester.request("example-channel");
-  //     response.then((res) => {
-  //       console.log(res);
-  //       return res;
-  //     });
-  //   },
-  // },
 })
 export default class App extends Vue {}
 </script>

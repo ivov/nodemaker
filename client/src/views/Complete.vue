@@ -45,13 +45,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import Instructions from '../components/SharedComponents/Instructions';
-import ForwardButton from '../components/SharedComponents/ForwardButton';
-import BackwardButton from '../components/SharedComponents/BackwardButton';
-import GenericButton from '../components/SharedComponents/GenericButton';
-import InputField from '../components/SharedComponents/InputField';
-import Dropdown from '../components/SharedComponents/Dropdown';
-import AddButton from '../components/SharedComponents/AddButton';
+import Instructions from '../components/SharedComponents/Instructions.vue';
+import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
+import BackwardButton from '../components/SharedComponents/BackwardButton.vue';
+import GenericButton from '../components/SharedComponents/GenericButton.vue';
+import InputField from '../components/SharedComponents/InputField.vue';
+import Dropdown from '../components/SharedComponents/Dropdown.vue';
+import AddButton from '../components/SharedComponents/AddButton.vue';
 
 import Requester from '../../Requester';
 
@@ -70,7 +70,7 @@ import { mapGetters } from 'vuex';
   },
   computed: mapGetters(['basicInfo', 'resources', 'operations', 'fields']),
   methods: {
-    buildMetaParameters() {
+    buildMetaParameters(): {} {
       const { name, auth, color, baseURL } = this.basicInfo;
       return {
         serviceName: name,
@@ -79,7 +79,7 @@ import { mapGetters } from 'vuex';
         apiURL: baseURL
       };
     },
-    buildMainParameters() {
+    buildMainParameters(): {} {
       let mainParameters = {};
       this.resources.forEach(resource => {
         mainParameters[resource.text] = [];
@@ -121,11 +121,6 @@ import { mapGetters } from 'vuex';
       };
 
       console.log(paramsBundle);
-      // const response = requester.request("parameters-channel", paramsBundle);
-
-      // response.then((res:string) => {
-      //   console.log(res);
-      // });
 
       const result = await requester.request(
         "nodegen-channel",
