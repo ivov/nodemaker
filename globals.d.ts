@@ -89,6 +89,7 @@ type MainParameters = RegularNodeParameters | TriggerNodeParameters;
 // ----------------------------------
 
 type TriggerNodeParameters = {
+  webhookEndpoint: string;
   webhookProperties: WebhookProperty[];
 };
 

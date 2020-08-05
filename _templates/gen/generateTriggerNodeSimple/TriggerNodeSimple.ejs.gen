@@ -6,7 +6,6 @@ metaParameters: <%= metaParameters %>
 <%_
  mainParameters = JSON.parse(mainParameters);
  metaParameters = JSON.parse(metaParameters);
- [operations] = Object.values(mainParameters);
 _%>
 import {
 	IHookFunctions,
@@ -22,9 +21,6 @@ import {
 
 import {
 	<%= h.camelify(metaParameters.serviceName) %>ApiRequest,
-	<%_ if (h.hasGetAll(operations)) { _%>
-	<%= h.camelify(name) %>ApiRequestAllItems,
-	<%_ } _%>
 } from './GenericFunctions';
 
 export class <%= h.classify(metaParameters.serviceName) %> implements INodeType {
@@ -150,39 +146,28 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 			async create(this: IHookFunctions): Promise<boolean> {
 				let webhook;
 				const webhookUrl = this.getNodeWebhookUrl('default');
-				const event = this.getNodeParameter('event', 0); // TODO
-				const endpoint = '/automations/hooks'; // TODO
+				<%_ for (let property of mainParameters.webhookProperties) { _%>
+				const <%= property.name %> = this.getNodeParameter('<%= property.name %>', 0);
+				<%_ } _%>
+
+				const endpoint = '<%= mainParameters.webhookEndpoint %>';
 
 				const qs: IDataObject = {};
 
-        // TODO START
-
 				try {
-					qs.target_url = webhookUrl;
-
-					if (event === 'subscriberActivated') {
-						qs.event = {
-							name: 'subscriber.subscriber_activate',
-						};
-					} else if (event === 'linkClicked') {
-						const link = this.getNodeParameter('link', 0) as string;
-						qs.event = {
-							name: 'subscriber.link_click',
-							initiator_value: link,
-						};
-					}
+					// TODO: Use node parameters in `qs` or in `body` or as boolean flag
 					webhook = await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, 'POST', endpoint, {}, qs);
 				} catch (error) {
 					throw error;
 				}
 
-				if (webhook.rule.id === undefined) {
+				// TODO: Replace TODO_PROPERTY_NAME with the name of the property
+				// that, if missing, indicates that webhook creation has failed
+				if (TODO_PROPERTY_NAME === undefined) {
 					return false;
         }
 
-        // TODO END
-
-				const webhookData = this.getWorkflowStaticData('node'); // TODO
+				const webhookData = this.getWorkflowStaticData('node');
 				webhookData.webhookId = webhook.rule.id as string; // TODO
 				webhookData.events = event; // TODO
 				return true;
@@ -221,5 +206,3 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 		};
 	}
 }
-
-

@@ -145,6 +145,7 @@ export const docsParameters: DocsParameters = {
 };
 
 export const triggerNodeParameters: TriggerNodeParameters = {
+  webhookEndpoint: "/automations/hooks",
   webhookProperties: [
     {
       displayName: "Event",
