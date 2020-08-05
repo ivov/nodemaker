@@ -98,7 +98,7 @@ type WebhookProperty = {
   name: string;
   required: boolean;
   description: string;
-  type: FieldType;
+  type: SingleValueFieldType | CollectionType | OptionsType;
   default: FieldDefault;
   options?: WebhookPropertyOption[];
 };
@@ -145,21 +145,17 @@ type SingleValueOperationField = {
 
 type ManyValuesGroupField = {
   name: string;
-  type: ManyValuesFieldType;
+  type: CollectionType | OptionsType;
   default: ManyValuesFieldDefault;
-  options: FieldOption[];
+  options: ManyValuesGroupFieldOption[];
   extraDisplayRestriction?: { [key: string]: boolean };
 };
 
-type FieldType = SingleValueFieldType | ManyValuesFieldType;
-
 type SingleValueFieldType = "string" | "number" | "boolean";
 
-type ManyValuesFieldType =
-  | "collection"
-  | "fixedCollection"
-  | "options"
-  | "multiOptions";
+type OptionsType = "options" | "multiOptions";
+
+type CollectionType = "collection" | "fixedCollection";
 
 type FieldDefault = SingleValueFieldDefault | ManyValuesFieldDefault;
 
@@ -167,10 +163,10 @@ type SingleValueFieldDefault = string | number | boolean;
 
 type ManyValuesFieldDefault = {};
 
-type FieldOption = {
+type ManyValuesGroupFieldOption = {
   name: string;
   description: string;
-  type: FieldType;
+  type: SingleValueFieldType | OptionsType;
   default: FieldDefault;
   options?: MaxNestedFieldOption[];
 };
