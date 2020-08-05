@@ -2,13 +2,23 @@ import inquirer from "inquirer";
 
 /**Responsible for prompting the user to select choices or enter input for four generation operations. Only static fields and methods allowed.*/
 export default class Prompter {
-  private static nodeGenerationPrompt = [
+  private static nodeGenerationTypePrompt = [
     {
       name: "nodeGenerationType",
       type: "list",
       message:
         "Node generation type?\n  - Simple: Node resources in single file.\n  - Complex: Node resources in Description files.\n",
       choices: ["Simple", "Complex"], // TODO - Replace with enum
+    },
+  ];
+
+  private static nodeTypePrompt = [
+    {
+      name: "nodeType",
+      type: "list",
+      message:
+        "Node type?\n  - Regular: Called when the workflow is executed.\n  - Trigger: Called when the workflow is activated.\n",
+      choices: ["Regular", "Trigger"], // TODO - Replace with enum
     },
   ];
 
@@ -40,10 +50,14 @@ export default class Prompter {
     },
   ];
 
-  static async forNodeGeneration() {
-    return inquirer.prompt<{ nodeGenerationType: "Simple" | "Complex" }>(
-      this.nodeGenerationPrompt
+  static async forNodeGenerationType() {
+    return inquirer.prompt<{ nodeGenerationType: NodeGenerationType }>(
+      this.nodeGenerationTypePrompt
     );
+  }
+
+  static async forNodeType() {
+    return inquirer.prompt<{ nodeType: NodeType }>(this.nodeTypePrompt);
   }
 
   static async forPlacement() {
@@ -55,8 +69,8 @@ export default class Prompter {
   }
 
   static async forIconResizing() {
-    return await inquirer.prompt<{
-      iconToResize: "1" | "2" | "3" | "4" | "5";
-    }>(this.iconNumberPrompt);
+    return await inquirer.prompt<{ iconToResize: IconCandidate }>(
+      this.iconNumberPrompt
+    );
   }
 }

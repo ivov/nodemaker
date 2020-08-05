@@ -8,6 +8,16 @@ export enum NodeGenerationEnum {
   Complex = "Complex",
 }
 
+/**
+ * Node type may be:
+ * - Regular: Called when the workflow is executed.
+ * - Trigger: Called when the workflow is activated.
+ */
+export enum NodeTypeEnum {
+  Regular = "Regular",
+  Trigger = "Trigger",
+}
+
 /**API auth may be:
  * - OAuth2: Various OAuth2 parameters required.
  * - Api Key: Usually a token string credential.

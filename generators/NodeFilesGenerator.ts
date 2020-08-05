@@ -3,6 +3,7 @@ import { join } from "path";
 import Generator from "./Generator";
 import { NodeGenerationEnum, AuthEnum } from "../utils/enums";
 import { readdirSync } from "fs";
+import { areTriggerNodeParameters } from "../utils/typeGuards";
 
 /**Responsible for generating all node functionality files at `/output`:
  * - `*.node.ts`
@@ -11,20 +12,23 @@ import { readdirSync } from "fs";
  * - one or more `*Description.ts` files (in complex node generation)
  */
 export default class NodeFilesGenerator extends Generator {
-  private mainParameters: MainParameters;
   private metaParameters: MetaParameters;
+  private mainParameters: MainParameters;
   private nodeGenerationType: NodeGenerationType;
+  private nodeType: NodeType;
 
   constructor(paramsBundle: NodegenParamsBundle) {
     super();
     this.mainParameters = paramsBundle.mainParameters;
     this.metaParameters = paramsBundle.metaParameters;
     this.nodeGenerationType = paramsBundle.nodeGenerationType;
+    this.nodeType = paramsBundle.nodeType;
   }
 
-  /**Generate node functionality files.*/
+  /**Generate all node functionality files.*/
   async run(): Promise<GenResult> {
     this.generateMainNodeFile();
+
     this.generateGenericFunctionsFile();
 
     if (this.nodeGenerationType === NodeGenerationEnum.Complex)
@@ -41,10 +45,10 @@ export default class NodeFilesGenerator extends Generator {
     }
   }
 
-  /**Generate `*.node.ts`, with a different version for simple or complex node generation.*/
+  /**Generate `*.node.ts` (regular node) or `*Trigger.node.ts` (trigger node), with a different version for simple or complex node generation.*/
   private generateMainNodeFile() {
     const command = this.formatCommand(`
-    gen generateNode${this.nodeGenerationType}
+    gen generate${this.nodeType}Node${this.nodeGenerationType}
       --name \"${this.metaParameters.serviceName}\"
       --metaParameters '${JSON.stringify(this.metaParameters)}'
       --mainParameters '${JSON.stringify(this.mainParameters)}'
@@ -76,6 +80,10 @@ export default class NodeFilesGenerator extends Generator {
 
   /** In complex node generation, generate one additional file per resource.*/
   private generateResourceDescriptionFile() {
+    if (areTriggerNodeParameters(this.mainParameters)) {
+      throw Error("Descriptions cannot be generated for trigger nodes!");
+    }
+
     for (let resourceName in this.mainParameters) {
       const command = this.formatCommand(`
       gen generateResourceDescription

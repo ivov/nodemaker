@@ -1,6 +1,6 @@
-// **********************************
-//         Env vars-related
-// **********************************
+// ********************************************************************
+//                         Env vars-related
+// ********************************************************************
 
 declare namespace NodeJS {
   export interface ProcessEnv {
@@ -12,11 +12,9 @@ declare namespace NodeJS {
   }
 }
 
-// **********************************
-//         Channel-related
-// **********************************
-
-// node generation or docs generation
+// ********************************************************************
+//                         Generator-related
+// ********************************************************************
 
 type GenResult = SuccessfulGenResult | FailedGenResult;
 
@@ -28,13 +26,20 @@ type FailedGenResult = {
   errorMessage: any;
 };
 
+// ********************************************************************
+//                         Bundle-related
+// ********************************************************************
+
 type NodegenParamsBundle = {
   metaParameters: MetaParameters;
   mainParameters: MainParameters;
   nodeGenerationType: NodeGenerationType;
+  nodeType: NodeType;
 };
 
 type NodeGenerationType = "Simple" | "Complex";
+
+type NodeType = "Regular" | "Trigger";
 
 type DocsgenParamsBundle = {
   metaParameters: MetaParameters;
@@ -42,11 +47,11 @@ type DocsgenParamsBundle = {
   docsParameters: DocsParameters;
 };
 
-// **********************************
-//         Params-related
-// **********************************
+type IconCandidate = "1" | "2" | "3" | "4" | "5";
 
-type NodemakerParameters = MetaParameters | MainParameters | DocsParameters;
+// ********************************************************************
+//                         Parameters-related
+// ********************************************************************
 
 // ----------------------------------
 //         Meta parameters
@@ -77,7 +82,44 @@ type DocsParameters = {
 //         Main parameters
 // ----------------------------------
 
-type MainParameters = { [key: string]: Resource };
+type MainParameters = RegularNodeParameters | TriggerNodeParameters;
+
+// ----------------------------------
+//      Trigger node parameters
+// ----------------------------------
+
+type TriggerNodeParameters = {
+  webhookEndpoint: string;
+  webhookProperties: WebhookProperty[];
+};
+
+type WebhookProperty = {
+  displayName: string;
+  name: string;
+  required: boolean;
+  description: string;
+  type: FieldType;
+  default: FieldDefault;
+  options?: WebhookPropertyOption[];
+};
+
+type WebhookPropertyOption = {
+  name: string;
+  description: string;
+  value: string;
+  fields?: WebhookPropertyOptionField[];
+};
+
+type WebhookPropertyOptionField = OperationField & {
+  displayName: string;
+  required: boolean;
+};
+
+// ----------------------------------
+//      Regular node parameters
+// ----------------------------------
+
+type RegularNodeParameters = { [key: string]: Resource };
 
 type Resource = Operation[];
 

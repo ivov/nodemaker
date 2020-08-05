@@ -1,0 +1,208 @@
+---
+to: output/<%= name.replace(/\s/g, "") %>Trigger.node.ts
+mainParameters: <%= mainParameters %>
+metaParameters: <%= metaParameters %>
+---
+<%_
+ mainParameters = JSON.parse(mainParameters);
+ metaParameters = JSON.parse(metaParameters);
+_%>
+import {
+	IHookFunctions,
+	IWebhookFunctions,
+} from 'n8n-core';
+
+import {
+	IWebhookResponseData,
+	INodeType,
+	INodeTypeDescription,
+	IDataObject,
+} from 'n8n-workflow';
+
+import {
+	<%= h.camelify(metaParameters.serviceName) %>ApiRequest,
+} from './GenericFunctions';
+
+export class <%= h.classify(metaParameters.serviceName) %> implements INodeType {
+	description: INodeTypeDescription = {
+		displayName: '<%= metaParameters.serviceName %> Trigger',
+		name: '<%= h.camelify(metaParameters.serviceName) %>Trigger',
+		icon: 'file:<%= h.camelify(metaParameters.serviceName) %>.png',
+		group: ['trigger'],
+		version: 1,
+		subtitle: '={{$parameter["event"]}}',
+		description: 'Handle <%= metaParameters.serviceName %> events via webhooks',
+		defaults: {
+			name: '<%= metaParameters.serviceName %>',
+			color: '<%= metaParameters.nodeColor %>',
+		},
+		inputs: [],
+    outputs: ['main'],
+		credentials: [
+			{
+				name: '<%= h.getCredentialsString(h.camelify(metaParameters.serviceName), metaParameters.authType) %>',
+				required: true,
+			}
+    ],
+		webhooks: [
+			{
+				name: 'default',
+				httpMethod: 'POST',
+				responseMode: 'onReceived',
+				path: 'webhook',
+			},
+		],
+		properties: [
+			<%_ for (let property of mainParameters.webhookProperties) { _%>
+			{
+				displayName: '<%= property.displayName %>',
+				name: '<%= property.name %>',
+				type: '<%= property.type %>',
+				required: <%= property.required %>,
+				default: <%_ if (property.default === true || property.default === false || typeof property.default === "number") { _%>
+					<%_ %> <%= property.default _%>,
+					<%_ } else if (typeof property.default === 'object' && property.default !== null) { _%>
+					<%_ %> <%= JSON.stringify(property.default) _%>,
+					<%_ } else { _%>
+					<%_ %> '<%= property.default _%>',
+					<%_ } _%>
+				description: '<%= property.description %>',
+				options: [
+				<%_ for (let option of property.options) { _%>
+					{
+						name: '<%= option.name %>',
+						value: '<%= option.value %>',
+						description: '<%= option.description %>',
+					},
+				<%_ } _%>
+				],
+			},
+			<%_ } _%>
+			<%_ for (let property of mainParameters.webhookProperties) { _%>
+				<%_ if (property.options !== undefined) { _%>
+					<%_ for (let option of property.options) { _%>
+						<%_ if (option.fields !== undefined) { _%>
+							<%_ for (let field of option.fields) { _%>
+			{
+				displayName: '<%= field.name %>',
+				name: '<%= field.name %>',
+				description: '<%= field.description %>',
+				type: '<%= field.type %>',
+				required: <%= property.required %>,
+				default: <%_ if (field.default === true || field.default === false || typeof field.default === "number") { _%>
+				<%_ %> <%= field.default _%>,
+				<%_ } else if (typeof field.default === 'object' && field.default !== null) { _%>
+				<%_ %> <%= JSON.stringify(field.default) _%>,
+				<%_ } else { _%>
+				<%_ %> '<%= field.default _%>',
+				<%_ } _%>
+				displayOptions: {
+					show: {
+						event: [
+							'<%= option.value %>',
+						],
+					},
+				},
+			},
+							<%_ } _%>
+						<%_ } _%>
+					<%_ } _%>
+				<%_ } _%>
+			<%_ } _%>
+		],
+  };
+
+  // @ts-ignore (because of request)
+	webhookMethods = {
+		default: {
+			async checkExists(this: IHookFunctions): Promise<boolean> {
+				const webhookData = this.getWorkflowStaticData('node');
+
+				if (webhookData.webhookId === undefined) {
+          // No webhook id is set, so no webhook can exist
+					return false;
+        }
+
+        // webhook was created before, so check if it still exists
+				const endpoint = `webhooks/${webhookData.webhookId}`; // TODO
+
+				try {
+					await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, 'GET', endpoint, {});
+				} catch (error) {
+					if (error.statusCode === 404) {
+						// webhook does not exist
+						delete webhookData.webhookId;
+						return false;
+					}
+
+					// some error occured
+					throw error;
+				}
+
+				// if no error, then the webhook exists
+				return true;
+			},
+
+			async create(this: IHookFunctions): Promise<boolean> {
+				let webhook;
+				const webhookUrl = this.getNodeWebhookUrl('default');
+				<%_ for (let property of mainParameters.webhookProperties) { _%>
+				const <%= property.name %> = this.getNodeParameter('<%= property.name %>', 0);
+				<%_ } _%>
+
+				const endpoint = '<%= mainParameters.webhookEndpoint %>';
+
+				const qs: IDataObject = {};
+
+				try {
+					// TODO: Use node parameters in `qs` or in `body` or as boolean flag
+					webhook = await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, 'POST', endpoint, {}, qs);
+				} catch (error) {
+					throw error;
+				}
+
+				// TODO: Replace TODO_PROPERTY_NAME with the name of the property
+				// that, if missing, indicates that webhook creation has failed
+				if (TODO_PROPERTY_NAME === undefined) {
+					return false;
+        }
+
+				const webhookData = this.getWorkflowStaticData('node');
+				webhookData.webhookId = webhook.rule.id as string; // TODO
+				webhookData.events = event; // TODO
+				return true;
+			},
+
+			async delete(this: IHookFunctions): Promise<boolean> {
+        const webhookData = this.getWorkflowStaticData('node');
+
+				if (webhookData.webhookId !== undefined) {
+          const endpoint = `/automations/hooks/${webhookData.webhookId}`;
+
+					try {
+						await <%= h.camelify(metaParameters.serviceName) %>ApiRequest.call(this, 'DELETE', endpoint, {}, {});
+					} catch (error) {
+						return false;
+          }
+
+          // Remove properties from static workflow data to
+          // make it clear that no webhooks are registred anymore
+					delete webhookData.webhookId;
+					delete webhookData.events;
+				}
+				return true;
+			},
+		},
+	};
+
+	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
+		const returnData: IDataObject[] = [];
+		returnData.push(this.getBodyData());
+
+		return {
+			workflowData: [
+				this.helpers.returnJsonArray(returnData),
+			],
+		};
+	}
+}
