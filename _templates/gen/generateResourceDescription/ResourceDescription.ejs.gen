@@ -66,7 +66,7 @@ export const <%= h.camelify(resourceName) %>Fields = [
 				<%_ } _%>
 			},
 		},
-		<%_ if (field.name === 'Additional Fields' && (field.type === 'collection' || field.type === 'multiOptions')) { _%>
+		<%_ if (h.isCollective(field)) { _%>
 		options: [
 		<%_ for (let option of field.options) { _%>
 			{
@@ -80,7 +80,7 @@ export const <%= h.camelify(resourceName) %>Fields = [
 				<%_ } else { _%>
 				<%_ %> '<%= option.default _%>',
 				<%_ } _%>
-				<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+				<%_ if (h.isCollective(option)) { _%>
 				options: [
 					<%_ for (let option of field.options) { _%>
 					{
@@ -94,7 +94,7 @@ export const <%= h.camelify(resourceName) %>Fields = [
 						<%_ } else { _%>
 						<%_ %> '<%= option.default %>',
 						<%_ } _%>
-						<%_ if (option.type === 'collection' || option.type === 'multiOptions') { _%>
+						<%_ if (h.isCollective(option)) { _%>
 						options: [
 							<%_ for (let nestedOption of option.options) { _%>
 							{
