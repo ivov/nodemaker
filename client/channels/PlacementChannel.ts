@@ -2,7 +2,7 @@ import { IpcMainEvent } from "electron";
 import IpcChannel from "./IpcChannel.interface";
 import FilePlacer from "../../services/FilePlacer";
 
-export default class DocsgenChannel implements IpcChannel {
+export default class PlacementChannel implements IpcChannel {
   public name = "placement-channel";
 
   public async handle(
@@ -15,8 +15,8 @@ export default class DocsgenChannel implements IpcChannel {
 
     const result =
       filesToPlace === "functionality"
-        ? filePlacer.placeNodeFunctionalityFiles()
-        : filePlacer.placeDocumentationFiles();
+        ? await filePlacer.placeNodeFunctionalityFiles()
+        : await filePlacer.placeNodeDocumentationFiles();
 
     process.chdir("client");
 

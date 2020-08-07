@@ -16,7 +16,19 @@ declare namespace NodeJS {
 //                         Interface-related
 // ********************************************************************
 
-type RequesterInputType = string | NodegenParamsBundle | DocsgenParamsBundle;
+type RequesterInputType =
+  | string
+  | NodegenParamsBundle
+  | DocsgenParamsBundle
+  | PlacementChannelArgument;
+
+// prettier-ignore
+type RequesterOutputType<T> =
+    T extends string ? string :
+    T extends NodegenParamsBundle ? BackendOperationResult :
+    T extends DocsgenParamsBundle ? BackendOperationResult :
+    T extends PlacementChannelArgument ? BackendOperationResult :
+    never;
 
 type BackendOperationResult = SuccessfulOperationResult | FailedOperationResult;
 

@@ -81,6 +81,17 @@ export default class FilePlacer {
     return await this.sendResponse();
   }
 
+  /**Place in the `n8n-docs` repo both node documentation files:
+   * - the node functionality documentation file, and
+   * - the node credential documentation file.
+   */
+  public async placeNodeDocumentationFiles() {
+    [NodeDocFileEnum.main, NodeDocFileEnum.credential].forEach((file) =>
+      this.placeDocFile(file)
+    );
+    return await this.sendResponse();
+  }
+
   /**Send a response to be relayed by the PlacementChannel to the frontend.*/
   private async sendResponse(): Promise<BackendOperationResult> {
     try {
@@ -132,16 +143,6 @@ export default class FilePlacer {
     const source = join(this.outputDir, sourceFilename);
 
     await relocate(source, join(destinationDir, "README.md"));
-  }
-
-  /**Place in the `n8n-docs` repo both node documentation files:
-   * - the node functionality documentation file, and
-   * - the node credential documentation file.
-   */
-  public placeDocumentationFiles() {
-    [NodeDocFileEnum.main, NodeDocFileEnum.credential].forEach((file) =>
-      this.placeDocFile(file)
-    );
   }
 
   /**Place in the `n8n` repo the selected (resized) icon.*/
@@ -211,8 +212,6 @@ export default class FilePlacer {
         !file.endsWith(".credentials.ts") &&
         !file.endsWith(".md")
     );
-
-    console.log(nodeFilenames);
 
     const destinationDir = join(
       this.mainNodesDir,
