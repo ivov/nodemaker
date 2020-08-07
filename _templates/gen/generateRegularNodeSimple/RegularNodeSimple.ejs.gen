@@ -140,24 +140,24 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 						<%_ } _%>
 						<%_ if (h.isCollective(option)) { _%>
 						options: [
-							<%_ for (let option of field.options) { _%>
+							<%_ for (let suboption of option.options) { _%>
 							{
-								name: '<%= option.name %>',
-								description: '<%= option.description %>',
-								type: '<%= option.type %>',
-								default: <%_ if (typeof option.default === "boolean" || typeof option.default === "number") { _%>
-								<%_ %> <%= option.default %>,
-								<%_ } else if (typeof option.default === 'object' && option.default !== null) { _%>
-								<%_ %> <%= JSON.stringify(option.default) %>,
+								name: '<%= suboption.name %>',
+								description: '<%= suboption.description %>',
+								type: '<%= suboption.type %>',
+								default: <%_ if (typeof suboption.default === "boolean" || typeof suboption.default === "number") { _%>
+								<%_ %> <%= suboption.default %>,
+								<%_ } else if (typeof suboption.default === 'object' && suboption.default !== null) { _%>
+								<%_ %> <%= JSON.stringify(suboption.default) %>,
 								<%_ } else { _%>
-								<%_ %> '<%= option.default %>',
+								<%_ %> '<%= suboption.default %>',
 								<%_ } _%>
-								<%_ if (h.isCollective(option)) { _%>
+								<%_ if (h.isCollective(suboption)) { _%>
 								options: [
-									<%_ for (let nestedOption of option.options) { _%>
+									<%_ for (let maxNestedOption of suboption.options) { _%>
 									{
-										name: '<%= nestedOption.name %>',
-										description: '<%= nestedOption.description %>',
+										name: '<%= maxNestedOption.name %>',
+										description: '<%= maxNestedOption.description %>',
 									},
 									<%_ } _%>
 								],
