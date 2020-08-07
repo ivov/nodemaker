@@ -13,17 +13,35 @@ declare namespace NodeJS {
 }
 
 // ********************************************************************
-//                         Generator-related
+//                         Interface-related
 // ********************************************************************
 
-type GenResult = SuccessfulGenResult | FailedGenResult;
+type RequesterInputType =
+  | string
+  | NodegenParamsBundle
+  | DocsgenParamsBundle
+  | PlacementChannelArgument;
 
-type SuccessfulGenResult = { completed: boolean; error: false };
+// prettier-ignore
+type RequesterOutputType<T> =
+    T extends string ? string :
+    T extends NodegenParamsBundle ? BackendOperationResult :
+    T extends DocsgenParamsBundle ? BackendOperationResult :
+    T extends PlacementChannelArgument ? BackendOperationResult :
+    never;
 
-type FailedGenResult = {
+type BackendOperationResult = SuccessfulOperationResult | FailedOperationResult;
+
+type SuccessfulOperationResult = { completed: boolean; error: false };
+
+type FailedOperationResult = {
   completed: boolean;
   error: true;
   errorMessage: any;
+};
+
+type PlacementChannelArgument = {
+  filesToPlace: "functionality" | "documentation";
 };
 
 // ********************************************************************
