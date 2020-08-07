@@ -27,8 +27,8 @@ export default class Prompter {
       name: "filesToPlace",
       type: "list",
       message:
-        "Which files to place?\n  - Node files in n8n repo: *.node.ts, GenericFunctions.ts, *.credentials.ts, PNG icon, etc.\n  - Docs files in n8n-docs repo: Markdown files for node and credentials, workflow screencap, etc.\n",
-      choices: ["Node files", "Docs files"],
+        "Which files to place?\n  - Node functionality files → n8n repo: *.node.ts, GenericFunctions.ts, *.credentials.ts, PNG icon, etc.\n  - Node documentation files → n8n-docs repo: Markdown files for node and credentials, workflow screencap, etc.\n",
+      choices: ["Node functionality files", "Node documentation files"],
     },
   ];
 

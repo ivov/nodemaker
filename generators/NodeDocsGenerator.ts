@@ -20,7 +20,7 @@ export default class NodeDocsGenerator extends Generator {
     this.mainParameters = paramsBundle.mainParameters;
   }
 
-  public async run() {
+  public async run(): Promise<BackendOperationResult> {
     this.generateNodeMainDocs();
 
     if (this.metaParameters.authType !== AuthEnum.None) {

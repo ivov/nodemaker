@@ -26,7 +26,7 @@ export default class NodeFilesGenerator extends Generator {
   }
 
   /**Generate all node functionality files.*/
-  async run(): Promise<GenResult> {
+  async run(): Promise<BackendOperationResult> {
     this.generateMainNodeFile();
 
     this.generateGenericFunctionsFile();
