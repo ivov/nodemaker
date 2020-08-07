@@ -1,5 +1,11 @@
 module.exports = {
   helpers: {
+    /**Check if a field or option is collective (containing fields or options).*/
+    isCollective: (entity) =>
+      entity.type === "collection" ||
+      entity.type === "fixedCollection" ||
+      entity.type === "multiOptions" ||
+      entity.type === "options",
     /**Format a string as a class name, uppercase for each initial and no whitespace.*/
     classify: (name) => name.replace(/\s/g, ""),
     /**Format a string as a lowercase single word, or a lowercase first word
