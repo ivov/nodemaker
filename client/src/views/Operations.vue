@@ -12,6 +12,7 @@
           <Dropdown 
             class="input"
             label="Resource" 
+            description="The resource to operate on"
             v-bind:options="resourceNames" 
             :value=operation.resource
             v-model=operation.resource
@@ -20,6 +21,7 @@
             class="input"
             label="Operation Name"
             placeholder="Get" 
+            description=""
             :value=operation.name
             v-model=operation.name
           />
@@ -27,19 +29,22 @@
             class="input"
             label="Description"
             placeholder="Get a Hacker News article." 
+            description=""
             :value=operation.description
             v-model=operation.description
           />
           <InputField 
             class="input"
             label="Endpoint"
-            placeholder="/article/{id}" 
+            placeholder="/items/$$articleId$$" 
+            description="The endpoint to associate with the operation. Wrap variables in dollar signs with the associated field name in the middle: $$var_name$$"
             :value=operation.endpoint
             v-model=operation.endpoint
           />
           <Dropdown 
             class="input"
             label="Request Method" 
+            description=""
             v-bind:options="['GET', 'POST', 'PATCH', 'PUT', 'DELETE']" 
             :value=operation.requestMethod
             v-model=operation.requestMethod

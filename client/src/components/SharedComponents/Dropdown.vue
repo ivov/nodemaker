@@ -2,7 +2,7 @@
   <span class="input">
       <div class="group">
         <label>{{label}}: </label>
-        <i class="fas fa-info-circle icon" title="hello world"></i>
+        <i v-if="description !== ''" class="fas fa-info-circle icon" :title=description></i>
       </div>
       <div class="group">
         <select @input="input" ref="dropdown">
@@ -31,7 +31,7 @@ import SmallButton from './SmallButton';
   components: {
     SmallButton
   },
-  props: ["label", "options", "add", "cancel"],
+  props: ["label", "options", "add", "cancel", "description"],
   methods: {
     input() {
       this.$emit('input', this.$refs.dropdown.value)

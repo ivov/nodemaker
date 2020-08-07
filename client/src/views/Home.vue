@@ -11,6 +11,7 @@
         <InputField 
           class="input"
           label="Name"
+          description="The name of your node"
           placeholder="Hacker News" 
           :value=basicInfo.name
           v-model=basicInfo.name
@@ -18,6 +19,7 @@
         <Dropdown 
           class="input"
           label="Auth" 
+          description="The type of authorization your node uses"
           v-bind:options="['No Auth', 'Access Token', 'OAuth1', 'OAuth2']" 
           :option=basicInfo.auth
           v-model=basicInfo.auth
@@ -25,6 +27,7 @@
         <InputField 
           class="input"
           label="Color"
+          description="The color of your node"
           placeholder="#ffffff" 
           :value=basicInfo.color
           v-model=basicInfo.color
@@ -32,7 +35,8 @@
         <InputField 
           class="input"
           label="API Base URL"
-          placeholder="http://hn.algolia.com/api" 
+          description="The base URL for your node's API endpoints"
+          placeholder="http://hn.algolia.com/api/v1" 
           :value=basicInfo.baseURL
           v-model=basicInfo.baseURL
         />

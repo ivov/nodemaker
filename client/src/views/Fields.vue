@@ -13,6 +13,7 @@
             <Dropdown 
               class="input"
               label="Resource/Operation" 
+              description="The resource/operation pairs to associate this field with. Choose as many associations as you need"
               :add=resourceOperation.add
               :cancel=resourceOperation.cancel
               v-on:plus="addResourceOperation(field.key)"
@@ -25,6 +26,7 @@
           <Dropdown 
             class="input"
             label="Type" 
+            description=""
             @change.native="adjustFieldParams(field.key, field.type)"
             v-bind:options="['String', 'Options', 'Multioptions', 'Boolean', 'Number', 'Collection', 'Fixed Collection']" 
             :value=field.type
@@ -35,6 +37,7 @@
               class="input"
               label="Field Name"
               placeholder="Article id" 
+              description=""
               :value=field.name
               v-model=field.name
             />
@@ -42,6 +45,7 @@
               class="input"
               label="Description"
               placeholder="The id of the article to get." 
+              description=""
               :value=field.description
               v-model=field.description
             />
@@ -49,6 +53,7 @@
               class="input"
               label="Default"
               placeholder="123" 
+              description="The default value for the field when the user opens the node"
               :value=field.default
               v-model=field.default
             />
@@ -58,6 +63,7 @@
               class="input"
               label="Field Name"
               placeholder="Return All" 
+              description=""
               :value=field.name
               v-model=field.name
             />
@@ -65,6 +71,7 @@
               class="input"
               label="Description"
               placeholder="Whether to return all results or only up to a limit." 
+              description=""
               :value=field.description
               v-model=field.description
             />
@@ -72,6 +79,7 @@
               class="input"
               label="Default"
               placeholder="false" 
+              description="The default value for the field when the user opens the node"
               :value=field.default
               v-model=field.default
             />
@@ -81,6 +89,7 @@
               class="input"
               label="Field Name"
               placeholder="Limit" 
+              description=""
               :value=field.name
               v-model=field.name
             />
@@ -88,13 +97,15 @@
               class="input"
               label="Description"
               placeholder="Limit of Hacker News articles to be returned for the query." 
+              description=""
               :value=field.description
               v-model=field.description
             />
             <InputField 
               class="input"
               label="Default"
-              placeholder="20" 
+              placeholder="20"
+              description="The default value for the field when the user opens the node" 
               :value=field.default
               v-model=field.default
             />
@@ -104,6 +115,7 @@
               class="input"
               label="Field Name"
               placeholder="Tags" 
+              description=""
               :value=field.name
               v-model=field.name
             />
@@ -111,6 +123,7 @@
               class="input"
               label="Description"
               placeholder="Tags for filtering the results of the query." 
+              description=""
               :value=field.description
               v-model=field.description
             />
@@ -118,6 +131,7 @@
               class="input"
               label="Default"
               placeholder="{}" 
+              description="The default value for the field when the user opens the node" 
               :value=field.default
               v-model=field.default
             />
@@ -128,13 +142,15 @@
                   class="input"
                   label="Option Name"
                   placeholder="Comment" 
+                  description=""
                   :value=option.name
                   v-model=option.name
                 />
                 <InputField 
                   class="input"
                   label="Description"
-                  placeholder="Returns query results filtered by comment tag." 
+                  placeholder="Returns query results filtered by comment tag."
+                  description="" 
                   :value=option.description
                   v-model=option.description
                 />
@@ -155,14 +171,16 @@
             <InputField 
               class="input"
               label="Field Name"
-              placeholder="Tags" 
+              placeholder="Additional Fields" 
+              description="The name of the collection. If this is for grouping unrequired fields, name this 'Additional Fields'"
               :value=field.name
               v-model=field.name
             />
             <InputField 
               class="input"
               label="Description"
-              placeholder="Tags for filtering the results of the query." 
+              placeholder="Not required fields to add on" 
+              description=""
               :value=field.description
               v-model=field.description
             />
@@ -170,6 +188,7 @@
               class="input"
               label="Default"
               placeholder="{}" 
+              description="The default value for the field when the user opens the node" 
               :value=field.default
               v-model=field.default
             />
@@ -180,6 +199,7 @@
                   <Dropdown 
                     class="input"
                     label="Type" 
+                    description="The type of the collection option"
                     @change.native="adjustCollectionFieldParams(field.key, option.key, option.type)"
                     v-bind:options="['String', 'Options', 'Multioptions', 'Boolean', 'Number']" 
                     :value=option.type
@@ -190,7 +210,8 @@
                   <InputField 
                     class="input"
                     label="Field Name"
-                    placeholder="Article id" 
+                    placeholder="Tags" 
+                    description=""
                     :value=option.name
                     v-model=option.name
                   />
@@ -198,6 +219,7 @@
                     class="input"
                     label="Description"
                     placeholder="The id of the article to get." 
+                    description=""
                     :value=option.description
                     v-model=option.description
                   />
@@ -205,6 +227,7 @@
                     class="input"
                     label="Default"
                     placeholder="123" 
+                    description="The default value for the field when the user opens the node" 
                     :value=option.default
                     v-model=option.default
                   />
@@ -214,6 +237,7 @@
                     class="input"
                     label="Field Name"
                     placeholder="Return All" 
+                    description=""
                     :value=option.name
                     v-model=option.name
                   />
@@ -221,6 +245,7 @@
                     class="input"
                     label="Description"
                     placeholder="Whether to return all results or only up to a limit." 
+                    description=""
                     :value=option.description
                     v-model=option.description
                   />
@@ -228,6 +253,7 @@
                     class="input"
                     label="Default"
                     placeholder="false" 
+                    description="The default value for the field when the user opens the node" 
                     :value=option.default
                     v-model=option.default
                   />
@@ -236,7 +262,8 @@
                   <InputField 
                     class="input"
                     label="Field Name"
-                    placeholder="Limit" 
+                    placeholder="Limit"
+                    description="" 
                     :value=option.name
                     v-model=option.name
                   />
@@ -244,6 +271,7 @@
                     class="input"
                     label="Description"
                     placeholder="Limit of Hacker News articles to be returned for the query." 
+                    description=""
                     :value=option.description
                     v-model=option.description
                   />
@@ -251,15 +279,17 @@
                     class="input"
                     label="Default"
                     placeholder="20" 
+                    description="The default value for the field when the user opens the node" 
                     :value=option.default
                     v-model=option.default
                   />
                 </div>
-                <div v-if="option.type === 'Options' || field.type === 'Multioptions'" class="optionBox">
+                <div v-if="option.type === 'Options' || option.type === 'Multioptions'" class="optionBox">
                   <InputField 
                     class="input"
                     label="Field Name"
                     placeholder="Tags" 
+                    description=""
                     :value=option.name
                     v-model=option.name
                   />
@@ -267,6 +297,7 @@
                     class="input"
                     label="Description"
                     placeholder="Tags for filtering the results of the query." 
+                    description=""
                     :value=option.description
                     v-model=option.description
                   />
@@ -274,18 +305,19 @@
                     class="input"
                     label="Default"
                     placeholder="{}" 
+                    description="The default value for the field when the user opens the node" 
                     :value=option.default
                     v-model=option.default
                   />
                   <strong>Options:</strong>
                   <div class="innerOptions optionBox">
-                    
                     <div class="box" v-bind:key="innerOption.key" v-for="innerOption in option.options">
                       <div class="option">
                         <InputField 
                           class="input"
                           label="Option Name"
                           placeholder="Comment" 
+                          description=""
                           :value=innerOption.name
                           v-model=innerOption.name
                         />
@@ -293,6 +325,7 @@
                           class="input"
                           label="Description"
                           placeholder="Returns query results filtered by comment tag." 
+                          description=""
                           :value=innerOption.description
                           v-model=innerOption.description
                         />
@@ -405,6 +438,7 @@ import { mapGetters, mapActions} from 'vuex';
     adjustCollectionFieldParams(fieldKey, optionKey, type) {
       console.log(type === "Multioptions");
       if(type === "Options" || type === "Multioptions") {
+        console.log("here")
         this.createInnerOption({ fieldKey, optionKey });
       }
     },

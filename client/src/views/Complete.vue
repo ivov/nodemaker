@@ -190,6 +190,7 @@ import { mapGetters } from 'vuex';
         metaParameters: this.buildMetaParameters(),
         mainParameters: this.buildMainParameters(),
         nodeGenerationType: "Simple",
+        nodeType: "Regular",
       };
 
       console.log(paramsBundle);

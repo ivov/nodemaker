@@ -13,6 +13,7 @@
             class="input"
             label="Resource"
             placeholder="Article"
+            description=""
             :value=resource.text
             v-model=resource.text
           />

@@ -2,7 +2,7 @@
   <div class="input">
       <div class="group">
         <label>{{label}}: </label>
-        <i class="fas fa-info-circle icon" title="hello world"></i>
+        <i v-if="description !== ''" class="fas fa-info-circle icon" :title=description></i>
       </div>
       <div class="group">
         <input 
@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts">
-/* eslint no-unused-vars: "warn" */
 import { Component, Vue } from 'vue-property-decorator';
 
 import SmallButton from './SmallButton';
@@ -28,14 +27,13 @@ import SmallButton from './SmallButton';
   components: {
     SmallButton
   },
-  props: ["label", "placeholder", "value", "add", "cancel"],
+  props: ["label", "placeholder", "value", "add", "cancel", "description"],
   methods: {
     input() {
       this.$emit('input', this.$refs.text_input.value);
     }
   }
 })
-
 export default class App extends Vue {}
 </script>
 
