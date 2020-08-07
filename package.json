@@ -15,7 +15,8 @@
     "runapp": "cd ../n8n && npm run start",
     "shotgen": "tsc && node build/scripts/takeScreenshot.js",
     "empty": "rm -rfv output/*",
-    "desktop": "cd client && npm run electron:serve"
+    "desktop": "cd client && npm run electron:serve",
+    "validate": "ttsc && node build/scripts/validateParams.js"
   },
   "keywords": [
     "n8n"
@@ -32,7 +33,8 @@
     "inquirer": "^7.3.1",
     "node-fetch": "^2.6.0",
     "puppeteer": "^5.2.1",
-    "sharp": "^0.25.4"
+    "sharp": "^0.25.4",
+    "typescript-is": "^0.16.3"
   },
   "devDependencies": {
     "@types/inquirer": "^6.5.0",
@@ -40,6 +42,7 @@
     "@types/node-fetch": "^2.5.7",
     "@types/puppeteer": "^3.0.1",
     "tsc-watch": "^4.2.9",
+    "ttypescript": "^1.5.10",
     "typescript": "^3.9.6"
   }
 }
