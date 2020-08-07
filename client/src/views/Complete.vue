@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import { Component, Vue } from 'vue-property-decorator';
 
 import Instructions from '../components/SharedComponents/Instructions.vue';
@@ -81,6 +82,19 @@ import { mapGetters } from 'vuex';
     },
     buildMainParameters(): {} {
       let mainParameters = {};
+
+      const mapFieldTypes = {
+        'String': 'string',
+        'Options': 'options',
+        'Multioptions': 'multiOptions',
+        'Boolean': 'boolean',
+        'Number': 'number',
+        'Collection': 'collection',
+        'Fixed Collection': 'fixedCollection'
+      };
+
+      console.log(mapFieldTypes['String']);
+
       this.resources.forEach(resource => {
         mainParameters[resource.text] = [];
       });
@@ -99,9 +113,21 @@ import { mapGetters } from 'vuex';
         const fieldObj = {
           name: field.name,
           description: field.description,
-          type: field.type,
-          default: field.default
+          type: mapFieldTypes[field.type],
+          default: field.default,
+          options: []
         };
+
+        if(field.options.length === 0 || field.options[0].name === "") {
+          delete fieldObj.options;
+        } else {
+          field.options.forEach(option => {
+            fieldObj.options.push({
+              name: option.name,
+              description: option.description
+            });
+          });
+        }
 
         field.resourceOperation.forEach(resourceOp => {
           const [ operation, resource ] = resourceOp.value.split(" : ");

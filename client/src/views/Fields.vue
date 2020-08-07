@@ -99,7 +99,7 @@
               v-model=field.default
             />
           </div>
-          <div v-if="field.type === 'Options'">
+          <div v-if="field.type === 'Options' || field.type === 'Multioptions'">
             <InputField 
               class="input"
               label="Field Name"
@@ -122,8 +122,8 @@
               v-model=field.default
             />
             <strong>Options:</strong>
-            <div class="box" v-bind:key="option.key" v-for="option in field.options">
-              <div class="option">
+            <div class="box innerText" v-bind:key="option.key" v-for="option in field.options">
+              <div class="option optionBox">
                 <InputField 
                   class="input"
                   label="Option Name"
@@ -140,18 +140,18 @@
                 />
               </div>
               <SmallButton 
-                class="delete" 
+                class="deleteOption" 
                 v-if="option.add"
                 @click.native="addOption(field.key)" 
                 :cancel=option.cancel />
               <SmallButton 
-                class="delete" 
+                class="deleteOption" 
                 v-if="option.cancel"
                 @click.native="removeOption(field.key, option.key)" 
                 :cancel=option.cancel />
             </div>
           </div>
-          <div v-if="field.type === 'Multioptions'">
+          <div v-if="field.type === 'Collection'">
             <InputField 
               class="input"
               label="Field Name"
@@ -173,31 +173,151 @@
               :value=field.default
               v-model=field.default
             />
-            <strong>Options:</strong>
-            <div class="box" v-bind:key="option.key" v-for="option in field.options">
+            <strong>Collection Options: </strong>
+            <div class="box innerText" v-bind:key="option.key" v-for="option in field.options">
               <div class="option">
-                <InputField 
-                  class="input"
-                  label="Option Name"
-                  placeholder="Comment" 
-                  :value=option.name
-                  v-model=option.name
-                />
-                <InputField 
-                  class="input"
-                  label="Description"
-                  placeholder="Returns query results filtered by comment tag." 
-                  :value=option.description
-                  v-model=option.description
-                />
+                <div class="optionBox">
+                  <Dropdown 
+                    class="input"
+                    label="Type" 
+                    @change.native="adjustCollectionFieldParams(field.key, option.key, option.type)"
+                    v-bind:options="['String', 'Options', 'Multioptions', 'Boolean', 'Number']" 
+                    :value=option.type
+                    v-model=option.type
+                  />
+                </div>
+                <div v-if="option.type === 'String'" class="optionBox">
+                  <InputField 
+                    class="input"
+                    label="Field Name"
+                    placeholder="Article id" 
+                    :value=option.name
+                    v-model=option.name
+                  />
+                  <InputField 
+                    class="input"
+                    label="Description"
+                    placeholder="The id of the article to get." 
+                    :value=option.description
+                    v-model=option.description
+                  />
+                  <InputField 
+                    class="input"
+                    label="Default"
+                    placeholder="123" 
+                    :value=option.default
+                    v-model=option.default
+                  />
+                </div>
+                <div v-if="option.type === 'Boolean'" class="optionBox">
+                  <InputField 
+                    class="input"
+                    label="Field Name"
+                    placeholder="Return All" 
+                    :value=option.name
+                    v-model=option.name
+                  />
+                  <InputField 
+                    class="input"
+                    label="Description"
+                    placeholder="Whether to return all results or only up to a limit." 
+                    :value=option.description
+                    v-model=option.description
+                  />
+                  <InputField 
+                    class="input"
+                    label="Default"
+                    placeholder="false" 
+                    :value=option.default
+                    v-model=option.default
+                  />
+                </div>
+                <div v-if="option.type === 'Number'" class="optionBox">
+                  <InputField 
+                    class="input"
+                    label="Field Name"
+                    placeholder="Limit" 
+                    :value=option.name
+                    v-model=option.name
+                  />
+                  <InputField 
+                    class="input"
+                    label="Description"
+                    placeholder="Limit of Hacker News articles to be returned for the query." 
+                    :value=option.description
+                    v-model=option.description
+                  />
+                  <InputField 
+                    class="input"
+                    label="Default"
+                    placeholder="20" 
+                    :value=option.default
+                    v-model=option.default
+                  />
+                </div>
+                <div v-if="option.type === 'Options' || field.type === 'Multioptions'" class="optionBox">
+                  <InputField 
+                    class="input"
+                    label="Field Name"
+                    placeholder="Tags" 
+                    :value=option.name
+                    v-model=option.name
+                  />
+                  <InputField 
+                    class="input"
+                    label="Description"
+                    placeholder="Tags for filtering the results of the query." 
+                    :value=option.description
+                    v-model=option.description
+                  />
+                  <InputField 
+                    class="input"
+                    label="Default"
+                    placeholder="{}" 
+                    :value=option.default
+                    v-model=option.default
+                  />
+                  <div class="innerOptions optionBox">
+                    <strong>Options:</strong>
+                    <div class="box" v-bind:key="innerOption.key" v-for="innerOption in option.options">
+                      <div class="option">
+                        <InputField 
+                          class="input"
+                          label="Option Name"
+                          placeholder="Comment" 
+                          :value=innerOption.name
+                          v-model=innerOption.name
+                        />
+                        <InputField 
+                          class="input"
+                          label="Description"
+                          placeholder="Returns query results filtered by comment tag." 
+                          :value=innerOption.description
+                          v-model=innerOption.description
+                        />
+                      </div>
+                      <SmallButton 
+                        class="deleteOption" 
+                        v-if="innerOption.add"
+                        @click.native="addInnerOption(field.key, option.key)" 
+                        :cancel=innerOption.cancel />
+                      <SmallButton 
+                        class="deleteOption" 
+                        v-if="innerOption.cancel"
+                        @click.native="removeInnerOption(field.key, option.key, innerOption.key)" 
+                        :cancel=innerOption.cancel />
+                    </div>
+                  </div>
+                </div>
+                <hr>
               </div>
               <SmallButton 
-                class="delete" 
+                class="deleteSection" 
                 v-if="option.add"
                 @click.native="addOption(field.key)" 
                 :cancel=option.cancel />
               <SmallButton 
-                class="delete" 
+                class="deleteSection" 
                 v-if="option.cancel"
                 @click.native="removeOption(field.key, option.key)" 
                 :cancel=option.cancel />
@@ -244,6 +364,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import { Component, Vue } from 'vue-property-decorator';
 
 import Instructions from '../components/SharedComponents/Instructions.vue';
@@ -271,11 +392,18 @@ import { mapGetters, mapActions} from 'vuex';
     ...mapGetters(['operationWithResourceNames', 'fields']),
   },
   methods: {
-    ...mapActions(['submitFields', 'createOption']),
+    ...mapActions(['submitFields', 'createOption', 'createCollectionOption', 'createInnerOption']),
     adjustFieldParams(fieldKey, type) {
       console.log(type);
       if(type === "Options" || type === "Multioptions") {
         this.createOption(fieldKey);
+      } else if(type === "Collection" || type === "Fixed Collection") {
+        this.createCollectionOption(fieldKey);
+      }
+    },
+    adjustCollectionFieldParams(fieldKey, optionKey, type) {
+      if(type === "Options" || type === "Multioptions") {
+        this.createInnerOption({ fieldKey, optionKey });
       }
     },
     addOption(fieldKey) {
@@ -287,7 +415,35 @@ import { mapGetters, mapActions} from 'vuex';
         cancel: true
       };
 
-      this.$store.commit('pushOption', { fieldKey, option })
+      this.$store.commit('pushOption', { fieldKey, option });
+    },
+    addInnerOption(fieldKey, optionKey) {
+      const option = {
+        name: "",
+        description: "",
+        key: this.fields[fieldKey].options[optionKey].options.length,
+        add: false,
+        cancel: true
+      };
+
+      this.$store.commit('pushInnerOption', { fieldKey, optionKey, option });
+    },
+    removeInnerOption(fieldKey, optionKey, innerOptionKey) {
+      const newObj = this.fields[fieldKey].options[optionKey].options.filter(innerOption => innerOption.key !== innerOptionKey);
+      this.$store.commit('submitInnerOptions', { fieldKey, optionKey, newObj });
+    },
+    addCollectionOption(fieldKey) {
+      const option = {
+        key: this.fields[fieldKey].options.length,
+        type: "",
+        name: "",
+        description: "",
+        default: "",
+        add: false,
+        cancel: true
+      };
+
+      this.$store.commit('pushOption', { fieldKey, option });
     },
     removeOption(fieldKey, optionKey) {
       const newObj = this.fields[fieldKey].options.filter(option => option.key !== optionKey);
@@ -362,13 +518,33 @@ export default class App extends Vue {}
   margin-left: 3rem;
 }
 
-.option {
-  min-width: 20rem;
+.deleteOption {
+  margin-left: 1rem;
 }
+
+.deleteSection {
+  margin-left: 4rem;
+}
+
+/* .option {
+  min-width: 20rem;
+} */
 
 .box {
   display: flex;
   align-items: center;
+}
+
+.optionBox {
+  width: 25rem;
+}
+
+.innerText {
+  margin-left: 1rem;
+}
+
+.innerOptions {
+  margin-left: 3rem;
 }
 
 .inputContainer {

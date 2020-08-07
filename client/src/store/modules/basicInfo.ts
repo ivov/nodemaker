@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const state = {
     basicInfo: {
         name: "",
@@ -13,13 +15,13 @@ const getters = {
 };
 
 const actions = {
-    submitBasicInfo({ commit }, info) {
+    submitBasicInfo({ commit }, info: any) {
         commit('submitBasicInfo', info);
     },
 };
 
 const mutations = {
-    submitBasicInfo: (state, info) => state.basicInfo = info,
+    submitBasicInfo: (state: any, info: any) => state.basicInfo = info,
 };
 
 export default {

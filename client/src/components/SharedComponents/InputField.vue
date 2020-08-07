@@ -1,6 +1,9 @@
 <template>
   <div class="input">
-      <label>{{label}}: </label>
+      <div class="group">
+        <label>{{label}}: </label>
+        <i class="fas fa-info-circle icon" title="hello world"></i>
+      </div>
       <div class="group">
         <input 
           type="text" 
@@ -46,6 +49,13 @@ export default class App extends Vue {}
 .group {
   display: flex;
   justify-content: end;
+  align-items: center;
+}
+
+.icon {
+    line-height: normal;
+    margin-left: .25rem;
+    opacity: 0.6;
 }
 
 input {
