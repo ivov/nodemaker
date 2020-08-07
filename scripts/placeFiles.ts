@@ -5,7 +5,10 @@ import Prompter from "../services/Prompter";
   const { filesToPlace } = await Prompter.forPlacement();
   const filePlacer = new FilePlacer();
 
-  filesToPlace === "Node files"
-    ? filePlacer.placeFunctionalFiles()
-    : filePlacer.placeDocumentationFiles();
+  const result =
+    filesToPlace === "Node functionality files"
+      ? await filePlacer.placeNodeFunctionalityFiles()
+      : await filePlacer.placeNodeDocumentationFiles();
+
+  console.log(result);
 })();
