@@ -93,8 +93,6 @@ import { mapGetters } from 'vuex';
         'Fixed Collection': 'fixedCollection'
       };
 
-      console.log(mapFieldTypes['String']);
-
       this.resources.forEach(resource => {
         mainParameters[resource.text] = [];
       });
@@ -110,16 +108,64 @@ import { mapGetters } from 'vuex';
       });
 
       this.fields.forEach(field => {
+        // fix the default for first-layer options
+        let defaultValue = field.default;
+        if(field.type === "Number") {
+          defaultValue = Number(defaultValue);
+        } else if(field.type === "Boolean") {
+          defaultValue = Boolean(defaultValue);
+        } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(field.type)) {
+          defaultValue = JSON.parse(defaultValue);
+        }
+
         const fieldObj = {
           name: field.name,
           description: field.description,
           type: mapFieldTypes[field.type],
-          default: field.default,
+          default: defaultValue,
           options: []
         };
 
-        if(field.options.length === 0 || field.options[0].name === "") {
+        if(field.name === "Additional Fields") {
+          delete fieldObj.description;
+        }
+        if(field.options === undefined || field.options.length === 0 || field.options[0].name === "") {
           delete fieldObj.options;
+        } else if(field.type === "Collection" || field.type === "Fixed Collection"){
+          field.options.forEach(option => {
+            // fix the default for internal options
+            let defaultValue = option.default;
+            if(option.type === "Number") {
+              defaultValue = Number(defaultValue);
+            } else if(option.type === "Boolean") {
+              defaultValue = Boolean(defaultValue);
+            } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(option.type)) {
+              defaultValue = JSON.parse(defaultValue);
+            }
+
+            //handle internal options, which will never be a collection
+            let innerOptions = [];
+            if(option.options !== undefined && option.options !== null) {
+              option.options.forEach(innerOption => {
+                innerOptions.push({
+                  name: innerOption.name,
+                  description: innerOption.description
+                })
+              });
+            }
+
+            fieldObj.options.push({
+              name: option.name,
+              description: option.description,
+              type: mapFieldTypes[option.type],
+              default: defaultValue,
+              options: innerOptions
+            });
+
+            if(fieldObj.options[fieldObj.options.length - 1].options.length === 0) {
+              delete fieldObj.options[fieldObj.options.length - 1].options;
+            }
+          });
         } else {
           field.options.forEach(option => {
             fieldObj.options.push({

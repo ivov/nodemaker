@@ -47,9 +47,6 @@ const actions = {
         cancel: false
       };
 
-      console.log(fieldKey);
-      console.log(optionKey);
-
       commit('createInnerOption', { fieldKey, optionKey, option });
     },
     createCollectionOption({ commit }, fieldKey: any) {

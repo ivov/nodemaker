@@ -277,8 +277,9 @@
                     :value=option.default
                     v-model=option.default
                   />
+                  <strong>Options:</strong>
                   <div class="innerOptions optionBox">
-                    <strong>Options:</strong>
+                    
                     <div class="box" v-bind:key="innerOption.key" v-for="innerOption in option.options">
                       <div class="option">
                         <InputField 
@@ -402,6 +403,7 @@ import { mapGetters, mapActions} from 'vuex';
       }
     },
     adjustCollectionFieldParams(fieldKey, optionKey, type) {
+      console.log(type === "Multioptions");
       if(type === "Options" || type === "Multioptions") {
         this.createInnerOption({ fieldKey, optionKey });
       }
