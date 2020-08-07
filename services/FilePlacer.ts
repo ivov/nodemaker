@@ -21,6 +21,9 @@ export default class FilePlacer {
   // icon candidates at /output/icon-candidates
   private iconCandidates: string[];
 
+  // array of files to be relocated - used for verification
+  private filesPlaced: string[] = [];
+
   // ----------------------------------
   //         n8n repo
   // ----------------------------------
@@ -92,19 +95,25 @@ export default class FilePlacer {
     return await this.sendResponse();
   }
 
-  /**Send a response to be relayed by the PlacementChannel to the frontend.*/
+  /**Send a response to be relayed by the PlacementChannel to the frontend.
+   * Note: Returns a promise in order to conform to channel usage.
+   */
   private async sendResponse(): Promise<BackendOperationResult> {
     try {
-      await this.verifyPlacementSuccess();
+      this.verifyPlacementSuccess();
       return { completed: true, error: false };
     } catch (thrownError) {
       return { completed: false, error: true, errorMessage: thrownError };
     }
   }
 
-  // TODO
-  private async verifyPlacementSuccess() {
-    return true;
+  /**Verify if all the files recorded as placed do not exist in /output anymore.*/
+  private verifyPlacementSuccess() {
+    this.filesPlaced.forEach((file) => {
+      if (fs.existsSync(join(this.outputDir, file))) {
+        throw Error("Placement failed for: " + file);
+      }
+    });
   }
 
   /**Place in the `n8n-docs` repo one a node documentation file:
@@ -118,12 +127,12 @@ export default class FilePlacer {
     const getCredentialDocFilename = (file: string) =>
       file.endsWith("Credentials.md");
 
-    const sourceFilename =
+    const sourceFile =
       nodeDocFile === NodeDocFileEnum.main
         ? this.outputFiles.find(getMainDocFilename)
         : this.outputFiles.find(getCredentialDocFilename);
 
-    if (sourceFilename === undefined) {
+    if (!sourceFile) {
       throw Error(
         `No ${NodeDocFileEnum[nodeDocFile]} documentation file found. Generate it before placement.`
       );
@@ -140,9 +149,11 @@ export default class FilePlacer {
       fs.mkdirSync(destinationDir);
     }
 
-    const source = join(this.outputDir, sourceFilename);
+    const source = join(this.outputDir, sourceFile);
 
     await relocate(source, join(destinationDir, "README.md"));
+
+    this.filesPlaced.push(sourceFile);
   }
 
   /**Place in the `n8n` repo the selected (resized) icon.*/
@@ -169,6 +180,8 @@ export default class FilePlacer {
     const source = join(this.iconCandidatesDir, iconFilename);
     const fileDestination = join(destinationDir, iconFilename);
     await relocate(source, fileDestination);
+
+    this.filesPlaced.push(iconFilename);
   }
 
   /**Place `nodemaker/output/package.json` at `n8n/packages/nodes-base/package.json`. The target `package.json` is overwritten.*/
@@ -182,6 +195,8 @@ export default class FilePlacer {
 
     const destination = join(this.mainBaseDir, "package.json");
     await relocate(packageJsonPath, destination);
+
+    this.filesPlaced.push("package.json");
   }
 
   /**Place `nodemaker/output/*.credentials.ts` at `n8n/packages/nodes-base/credentials/ServiceName`.*/
@@ -197,6 +212,8 @@ export default class FilePlacer {
     const destination = join(this.mainCredentialsDir, credentialsFilename);
 
     await relocate(source, destination);
+
+    this.filesPlaced.push(credentialsFilename);
   }
 
   /**Place in the `n8n` repo the node logic files:
@@ -227,6 +244,8 @@ export default class FilePlacer {
       const fileDestination = join(destinationDir, filename);
       await relocate(source, fileDestination);
     });
+
+    this.filesPlaced.push(...nodeFilenames);
   }
 
   /**Create the string for the name of the service, to be used as a new node functionality dirname.*/
