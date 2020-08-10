@@ -1,68 +1,109 @@
-# Nodemaker
+<p align="center">
+  <img src="docs/images/banner.png" width="315" />
+</p>
 
-Proof of concept for n8n node generator.
+<p align="center">
+  <h1 align="center">Nodemaker</h1>
+</p>
 
-Autogenerate node files and place them in the n8n repos!
+<p align="center">
+  Desktop app and CLI utility to auto-generate n8n nodes<br/>
+  by <a href='https://github.com/ivov'>Iván Ovejero</a> and <a href='https://github.com/erin2722'>Erin McNulty</a>
+</p>
 
-**Features**:
+<p align="center">
+  <a href="#overview">Overview</a> •
+  <a href="/docs/output-examples">Examples</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#operation">Operation</a> •
+  <a href="/docs/cli-reference.md">Documentation</a>
+</p>
 
-- File generation
-  - Node functionality files
-    - `*.node.ts`
-    - `GenericFunctions.ts`
-    - `*Description.ts` (optional)
-    - `*.credentials.ts`
-    - `package.json`
-  - Node documentation files
-    - `README.md` (node)
-    - `README.md` (credential)
-    - In-app screenshot of node
-  - Five icon candidates
-- Resizing of selected icon candidate
-- Placement of generated files in repos
-  - Node functionality files in `n8n` repo
-  - Node documentation files in `n8n-docs` repo
+<p align="center">
+  <img src="https://img.shields.io/badge/stage-MVP-f7786a">
+  <a href="https://github.com/MLH-Fellowship"><img src="https://img.shields.io/badge/org-MLH%20Fellowship-blue"></a>
+  <img src="https://img.shields.io/badge/license-MIT-brightgreen">
+</p>
 
-[Roadmap for next steps](https://github.com/ivov/nodemaker/issues/1)
+<br/>
+
+**Nodemaker** is an automatic node generator for [n8n](https://github.com/n8n-io/n8n), a workflow automation tool. Nodemaker outputs all functionality and documentation files for a node, places them in the official repos, and uploads a sample workflow to [n8n.io](https://n8n.io/workflows).
+
+Developed as a **desktop app** and **CLI utility**, in MVP stage, as a capstone project for the [MLH Fellowship](https://github.com/MLH-Fellowship).
+
+<br/>
+
+<p align="center">
+    <img src="docs/images/logos/ts.png" width="128">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="docs/images/logos/node.png" width="125">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="docs/images/logos/electron.png" width="112">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="docs/images/logos/vue.png" width="125">
+</p>
+
+<p align="center">
+  Built with <b>TypeScript</b>, <b>Node</b>, <b>Electron</b> and <b>Vue</b>
+</p>
+
+## Overview
+
+Nodemaker generates two types of files:
+
+**Node functionality files**
+
+- `*.node.ts` — main logic (regular or trigger node)
+- `GenericFunctions.ts` — node helper functions
+- `*Description.ts` — separate logic per resource (optional)
+- `*.credentials.ts` — node authentication params
+- `package.json` — updated node listing
+- `*.png` — node icon
+
+| ![](docs/images/screencaps/node.png) ![](docs/images/screencaps/credentials.png) |
+| :------------------------------------------------------------------------------: |
+|            Excerpts of `HackerNews.node.ts` and `GenericFunctions.ts`            |
+
+<br />
+
+**Node documentation files**
+
+- `README.md` — main doc file
+- `README.md` — credentials doc file
+- `workflow.png` — in-app screenshot for main doc file
+
+| ![](docs/images/screencaps/node-doc.png) ![](docs/images/screencaps/workflow.png) |
+| :-------------------------------------------------------------------------------: |
+|                  Excerpt of main `README.md` and `workflow.png`                   |
+
+<br />
+
+Once these files are generated, Nodemaker can:
+
+- relocate them in your copies of the [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs) repos, and
+- submit a sample workflow to the [n8n.io](https://n8n.io/workflows) collection.
+
+| ![](docs/images/screencaps/placement.png) <img src="docs/images/screencaps/workflow-submission.png" width="610"/>  |
+| :----------------------------------------------------------------------------------------------------------------: |
+| Node TypeScript files placed in `n8n` repo and automated workflow submission on [n8n.io](https://n8n.io/workflows) |
 
 ## Installation
 
-1. Clone repo.
-2. Install dependencies: `npm i`
+### Nodemaker
 
-## Operation
+To set up Nodemaker:
 
-1. Enter node params in `parameters.js`. More info on editing params below.
-2. Run one of the following scripts:
+1. Clone this repository: `git clone https://github.com/MLH-Fellowship/nodemaker.git`
+2. Install backend dependencies: `npm i`
+3. Install frontend dependencies: `cd client && npm i`
 
-```
-$ npm run [script]
-```
+> **Note**: Only the backend dependencies are needed to run the CLI utility.
 
-| Script    | Action                                                                                             |
-| --------- | -------------------------------------------------------------------------------------------------- |
-| `nodegen` | Generate `*.node.ts`, `GenericFunctions.ts`, `*Description.ts` (optional), and `*.credentials.ts`. |
-| `packgen` | Generate a `package.json` updated with node path and credential path insertions.                   |
-| `docsgen` | Generate a node functionality doc file and a node credential doc file in markdown.                 |
-| `shotgen` | Generate an in-app screenshot of the node for the docs. For **pre-requisite**, see below.          |
-| `icongen` | Generate five images as icon candidates. For **pre-requisite**, see below.                         |
-| `resize`  | Resize one of the generated icon candidates to a 60×60 px PNG file.                                |
-| `place`   | Move files at `/output` to the `n8n` and `n8n-docs` repos. For **pre-requisite**, see below.       |
-| `empty`   | Clear the `/output` dir                                                                            |
+### Main repos
 
-### Notes
+Nodemaker is a companion project to the main repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs). Nodemaker's output files are meant to be placed in these repos.
 
-- All output files are generated at `nodemaker/output` dir.
-- Generated files may contain `// TODO:` lines, for adding in custom logic.
-- `nodegen` prompts for node generation type. In **simple node generation**, the output node has its resources in a single file. In **complex node generation**, the output node has its resources in separate `*Description.ts` files.
-- `nodegen` generates no credential file if `metaParameters.authType` is `"None"`.
-- `packgen` retrieves the `package.json` at runtime from the official repo.
-
-### Pre-requisites
-
-- `shotgen` [requires credentials](#screenshot-generation-credentials) for image hosting.
-- `icongen` [requires credentials](#icon-generation-credentials) for image search.
-- `place` requires `nodemaker` to sit alongside the `n8n` and `n8n-docs` repos.
+Nodemaker's file placement service requires the `nodemaker` repo to be located alongside your copies of the `n8n` and `n8n-docs` repos. The screenshot generation service further requires `n8n` to be built.
 
 ```bash
 .
@@ -71,127 +112,69 @@ $ npm run [script]
 └── nodemaker
 ```
 
-## Editing params
+To set up both main repos:
 
-Node params are divided into:
-
-- `metaParameters` (service-related)
-- `mainParameters` (resource-related)
-
-Types for both sets of parameters are defined in `globals.d.ts`. Wrong parameters trigger TypeScript type error messages.
-
-### `metaParameters`
-
-```js
-const metaParameters = {
-  serviceName: "Some Service", // casing and spacing as in original service
-  auth: "OAuth2",
-  nodeColor: "#ff6600",
-  apiUrl: "http://api.service.com/",
-};
-```
-
-### `mainParameters`
-
-`mainParameters` is a big object containing resource names as properties pointing to arrays of operations.
-
-Operations all have the same five fields `name`, `description`, `endpoint`, `requestMethod` and `fields`. `endpoint` can contain a variable between double dollar signs, as in `endpoint: "items/$$articleId$$"`, to allow for the endpoint to be fully autogenerated.
-
-The operation's `fields` property points to an array of objects, which may be:
-
-- **Regular fields**, which contain the properties `name`, `description`, `type`, and `default`, or
-- **Group fields**, which contain the properties `name`, `description`, `type: collection` or `type: multiOptions`, `default: {}`, and `options`.
-
-Group fields with `name: "Additional Fields"` should be used for optional fields, i.e. those not needed for the request to succeed.
-
-The `options` property points to an array of objects structured like a regular or group field. Two-level nesting is supported. When using `multiOptions`, `options` should point to an object containing only `name` and `description`.
-
-```js
-const mainParameters = {
-  Resource1: [
-    // first operation for first resource
-    {
-      name: "Get",
-      description: "Get some entity",
-      endpoint: "entity/$$entityId$$",
-      requestMethod: "GET",
-      fields: [
-        {
-          name: "Entity ID",
-          description: "The ID of entity to be returned",
-          type: "string",
-          default: "",
-        },
-        {
-          name: "Additional Fields",
-          type: "collection",
-          default: {},
-          options: [
-            {
-              name: "Keyword",
-              description: "The keyword for filtering the results of the query",
-              type: "string",
-              default: "",
-            },
-          ],
-        },
-      ],
-    },
-    // second operation for first resource
-    {
-      name: "Put",
-      // etc.
-    },
-  ],
-  Resource2: [
-    // etc.
-  ],
-};
-```
-
-Field display restrictions are inferred from the object structure, but if you have an additional field display restriction, you can add it with `extraDisplayRestriction: { fieldName: boolean }`.
-
-## Screenshot generation credentials
-
-The generated screenshot is hosted at Imgbb, which requires an API Key, to be placed in a `.env` file in `/config`, containing:
+**1. Install build tools and lerna**
 
 ```bash
-IMGBB_API_KEY="6d17c6..."
+# Windows
+npm install -g windows-build-tools
+
+# Linux
+apt-get install -y build-essential python
+
+# both
+npm i lerna -g
 ```
 
-To generate your own Imgbb API Key:
-
-1. Visit [Imgbb](https://imgbb.com/).
-2. Create an account or sign in with one of the services offered.
-3. While logged in, visit the [Imgbb API docs](https://api.imgbb.com/).
-4. Click on `Get API key` and use it for `IMGBB_API_KEY` in the `.env` file.
-
-## Icon generation credentials
-
-Icon candidate generation uses Google's Custom Search Engine, which requires credentials. Please note that Google's Custom Search Engine is limited to 100 free requests a day. Credentials are to be placed in a `.env` file in `/config`, containing:
+**2. Clone both repos**
 
 ```bash
-GOOGLE_IMAGE_SEARCH_ENGINE_ID="01782..."
-GOOGLE_PROJECT_API_KEY="AIzaS..."
+git clone https://github.com/n8n-io/n8n.git
+git clone https://github.com/n8n-io/n8n-docs.git
 ```
 
-Please contact the author for a Search Engine ID and API Key, or generate your own as described below.
+**3. Build the `n8n` repo**
 
-**Configuring Custom Search Engine and generating an engine ID**
+```bash
+cd n8n
+lerna bootstrap --hoist
+npm run build
+```
 
-1. Access the [Custom Search Engine dashboard](https://cse.google.com/cse/create/new).
-2. Enter any site in `Sites to Search`, name the engine and `Create`.
-3. Click on `Edit search engine` and then on `Setup`.
-4. Under `Basics`, copy the string `Search engine ID` and use it for `GOOGLE_IMAGE_SEARCH_ENGINE_ID` in the `.env` file.
-5. Under `Basics`, switch on `Image search`.
-6. Under `Basics`, switch on `Search the entire web`.
-7. Under `Basics`, in `Sites to search`, delete the site you added in step 2.
+## Operation
 
-**Configuring a Google Cloud Platform project and generating an API key**
+Nodemaker can be operated as a desktop app or as a CLI utility.
 
-1. Access the [Google Cloud Platform dashboard](https://console.developers.google.com).
-2. On the top-left corner, click on the project name and then on `New Project`.
-3. Name the project and `Create`.
-4. Select your new project on the top-left corner.
-5. Click on `Enable APIs and Services`, search for `Custom Search API`, select it and enable it.
-6. Click on `Create Credentials` on the top-right corner, then on `Credentials` on the left nav, then on the `API key` hyperlink, and finally on `Create`. Use the generated API key for `GOOGLE_PROJECT_API_KEY` in the `.env` file.
+### Desktop app
+
+> PENDING: Explanation of how to run and operate desktop app.
+
+**Note:** At MVP stage, `shotgen`, `flowgen`, `icongen` and `resize` are not available through the desktop app.
+
+### CLI utility
+
+1. Enter node params as explained [here](/docs/cli-reference.md#parameters).
+2. Run a script: `npm run ...`
+
+| Script     | Action                                                          | Docs                                       |
+| ---------- | --------------------------------------------------------------- | ------------------------------------------ |
+| `nodegen`  | Generate node functionality files in TypeScript.                | [Section](/docs/cli-reference.md#nodegen)  |
+| `docsgen`  | Generate node documentation files in Markdown.                  | [Section](/docs/cli-reference.md#docsgen)  |
+| `packgen`  | Generate an updated `package.json` file.                        | [Section](/docs/cli-reference.md#packgen)  |
+| `shotgen`  | Generate an in-app PNG screenshot.                              | [Section](/docs/cli-reference.md#shotgen)  |
+| `flowgen`  | Submit a sample workflow to [n8n.io](https://n8n.io/workflows). | [Section](/docs/cli-reference.md#flowgen)  |
+| `icongen`  | Generate five PNG images as icon candidates.                    | [Section](/docs/cli-reference.md#icongen)  |
+| `resize`   | Resize an icon candidate to a 60×60 px file.                    | [Section](/docs/cli-reference.md#icongen)  |
+| `place`    | Move files to the `n8n` and `n8n-docs` repos.                   | [Section](/docs/cli-reference.md#place)    |
+| `validate` | Validate properties in a params object.                         | [Section](/docs/cli-reference.md#validate) |
+| `empty`    | Clear the `/output` directory.                                  | ---                                        |
+| `desktop`  | Run the desktop app.                                            | ---                                        |
+
+## Authors
+
+© 2020 Iván Ovejero and Erin McNulty
+
+## License
+
+Distributed under the MIT License. See [LICENSE.md](LICENSE.md)
