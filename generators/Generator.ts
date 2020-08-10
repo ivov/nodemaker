@@ -11,7 +11,7 @@ export default class Generator {
   }
 
   /**Create a service credential name string based on auth type.*/
-  deriveServiceCredentialName(metaParameters: MetaParameters) {
+  getServiceCredentialName(metaParameters: MetaParameters) {
     const serviceName = metaParameters.serviceName.replace(/\s/g, "");
     return (
       serviceName +

@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 import { join } from "path";
 import Generator from "./Generator";
 import { PACKAGE_JSON_URL } from "../utils/constants";
+import sleep from "../utils/sleep";
 
 export default class PackageJsonGenerator extends Generator {
   private packageJsonData: any;
@@ -12,6 +13,18 @@ export default class PackageJsonGenerator extends Generator {
   constructor(private metaParameters: MetaParameters) {
     super();
     this.localPackageJsonPath = join("output", "package.json");
+  }
+
+  public async run(): Promise<BackendOperationResult> {
+    try {
+      await this.retrievePackageJson();
+      this.insertCredentialPathIntoPackageJson();
+      await sleep(1000); // to ensure both insertions succeed
+      this.insertNodePathIntoPackageJson();
+      return { completed: true, error: false };
+    } catch (thrownError) {
+      return { completed: false, error: true, errorMessage: thrownError };
+    }
   }
 
   /**Download `package.json` from `packages/nodes-base` from official repo and store it at `/output` dir.*/
@@ -24,9 +37,7 @@ export default class PackageJsonGenerator extends Generator {
   public insertCredentialPathIntoPackageJson() {
     const command = this.formatCommand(`
     gen updateCredentialPackageJson
-      --serviceCredential ${this.deriveServiceCredentialName(
-        this.metaParameters
-      )}
+      --serviceCredential ${this.getServiceCredentialName(this.metaParameters)}
       --credentialSpot ${this.findCredentialSpot()}
     `);
 
@@ -35,10 +46,8 @@ export default class PackageJsonGenerator extends Generator {
 
   /**Insert the new node at their appropriate location in `package.json`.*/
   public insertNodePathIntoPackageJson() {
-    const formattedServiceName = this.metaParameters.serviceName.replace(
-      /\s/,
-      ""
-    );
+    const { serviceName } = this.metaParameters;
+    const formattedServiceName = serviceName.replace(/\s/, "");
 
     const command = this.formatCommand(`
     gen updateNodePackageJson
@@ -71,7 +80,7 @@ export default class PackageJsonGenerator extends Generator {
 
   /**Find the credential right after which the new node credential is to be inserted in `package.json`.*/
   private findCredentialSpot() {
-    const serviceCredential = this.deriveServiceCredentialName(
+    const serviceCredential = this.getServiceCredentialName(
       this.metaParameters
     );
     for (let credential of this.packageJsonData.n8n.credentials) {
