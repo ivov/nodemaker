@@ -38,9 +38,6 @@ export default class FilePlacer {
   // array of files to be relocated - used for verification
   private filesPlaced: string[] = [];
 
-  // credential doc file may not exist - `authType: "None"`
-  private credentialDocFileExists: boolean;
-
   // ----------------------------------
   //         n8n repo
   // ----------------------------------
@@ -188,20 +185,15 @@ export default class FilePlacer {
       );
     }
 
-    if (!credentialDocFile) {
-      this.credentialDocFileExists = false;
-    } else {
-      this.credentialDocFile = credentialDocFile;
-    }
-
     this.mainDocFile = mainDocFile;
+    this.credentialDocFile = credentialDocFile || ""; // credential file (documentation) may not exist
   }
 
   /**Place in the `n8n-docs` repo one a node documentation file:
    * - a node functionality documentation file, or
    * - a node credential documentation file.*/
   private async placeDocFile(nodeDocFile: string) {
-    if (!this.credentialDocFileExists) return;
+    if (nodeDocFile === "") return; // credential file (documentation) may not exist
 
     const destinationDir = join(
       nodeDocFile === this.mainDocFile
