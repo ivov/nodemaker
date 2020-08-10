@@ -3,14 +3,13 @@ import fs from "fs";
 import fetch from "node-fetch";
 import { join } from "path";
 import Generator from "./Generator";
-import { metaParameters } from "../parameters";
 import { PACKAGE_JSON_URL } from "../utils/constants";
 
 export default class PackageJsonGenerator extends Generator {
   private packageJsonData: any;
   private localPackageJsonPath: string;
 
-  constructor() {
+  constructor(private metaParameters: MetaParameters) {
     super();
     this.localPackageJsonPath = join("output", "package.json");
   }
@@ -25,7 +24,9 @@ export default class PackageJsonGenerator extends Generator {
   public insertCredentialPathIntoPackageJson() {
     const command = this.formatCommand(`
     gen updateCredentialPackageJson
-      --serviceCredential ${this.deriveServiceCredentialName()}
+      --serviceCredential ${this.deriveServiceCredentialName(
+        this.metaParameters
+      )}
       --credentialSpot ${this.findCredentialSpot()}
     `);
 
@@ -34,7 +35,10 @@ export default class PackageJsonGenerator extends Generator {
 
   /**Insert the new node at their appropriate location in `package.json`.*/
   public insertNodePathIntoPackageJson() {
-    const formattedServiceName = metaParameters.serviceName.replace(/\s/, "");
+    const formattedServiceName = this.metaParameters.serviceName.replace(
+      /\s/,
+      ""
+    );
 
     const command = this.formatCommand(`
     gen updateNodePackageJson
@@ -67,7 +71,9 @@ export default class PackageJsonGenerator extends Generator {
 
   /**Find the credential right after which the new node credential is to be inserted in `package.json`.*/
   private findCredentialSpot() {
-    const serviceCredential = this.deriveServiceCredentialName();
+    const serviceCredential = this.deriveServiceCredentialName(
+      this.metaParameters
+    );
     for (let credential of this.packageJsonData.n8n.credentials) {
       const relevantString = credential.slice(17);
       if (relevantString[0] < serviceCredential[0]) {
@@ -90,7 +96,7 @@ export default class PackageJsonGenerator extends Generator {
 
       const relevantString = pathMatch[1];
 
-      if (relevantString[0] < metaParameters.serviceName[0]) {
+      if (relevantString[0] < this.metaParameters.serviceName[0]) {
         continue;
       }
       return relevantString.replace(".node.js", "");

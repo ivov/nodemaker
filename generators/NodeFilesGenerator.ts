@@ -72,7 +72,9 @@ export default class NodeFilesGenerator extends Generator {
     const command = this.formatCommand(`
     gen generate${this.metaParameters.authType}Credential
       --name \"${this.metaParameters.serviceName}\"
-      --serviceCredential ${this.deriveServiceCredentialName()}
+      --serviceCredential ${this.deriveServiceCredentialName(
+        this.metaParameters
+      )}
     `);
 
     exec(command);

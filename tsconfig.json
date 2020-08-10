@@ -1,5 +1,5 @@
 {
-	"exclude": [ "output" ],
+	"exclude": [ "output", "docs" ],
 	"include": [
 		"**/*.ts",
 		"*.d.ts", "client/src/store/modules/fields.js"

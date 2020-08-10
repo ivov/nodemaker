@@ -1,8 +1,9 @@
 import PackageJsonGenerator from "../generators/PackageJsonGenerator";
 import sleep from "../utils/sleep";
+import { metaParameters } from "../parameters";
 
 (async () => {
-  const generator = new PackageJsonGenerator();
+  const generator = new PackageJsonGenerator(metaParameters);
 
   await generator.retrievePackageJson();
 
