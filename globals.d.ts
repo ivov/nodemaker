@@ -21,7 +21,8 @@ type RequesterInputType =
   | NodegenParamsBundle
   | DocsgenParamsBundle
   | PlacementChannelArgument
-  | PackgenChannelArgument;
+  | PackgenChannelArgument
+  | EmptyChannelArgument;
 
 // prettier-ignore
 type RequesterOutputType<T> =
@@ -30,6 +31,7 @@ type RequesterOutputType<T> =
     T extends DocsgenParamsBundle ? BackendOperationResult :
     T extends PlacementChannelArgument ? BackendOperationResult :
     T extends PackgenChannelArgument ? BackendOperationResult :
+    T extends EmptyChannelArgument ? BackendOperationResult :
     never;
 
 type BackendOperationResult = SuccessfulOperationResult | FailedOperationResult;
@@ -47,6 +49,8 @@ type PlacementChannelArgument = {
 };
 
 type PackgenChannelArgument = MetaParameters;
+
+type EmptyChannelArgument = void;
 
 // ********************************************************************
 //                         Bundle-related
