@@ -1,33 +1,116 @@
 <template>
   <div class="home">
-    <button @click="example()">call example</button>
-    <h4>{{ tester }}</h4>
+    <div id="optionsBox">
+      <Instructions 
+        class="instructions"
+        header="Welcome to the nodemaker."
+        subtitle="This tool is designed to help developers create their own n8n nodes."
+        instructions="To get started, enter in your node’s name, authorization method, color, and API base url."
+      />
+      <div class="inputContainer">
+        <InputField 
+          class="input"
+          label="Name"
+          description="The name of your node"
+          placeholder="Hacker News" 
+          :value=basicInfo.name
+          v-model=basicInfo.name
+        />
+        <Dropdown 
+          class="input"
+          label="Auth" 
+          description="The type of authorization your node uses"
+          v-bind:options="['No Auth', 'Access Token', 'OAuth1', 'OAuth2']" 
+          :option=basicInfo.auth
+          v-model=basicInfo.auth
+        />
+        <InputField 
+          class="input"
+          label="Color"
+          description="The color of your node"
+          placeholder="#ffffff" 
+          :value=basicInfo.color
+          v-model=basicInfo.color
+        />
+        <InputField 
+          class="input"
+          label="API Base URL"
+          description="The base URL for your node's API endpoints"
+          placeholder="http://hn.algolia.com/api/v1" 
+          :value=basicInfo.baseURL
+          v-model=basicInfo.baseURL
+        />
+      </div>
+      <div class="centerButton">
+        <router-link to="/resources">
+          <ForwardButton 
+            text="Select Your Resources" 
+            @click.native="submitBasicInfo(basicInfo)"
+          />
+        </router-link>
+      </div>
+    </div>
+    <div id="previewBox">
+      <Instructions
+        class="instructions"
+        header="A preview of your node will show up here as you create." 
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from 'vue-property-decorator';
 
-import Requester from "../../Requester";
+import Instructions from '../components/SharedComponents/Instructions.vue';
+import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
+import InputField from '../components/SharedComponents/InputField.vue';
+import Dropdown from '../components/SharedComponents/Dropdown.vue';
+
+import { mapGetters, mapActions } from 'vuex';
 
 @Component({
-  data: () => {
-    return {
-      name: "erin123",
-      tester: "",
-    };
+  name: 'Home',
+  components: {
+    Instructions,
+    ForwardButton,
+    InputField,
+    Dropdown,
   },
-  computed: {
-    example() {
-      const requester = new Requester();
-      const response = requester.request<string>("example-channel");
-      response.then((res) => {
-        console.log(res);
-        // this.tester = res;
-      });
-    },
-  },
+  computed: mapGetters(['basicInfo']),
+  methods: mapActions(['submitBasicInfo']),
 })
 export default class App extends Vue {}
 </script>
-n
+
+<style scoped>
+.home {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+#optionsBox, #previewBox {
+    background-color: white;
+    width: 35rem;
+    margin: 2rem;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.instructions {
+  margin-bottom: 2rem;
+}
+
+.input {
+  margin: 1.5rem 0rem;
+}
+
+.inputContainer {
+  width: 21rem;
+}
+
+.centerButton {
+  margin-top: 3rem;
+  text-align: center;
+}
+</style>

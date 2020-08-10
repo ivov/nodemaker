@@ -2,7 +2,7 @@
 	"exclude": [ "output" ],
 	"include": [
 		"**/*.ts",
-		"*.d.ts"
+		"*.d.ts", "client/src/store/modules/fields.js"
   ],
 	"compilerOptions": {
 		"target": "es5",
