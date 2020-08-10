@@ -18,6 +18,15 @@ export default class FilePlacer {
   // files at /output excluding icon candidates
   private outputFiles: string[];
 
+  // output/package.json
+  private packageJson: string;
+
+  // output/*.node.ts
+  private serviceFile: string;
+
+  // output/*.png (icon)
+  private iconFile: string;
+
   // icon candidates at /output/icon-candidates
   private iconCandidates: string[];
 
@@ -60,12 +69,48 @@ export default class FilePlacer {
       this.iconCandidates = fs.readdirSync(this.iconCandidatesDir);
     }
 
+    this.packageJson = join(this.outputDir, "package.json");
     this.mainBaseDir = join(__dirname, "..", "..", "..", "n8n", "packages", "nodes-base");
     this.mainNodesDir = join(this.mainBaseDir, "nodes");
     this.mainCredentialsDir = join(this.mainBaseDir, "credentials");
     this.docsNodesDir = join(__dirname, "..", "..", "..", "n8n-docs", "docs", "nodes");
     this.docsFunctionalityDir = join(this.docsNodesDir, "nodes-library", "nodes");
     this.docsCredentialsDir = join(this.docsNodesDir, "credentials");
+  }
+
+  /**Verify that all the files to be placed exist before placement.*/
+  private verifyFunctionalityFilesToBePlaced() {
+    if (!fs.existsSync(this.packageJson)) {
+      throw Error("No package.json file found. Generate it before placement.");
+    }
+
+    const serviceFile = this.outputFiles.find((file) =>
+      file.endsWith(".node.ts")
+    );
+
+    if (!serviceFile) {
+      throw Error("No *.node.ts file found. Generate it before placement.");
+    }
+
+    this.serviceFile = serviceFile;
+
+    if (!this.iconCandidates) {
+      throw Error(
+        "No icon-candidates directory found. Generate icon candidates before placement."
+      );
+    }
+
+    const iconFile = this.iconCandidates.find(
+      (file) => !file.startsWith("icon-candidate")
+    );
+
+    if (!iconFile) {
+      throw Error(
+        "No PNG icon file found. Generate icon candidates and resize one before placement."
+      );
+    }
+
+    this.iconFile = iconFile;
   }
 
   /**Place in the `n8n` repo all the node functionality files:
@@ -77,6 +122,7 @@ export default class FilePlacer {
    * - any resource files.
    */
   public async placeNodeFunctionalityFiles() {
+    this.verifyFunctionalityFilesToBePlaced();
     await this.placePackageJson();
     await this.placeCredentialFile();
     await this.placeLogicFiles();
@@ -158,16 +204,6 @@ export default class FilePlacer {
 
   /**Place in the `n8n` repo the selected (resized) icon.*/
   private async placeIconFile() {
-    if (!this.iconCandidates) return;
-
-    const iconFilename = this.iconCandidates.find(
-      (file) => !file.startsWith("icon-candidate")
-    );
-
-    if (!iconFilename) {
-      throw Error("No source icon file found. Generate it before placement.");
-    }
-
     const destinationDir = join(
       this.mainNodesDir,
       this.deriveNodeDestinationDirname()
@@ -177,24 +213,18 @@ export default class FilePlacer {
       fs.mkdirSync(destinationDir);
     }
 
-    const source = join(this.iconCandidatesDir, iconFilename);
-    const fileDestination = join(destinationDir, iconFilename);
-    await relocate(source, fileDestination);
+    const source = join(this.iconCandidatesDir, this.iconFile);
+    const destination = join(destinationDir, this.iconFile);
 
-    this.filesPlaced.push(iconFilename);
+    await relocate(source, destination);
+
+    this.filesPlaced.push(this.iconFile);
   }
 
   /**Place `nodemaker/output/package.json` at `n8n/packages/nodes-base/package.json`. The target `package.json` is overwritten.*/
   private async placePackageJson() {
-    const packageJsonPath = join(this.outputDir, "package.json");
-
-    if (!fs.existsSync(packageJsonPath)) {
-      console.log("No package.json found → skipped");
-      return;
-    }
-
     const destination = join(this.mainBaseDir, "package.json");
-    await relocate(packageJsonPath, destination);
+    await relocate(this.packageJson, destination);
 
     this.filesPlaced.push("package.json");
   }
@@ -208,7 +238,6 @@ export default class FilePlacer {
     if (!credentialsFilename) return; // with no auth, there will be no credential to place
 
     const source = join(this.outputDir, credentialsFilename);
-
     const destination = join(this.mainCredentialsDir, credentialsFilename);
 
     await relocate(source, destination);
@@ -222,6 +251,7 @@ export default class FilePlacer {
    * - resource files (if any).
    */
   private async placeLogicFiles() {
+    // TODO: Refactor `isLogicFile`
     const isLogicFile = (file: string) =>
       file !== ".gitkeep" &&
       file !== "package.json" &&
