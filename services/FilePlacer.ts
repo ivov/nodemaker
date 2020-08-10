@@ -1,6 +1,14 @@
 import fs from "fs";
 import { join } from "path";
 import relocate from "../utils/relocate";
+import {
+  isMainFuncFile,
+  isCredFuncFile,
+  isIconFile,
+  isMainDocFile,
+  isCredDocFile,
+  isFuncFileInTypeScript,
+} from "../utils/findFiles";
 
 /**Responsible for placing the files at `/output` into their appropriate locations in the `n8n` and `n8n-docs` repos.*/
 export default class FilePlacer {
@@ -21,7 +29,10 @@ export default class FilePlacer {
   private packageJson: string;
 
   // output/*.node.ts
-  private serviceFile: string;
+  private mainFuncFile: string;
+
+  // output/*.credentials.ts
+  private credFuncFile: string | undefined; // non-existence allowed
 
   // output/*.png
   private iconFile: string;
@@ -30,7 +41,7 @@ export default class FilePlacer {
   private mainDocFile: string;
 
   // output/*.md
-  private credentialDocFile: string;
+  private credDocFile: string | undefined; // non-existence allowed
 
   // icon candidates at /output/icon-candidates
   private iconCandidates: string[];
@@ -68,54 +79,19 @@ export default class FilePlacer {
   constructor() {
     this.outputDir = join(__dirname, "..", "..", "output");
     this.iconCandidatesDir = join(this.outputDir, "icon-candidates");
-    this.outputFiles = fs.readdirSync(this.outputDir);
-
-    if (fs.existsSync(this.iconCandidatesDir)) {
-      this.iconCandidates = fs.readdirSync(this.iconCandidatesDir);
-    }
-
-    this.packageJson = join(this.outputDir, "package.json");
     this.mainBaseDir = join(__dirname, "..", "..", "..", "n8n", "packages", "nodes-base");
     this.mainNodesDir = join(this.mainBaseDir, "nodes");
     this.mainCredentialsDir = join(this.mainBaseDir, "credentials");
     this.docsNodesDir = join(__dirname, "..", "..", "..", "n8n-docs", "docs", "nodes");
     this.docsFunctionalityDir = join(this.docsNodesDir, "nodes-library", "nodes");
     this.docsCredentialsDir = join(this.docsNodesDir, "credentials");
-  }
 
-  /**Verify that all the functionality files to be placed exist before placement.*/
-  private verifyFunctionalityFilesToBePlaced() {
-    if (!fs.existsSync(this.packageJson)) {
-      throw Error("No package.json file found. Generate it before placement.");
+    this.outputFiles = fs.readdirSync(this.outputDir);
+    this.packageJson = join(this.outputDir, "package.json");
+
+    if (fs.existsSync(this.iconCandidatesDir)) {
+      this.iconCandidates = fs.readdirSync(this.iconCandidatesDir);
     }
-
-    const serviceFile = this.outputFiles.find((file) =>
-      file.endsWith(".node.ts")
-    );
-
-    if (!serviceFile) {
-      throw Error("No *.node.ts file found. Generate it before placement.");
-    }
-
-    this.serviceFile = serviceFile;
-
-    if (!this.iconCandidates) {
-      throw Error(
-        "No icon-candidates directory found. Generate icon candidates before placement."
-      );
-    }
-
-    const iconFile = this.iconCandidates.find(
-      (file) => !file.startsWith("icon-candidate")
-    );
-
-    if (!iconFile) {
-      throw Error(
-        "No PNG icon file found. Generate icon candidates and resize one before placement."
-      );
-    }
-
-    this.iconFile = iconFile;
   }
 
   /**Place in the `n8n` repo all the node functionality files:
@@ -131,8 +107,8 @@ export default class FilePlacer {
     try {
       this.verifyFunctionalityFilesToBePlaced();
       await this.placePackageJson();
-      await this.placeCredentialFile();
-      await this.placeLogicFiles();
+      await this.placeCredFuncFile();
+      await this.placeFuncFilesInTypeScript();
       await this.placeIconFile();
       this.verifyPlacementSuccess();
       return { completed: true, error: false };
@@ -149,14 +125,46 @@ export default class FilePlacer {
   public async placeNodeDocumentationFiles(): Promise<BackendOperationResult> {
     try {
       this.verifyDocumentationFilesToBePlaced();
-      [this.mainDocFile, this.credentialDocFile].forEach((file) =>
-        this.placeDocFile(file)
-      );
+      this.placeDocFile(this.mainDocFile);
+      if (this.credDocFile) {
+        this.placeDocFile(this.credDocFile);
+      }
       this.verifyPlacementSuccess();
       return { completed: true, error: false };
     } catch (thrownError) {
       return { completed: false, error: true, errorMessage: thrownError };
     }
+  }
+
+  /**Verify that all the functionality files to be placed exist before placement.*/
+  private verifyFunctionalityFilesToBePlaced() {
+    const mainFuncFile = this.outputFiles.find(isMainFuncFile);
+    const credFuncFile = this.outputFiles.find(isCredFuncFile);
+    const iconFile = this.iconCandidates.find(isIconFile);
+
+    if (!fs.existsSync(this.packageJson)) {
+      throw Error("No package.json file found. Generate it before placement.");
+    }
+
+    if (!mainFuncFile) {
+      throw Error("No *.node.ts file found. Generate it before placement.");
+    }
+
+    if (!this.iconCandidates) {
+      throw Error(
+        "No icon-candidates dir found. Generate icon candidates before placement."
+      );
+    }
+
+    if (!iconFile) {
+      throw Error(
+        "No PNG icon file found. Generate icon candidates and resize one before placement."
+      );
+    }
+
+    this.mainFuncFile = mainFuncFile;
+    this.credFuncFile = credFuncFile;
+    this.iconFile = iconFile;
   }
 
   /**Verify if all the files recorded as placed do not exist in /output anymore.*/
@@ -170,14 +178,8 @@ export default class FilePlacer {
 
   /**Verify that all the documentation files to be placed exist before placement.*/
   private verifyDocumentationFilesToBePlaced() {
-    const isMainDocFile = (file: string) =>
-      file.endsWith(".md") && !file.endsWith("Credentials.md");
-
-    const isCredentialDocFile = (file: string) =>
-      file.endsWith("Credentials.md");
-
     const mainDocFile = this.outputFiles.find(isMainDocFile);
-    const credentialDocFile = this.outputFiles.find(isCredentialDocFile);
+    const credDocFile = this.outputFiles.find(isCredDocFile);
 
     if (!mainDocFile) {
       throw Error(
@@ -186,14 +188,14 @@ export default class FilePlacer {
     }
 
     this.mainDocFile = mainDocFile;
-    this.credentialDocFile = credentialDocFile || ""; // credential file (documentation) may not exist
+    this.credDocFile = credDocFile;
   }
 
   /**Place in the `n8n-docs` repo one a node documentation file:
    * - a node functionality documentation file, or
    * - a node credential documentation file.*/
   private async placeDocFile(nodeDocFile: string) {
-    if (nodeDocFile === "") return; // credential file (documentation) may not exist
+    if (!nodeDocFile) return; // credential doc file may not exist
 
     const destinationDir = join(
       nodeDocFile === this.mainDocFile
@@ -235,45 +237,32 @@ export default class FilePlacer {
   /**Place `output/package.json` at `n8n/packages/nodes-base/package.json`. The target `package.json` is overwritten.*/
   private async placePackageJson() {
     const destination = join(this.mainBaseDir, "package.json");
+
     await relocate(this.packageJson, destination);
 
     this.filesPlaced.push("package.json");
   }
 
   /**Place `output/*.credentials.ts` at `n8n/packages/nodes-base/credentials/ServiceName`.*/
-  private async placeCredentialFile() {
-    const credentialsFile = this.outputFiles.find((file) =>
-      file.endsWith(".credentials.ts")
-    );
+  private async placeCredFuncFile() {
+    if (!this.credFuncFile) return;
 
-    if (!credentialsFile) return; // credential file (functionality) may not exist
-
-    const source = join(this.outputDir, credentialsFile);
-    const destination = join(this.mainCredentialsDir, credentialsFile);
+    const source = join(this.outputDir, this.credFuncFile);
+    const destination = join(this.mainCredentialsDir, this.credFuncFile);
 
     await relocate(source, destination);
 
-    this.filesPlaced.push(credentialsFile);
+    this.filesPlaced.push(this.credFuncFile);
   }
 
-  /**Place in the `n8n` repo the node logic files:
+  /**Place in the `n8n` repo node functionality files in TypeScript:
    * - `*.node.ts`,
    * - `GenericFunctions.ts`, and
-   * - resource files (if any).
-   */
-  private async placeLogicFiles() {
-    // TODO: Refactor `isLogicFile` to target logic files specifically.
-    const isLogicFile = (file: string) =>
-      file !== ".gitkeep" &&
-      file !== "package.json" &&
-      file !== "workflow.png" &&
-      file !== "unsaved_workflow.json" &&
-      !file.startsWith("icon-candidate") &&
-      !file.endsWith(".credentials.ts") &&
-      !file.endsWith(".md") &&
-      !file.endsWith(".txt");
-
-    const logicFiles = this.outputFiles.filter(isLogicFile);
+   * - resource files `*Description.ts` (if any).*/
+  private async placeFuncFilesInTypeScript() {
+    const funcFilesInTypeScript = this.outputFiles.filter(
+      isFuncFileInTypeScript
+    );
 
     const destinationDir = join(
       this.mainNodesDir,
@@ -284,18 +273,18 @@ export default class FilePlacer {
       fs.mkdirSync(destinationDir);
     }
 
-    logicFiles.forEach(async (file) => {
+    funcFilesInTypeScript.forEach(async (file) => {
       const source = join(this.outputDir, file);
       const destination = join(destinationDir, file);
       await relocate(source, destination);
     });
 
-    this.filesPlaced.push(...logicFiles);
+    this.filesPlaced.push(...funcFilesInTypeScript);
   }
 
   /**Create the string for the name of the service, to be used as a new node functionality dirname.*/
   private getNodeDestinationDirname() {
-    return this.serviceFile.replace(".node.ts", "");
+    return this.mainFuncFile.replace(".node.ts", "");
   }
 
   /**Create the string for the name of the service, to be used as a new docs dirname.*/
