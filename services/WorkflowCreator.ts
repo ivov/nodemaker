@@ -20,8 +20,12 @@ export default class WorkflowCreator {
   }
 
   private async init() {
-    this.browser = await puppeteer.launch({ headless: false });
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ["--start-maximized"],
+    });
     this.page = await this.browser.newPage();
+    await this.page.setViewport({ width: 1100, height: 800 }); // prevent mobile layout
   }
 
   private async doLogin() {
