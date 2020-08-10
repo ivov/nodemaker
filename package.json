@@ -24,7 +24,6 @@
   "author": "Iván Ovejero",
   "license": "MIT",
   "dependencies": {
-    "@types/sharp": "^0.25.0",
     "concurrently": "^5.2.0",
     "dotenv": "^8.2.0",
     "electron": "^9.1.1",
@@ -41,7 +40,7 @@
     "@types/node": "^12.12.38",
     "@types/node-fetch": "^2.5.7",
     "@types/puppeteer": "^3.0.1",
-    "tsc-watch": "^4.2.9",
+    "@types/sharp": "^0.25.1",
     "ttypescript": "^1.5.10",
     "typescript": "^3.9.6"
   }
