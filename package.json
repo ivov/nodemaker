@@ -14,7 +14,7 @@
     "runapp-shotgen": "concurrently --kill-others-on-fail \"npm run runapp\" \"npm run shotgen\"",
     "runapp": "cd ../n8n && npm run start",
     "shotgen": "tsc && node build/scripts/takeScreenshot.js",
-    "empty": "rm -rfv output/*",
+    "empty": "tsc && node build/scripts/emptyOutputDir.js",
     "desktop": "cd client && npm run electron:serve",
     "validate": "ttsc && node build/scripts/validateParams.js"
   },
