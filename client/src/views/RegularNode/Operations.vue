@@ -64,7 +64,7 @@
             />
       </div>
       <div class="centerButton finalButton">
-        <router-link to="/fields">
+        <router-link to="/regular/fields">
             <ForwardButton 
                 text="Select Your Fields" 
                 @click.native="submitOperations(operations)"
@@ -78,7 +78,7 @@
         header="A preview of your node will show up here as you create." 
       />
       <div class="centerButton">
-        <router-link to="/resources">
+        <router-link to="/regular/resources">
           <BackwardButton 
             text="Edit the previous selections" 
             @click.native="submitOperations(operations)"
@@ -92,13 +92,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import Instructions from '../components/SharedComponents/Instructions.vue';
-import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
-import BackwardButton from '../components/SharedComponents/BackwardButton.vue';
-import InputField from '../components/SharedComponents/InputField.vue';
-import Dropdown from '../components/SharedComponents/Dropdown.vue';
-import AddButton from '../components/SharedComponents/AddButton.vue';
-import SmallButton from '../components/SharedComponents/SmallButton.vue';
+import Instructions from '../../components/SharedComponents/Instructions.vue';
+import ForwardButton from '../../components/SharedComponents/ForwardButton.vue';
+import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
+import InputField from '../../components/SharedComponents/InputField.vue';
+import Dropdown from '../../components/SharedComponents/Dropdown.vue';
+import AddButton from '../../components/SharedComponents/AddButton.vue';
+import SmallButton from '../../components/SharedComponents/SmallButton.vue';
 
 import { mapGetters, mapActions} from 'vuex';
 
