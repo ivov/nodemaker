@@ -120,7 +120,7 @@ export default class FilePlacer {
    * - a node functionality documentation file, or
    * - a node credential documentation file.
    */
-  public async placeDocFile(nodeDocFile: NodeDocFileEnum) {
+  private async placeDocFile(nodeDocFile: NodeDocFileEnum) {
     const getMainDocFilename = (file: string) =>
       file.endsWith(".md") && !file.endsWith("Credentials.md");
 
