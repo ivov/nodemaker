@@ -1,6 +1,5 @@
 import fs from "fs";
 import { join } from "path";
-import { NodeDocFileEnum } from "../utils/enums";
 import relocate from "../utils/relocate";
 
 /**Responsible for placing the output files located in `nodemaker/output` in their appropriate dirs in the `n8n` and `n8n-docs` repos.*/
@@ -21,11 +20,14 @@ export default class FilePlacer {
   // output/package.json
   private packageJson: string;
 
-  // output/*.node.ts
-  private serviceFile: string;
-
-  // output/*.png (icon)
+  // output/*.png
   private iconFile: string;
+
+  // output/*.md
+  private mainDocFile: string;
+
+  // output/*.md
+  private credentialDocFile: string;
 
   // icon candidates at /output/icon-candidates
   private iconCandidates: string[];
@@ -78,7 +80,7 @@ export default class FilePlacer {
     this.docsCredentialsDir = join(this.docsNodesDir, "credentials");
   }
 
-  /**Verify that all the files to be placed exist before placement.*/
+  /**Verify that all the functionality files to be placed exist before placement.*/
   private verifyFunctionalityFilesToBePlaced() {
     if (!fs.existsSync(this.packageJson)) {
       throw Error("No package.json file found. Generate it before placement.");
@@ -91,8 +93,6 @@ export default class FilePlacer {
     if (!serviceFile) {
       throw Error("No *.node.ts file found. Generate it before placement.");
     }
-
-    this.serviceFile = serviceFile;
 
     if (!this.iconCandidates) {
       throw Error(
@@ -135,15 +135,17 @@ export default class FilePlacer {
    * - the node credential documentation file.
    */
   public async placeNodeDocumentationFiles() {
-    [NodeDocFileEnum.main, NodeDocFileEnum.credential].forEach((file) =>
+    this.verifyDocumentationFilesToBePlaced();
+
+    [this.mainDocFile, this.credentialDocFile].forEach((file) =>
       this.placeDocFile(file)
     );
+
     return await this.sendResponse();
   }
 
   /**Send a response to be relayed by the PlacementChannel to the frontend.
-   * Note: Returns a promise in order to conform to channel usage.
-   */
+   * Note: Returns a promise in order to conform to channel usage.*/
   private async sendResponse(): Promise<BackendOperationResult> {
     try {
       this.verifyPlacementSuccess();
@@ -162,30 +164,33 @@ export default class FilePlacer {
     });
   }
 
-  /**Place in the `n8n-docs` repo one a node documentation file:
-   * - a node functionality documentation file, or
-   * - a node credential documentation file.
-   */
-  private async placeDocFile(nodeDocFile: NodeDocFileEnum) {
-    const getMainDocFilename = (file: string) =>
+  /**Verify that all the documentation files to be placed exist before placement.*/
+  private verifyDocumentationFilesToBePlaced() {
+    const isMainDocFile = (file: string) =>
       file.endsWith(".md") && !file.endsWith("Credentials.md");
 
-    const getCredentialDocFilename = (file: string) =>
+    const isCredentialDocFile = (file: string) =>
       file.endsWith("Credentials.md");
 
-    const sourceFile =
-      nodeDocFile === NodeDocFileEnum.main
-        ? this.outputFiles.find(getMainDocFilename)
-        : this.outputFiles.find(getCredentialDocFilename);
+    const mainDocFile = this.outputFiles.find(isMainDocFile);
+    const credentialDocFile = this.outputFiles.find(isCredentialDocFile);
 
-    if (!sourceFile) {
+    if (!mainDocFile) {
       throw Error(
-        `No ${NodeDocFileEnum[nodeDocFile]} documentation file found. Generate it before placement.`
+        "No main documentation file found. Generate it before placement."
       );
     }
 
+    this.mainDocFile = mainDocFile;
+    this.credentialDocFile = credentialDocFile || ""; // credential file (documentation) may not exist
+  }
+
+  /**Place in the `n8n-docs` repo one a node documentation file:
+   * - a node functionality documentation file, or
+   * - a node credential documentation file.*/
+  private async placeDocFile(nodeDocFile: string) {
     const destinationDir = join(
-      nodeDocFile === NodeDocFileEnum.main
+      nodeDocFile === this.mainDocFile
         ? this.docsFunctionalityDir
         : this.docsCredentialsDir,
       this.deriveDocDestinationDirname()
@@ -195,11 +200,11 @@ export default class FilePlacer {
       fs.mkdirSync(destinationDir);
     }
 
-    const source = join(this.outputDir, sourceFile);
+    const source = join(this.outputDir, nodeDocFile);
 
     await relocate(source, join(destinationDir, "README.md"));
 
-    this.filesPlaced.push(sourceFile);
+    this.filesPlaced.push(nodeDocFile);
   }
 
   /**Place in the `n8n` repo the selected (resized) icon.*/
@@ -235,7 +240,7 @@ export default class FilePlacer {
       file.endsWith(".credentials.ts")
     );
 
-    if (!credentialsFilename) return; // with no auth, there will be no credential to place
+    if (!credentialsFilename) return; // credential file (functionality) may not exist
 
     const source = join(this.outputDir, credentialsFilename);
     const destination = join(this.mainCredentialsDir, credentialsFilename);
