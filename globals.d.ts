@@ -20,7 +20,8 @@ type RequesterInputType =
   | string
   | NodegenParamsBundle
   | DocsgenParamsBundle
-  | PlacementChannelArgument;
+  | PlacementChannelArgument
+  | PackgenChannelArgument;
 
 // prettier-ignore
 type RequesterOutputType<T> =
@@ -28,6 +29,7 @@ type RequesterOutputType<T> =
     T extends NodegenParamsBundle ? BackendOperationResult :
     T extends DocsgenParamsBundle ? BackendOperationResult :
     T extends PlacementChannelArgument ? BackendOperationResult :
+    T extends PackgenChannelArgument ? BackendOperationResult :
     never;
 
 type BackendOperationResult = SuccessfulOperationResult | FailedOperationResult;
@@ -43,6 +45,8 @@ type FailedOperationResult = {
 type PlacementChannelArgument = {
   filesToPlace: "functionality" | "documentation";
 };
+
+type PackgenChannelArgument = MetaParameters;
 
 // ********************************************************************
 //                         Bundle-related

@@ -1,5 +1,3 @@
-import { metaParameters } from "../parameters";
-
 /**Container for methods shared by child generators.*/
 export default class Generator {
   /**Prefix a command with an env var and the path to hygen, and remove readability formatting.*/
@@ -13,7 +11,7 @@ export default class Generator {
   }
 
   /**Create a service credential name string based on auth type.*/
-  deriveServiceCredentialName() {
+  getServiceCredentialName(metaParameters: MetaParameters) {
     const serviceName = metaParameters.serviceName.replace(/\s/g, "");
     return (
       serviceName +
