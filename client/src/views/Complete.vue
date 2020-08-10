@@ -4,25 +4,23 @@
       <Instructions
         class="instructions"
         header="Thank you for using the nodemaker."
-        instructions="Choose your file configurations below. The nodemaker will output your code to edit and then place into your folders."
+        instructions="Choose your file configurations below. The nodemaker will put the generated file into the output folder."
       />
       <div class="centerButton stacked">
           <GenericButton 
             class="input"
-            text="Generate *.node.ts, GenericFunctions.ts, *Description.ts (optional), and *.credentials.ts." 
-            @click.native="example()"
+            text="Generate *.node.ts, GenericFunctions.ts, and *.credentials.ts." 
+            @click.native="simpleNode()"
           />
           <GenericButton 
             class="input"
-            text="Generate a package.json updated with node path and credential path insertions." 
+            text="Generate *.node.ts, GenericFunctions.ts, *.Description.ts, and *.credentials.ts." 
+            @click.native="complexNode()"
           />
           <GenericButton 
             class="input"
-            text="Generate a node functionality doc file and a node credential doc file in markdown." 
-          />
-          <GenericButton 
-            class="input"
-            text="Generate five images as icon candidates." 
+            text="Place the generated files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
+            @click.native="place()"
           />
       </div>
     </div>
@@ -107,84 +105,86 @@ import { mapGetters } from 'vuex';
         })
       });
 
-      this.fields.forEach(field => {
-        // fix the default for first-layer options
-        let defaultValue = field.default;
-        if(field.type === "Number") {
-          defaultValue = Number(defaultValue);
-        } else if(field.type === "Boolean") {
-          defaultValue = Boolean(defaultValue);
-        } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(field.type)) {
-          defaultValue = JSON.parse(defaultValue);
-        }
+      if(this.fields[0].name !== "") {
+        this.fields.forEach(field => {
+          // fix the default for first-layer options
+          let defaultValue = field.default;
+          if(field.type === "Number") {
+            defaultValue = Number(defaultValue);
+          } else if(field.type === "Boolean") {
+            defaultValue = Boolean(defaultValue);
+          } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(field.type)) {
+            defaultValue = JSON.parse(defaultValue);
+          }
 
-        const fieldObj = {
-          name: field.name,
-          description: field.description,
-          type: mapFieldTypes[field.type],
-          default: defaultValue,
-          options: []
-        };
+          const fieldObj = {
+            name: field.name,
+            description: field.description,
+            type: mapFieldTypes[field.type],
+            default: defaultValue,
+            options: []
+          };
 
-        if(field.name === "Additional Fields") {
-          delete fieldObj.description;
-        }
-        if(field.options === undefined || field.options.length === 0 || field.options[0].name === "") {
-          delete fieldObj.options;
-        } else if(field.type === "Collection" || field.type === "Fixed Collection"){
-          field.options.forEach(option => {
-            // fix the default for internal options
-            let defaultValue = option.default;
-            if(option.type === "Number") {
-              defaultValue = Number(defaultValue);
-            } else if(option.type === "Boolean") {
-              defaultValue = Boolean(defaultValue);
-            } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(option.type)) {
-              defaultValue = JSON.parse(defaultValue);
-            }
+          if(field.name === "Additional Fields") {
+            delete fieldObj.description;
+          }
+          if(field.options === undefined || field.options.length === 0 || field.options[0].name === "") {
+            delete fieldObj.options;
+          } else if(field.type === "Collection" || field.type === "Fixed Collection"){
+            field.options.forEach(option => {
+              // fix the default for internal options
+              let defaultValue = option.default;
+              if(option.type === "Number") {
+                defaultValue = Number(defaultValue);
+              } else if(option.type === "Boolean") {
+                defaultValue = Boolean(defaultValue);
+              } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(option.type)) {
+                defaultValue = JSON.parse(defaultValue);
+              }
 
-            //handle internal options, which will never be a collection
-            let innerOptions = [];
-            if(option.options !== undefined && option.options !== null) {
-              option.options.forEach(innerOption => {
-                innerOptions.push({
-                  name: innerOption.name,
-                  description: innerOption.description
-                })
+              //handle internal options, which will never be a collection
+              let innerOptions = [];
+              if(option.options !== undefined && option.options !== null) {
+                option.options.forEach(innerOption => {
+                  innerOptions.push({
+                    name: innerOption.name,
+                    description: innerOption.description
+                  })
+                });
+              }
+
+              fieldObj.options.push({
+                name: option.name,
+                description: option.description,
+                type: mapFieldTypes[option.type],
+                default: defaultValue,
+                options: innerOptions
               });
-            }
 
-            fieldObj.options.push({
-              name: option.name,
-              description: option.description,
-              type: mapFieldTypes[option.type],
-              default: defaultValue,
-              options: innerOptions
+              if(fieldObj.options[fieldObj.options.length - 1].options.length === 0) {
+                delete fieldObj.options[fieldObj.options.length - 1].options;
+              }
             });
-
-            if(fieldObj.options[fieldObj.options.length - 1].options.length === 0) {
-              delete fieldObj.options[fieldObj.options.length - 1].options;
-            }
-          });
-        } else {
-          field.options.forEach(option => {
-            fieldObj.options.push({
-              name: option.name,
-              description: option.description
+          } else {
+            field.options.forEach(option => {
+              fieldObj.options.push({
+                name: option.name,
+                description: option.description
+              });
             });
-          });
-        }
+          }
 
-        field.resourceOperation.forEach(resourceOp => {
-          const [ operation, resource ] = resourceOp.value.split(" : ");
-          const operationToUpdate = mainParameters[resource].findIndex(op => op.name === operation);   
-          mainParameters[resource][operationToUpdate].fields.push(fieldObj);
+          field.resourceOperation.forEach(resourceOp => {
+            const [ operation, resource ] = resourceOp.value.split(" : ");
+            const operationToUpdate = mainParameters[resource].findIndex(op => op.name === operation);   
+            mainParameters[resource][operationToUpdate].fields.push(fieldObj);
+          });
         });
-      });
+      }
 
       return mainParameters;
     },
-    async example() {
+    async simpleNode() {
       const requester = new Requester();
       const paramsBundle = {
         metaParameters: this.buildMetaParameters(),
@@ -200,6 +200,35 @@ import { mapGetters } from 'vuex';
         paramsBundle
       );
       console.log(result);
+      alert("Thank you for using the nodemaker! Check your output folder.")
+    },
+    async complexNode() {
+      const requester = new Requester();
+      const paramsBundle = {
+        metaParameters: this.buildMetaParameters(),
+        mainParameters: this.buildMainParameters(),
+        nodeGenerationType: "Complex",
+        nodeType: "Regular",
+      };
+
+      console.log(paramsBundle);
+
+      const result = await requester.request(
+        "nodegen-channel",
+        paramsBundle
+      );
+      console.log(result);
+      alert("Thank you for using the nodemaker! Check your output folder.")
+    },
+    async place() {
+      const requester = new Requester();
+      const placementResult = await requester.request<PlacementChannelArgument>(
+        "placement-channel",
+        { filesToPlace: "functionality" }
+      );
+      console.log(placementResult);
+
+      alert(`Thank you for using the nodemaker! Check the n8n/packages/nodes-base/nodes/${this.basicInfo.name.replace(/\s/g, '')} folder for your code.`);
     },
   },
 })
