@@ -165,7 +165,7 @@ export default class FilePlacer {
     );
 
     if (!iconFilename) {
-      throw Error("No source icon file found!");
+      throw Error("No source icon file found. Generate it before placement.");
     }
 
     const destinationDir = join(
@@ -222,13 +222,17 @@ export default class FilePlacer {
    * - resource files (if any).
    */
   private async placeLogicFiles() {
-    const nodeFilenames = this.outputFiles.filter(
-      (file) =>
-        file !== ".gitkeep" &&
-        file !== "package.json" &&
-        !file.endsWith(".credentials.ts") &&
-        !file.endsWith(".md")
-    );
+    const isLogicFile = (file: string) =>
+      file !== ".gitkeep" &&
+      file !== "package.json" &&
+      file !== "workflow.png" &&
+      file !== "unsaved_workflow.json" &&
+      !file.startsWith("icon-candidate") &&
+      !file.endsWith(".credentials.ts") &&
+      !file.endsWith(".md") &&
+      !file.endsWith(".txt");
+
+    const nodeFilenames = this.outputFiles.filter(isLogicFile);
 
     const destinationDir = join(
       this.mainNodesDir,
@@ -255,7 +259,9 @@ export default class FilePlacer {
     );
 
     if (!serviceFile) {
-      throw Error("No source *.node.ts file found!");
+      throw Error(
+        "No source *.node.ts file found. Generate it before placement."
+      );
     }
 
     return serviceFile.replace(".node.ts", "");
