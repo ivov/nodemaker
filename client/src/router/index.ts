@@ -1,35 +1,33 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Parameters from "../views/Parameters.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
-    component: Home,
+    path: '/',
+    name: 'Home',
+    component: () => import(/* webpackChunkName: "basicInfoRegular" */ '../views/BasicInfo.vue')
   },
   {
-    path: '/resources',
+    path: '/regular/resources',
     name: 'Resources',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Resources.vue')
+    component: () => import(/* webpackChunkName: "resources" */ '../views/RegularNode/Resources.vue')
   },
   {
-    path: '/operations',
+    path: '/regular/operations',
     name: 'Operations',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Operations.vue')
+    component: () => import(/* webpackChunkName: "operations" */ '../views/RegularNode/Operations.vue')
   },
   {
-    path: '/fields',
+    path: '/regular/fields',
     name: 'Fields',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Fields.vue')
+    component: () => import(/* webpackChunkName: "fields" */ '../views/RegularNode/Fields.vue')
   },
   {
-    path: '/complete',
+    path: '/regular/complete',
     name: 'Complete',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Complete.vue')
+    component: () => import(/* webpackChunkName: "complete" */ '../views/RegularNode/Complete.vue')
   },
 ]
 

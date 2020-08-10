@@ -17,10 +17,20 @@
             text="Generate *.node.ts, GenericFunctions.ts, *.Description.ts, and *.credentials.ts." 
             @click.native="complexNode()"
           />
+           <GenericButton 
+            class="input"
+            text="Generate a node functionality doc file and a node credential doc file in markdown (if you filled out the optional documentation parameters)." 
+            @click.native="docsGen()"
+          />
           <GenericButton 
             class="input"
-            text="Place the generated files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
-            @click.native="place()"
+            text="Place the generated node files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
+            @click.native="placeFunctional()"
+          />
+          <GenericButton 
+            class="input"
+            text="Place the generated documentation files into the proper n8n-docs folders (must have file structure specified on nodemaker docs)." 
+            @click.native="placeDocumentation()"
           />
       </div>
     </div>
@@ -30,7 +40,7 @@
         header="A preview of your node will show up here as you create." 
       />
       <div class="centerButton">
-        <router-link to="/fields">
+        <router-link to="/regular/fields">
           <BackwardButton 
             text="Edit the previous selections" 
           />
@@ -44,15 +54,15 @@
 // @ts-nocheck
 import { Component, Vue } from 'vue-property-decorator';
 
-import Instructions from '../components/SharedComponents/Instructions.vue';
-import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
-import BackwardButton from '../components/SharedComponents/BackwardButton.vue';
-import GenericButton from '../components/SharedComponents/GenericButton.vue';
-import InputField from '../components/SharedComponents/InputField.vue';
-import Dropdown from '../components/SharedComponents/Dropdown.vue';
-import AddButton from '../components/SharedComponents/AddButton.vue';
+import Instructions from '../../components/SharedComponents/Instructions.vue';
+import ForwardButton from '../../components/SharedComponents/ForwardButton.vue';
+import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
+import GenericButton from '../../components/SharedComponents/GenericButton.vue';
+import InputField from '../../components/SharedComponents/InputField.vue';
+import Dropdown from '../../components/SharedComponents/Dropdown.vue';
+import AddButton from '../../components/SharedComponents/AddButton.vue';
 
-import Requester from '../../Requester';
+import Requester from '../../../Requester';
 
 import { mapGetters } from 'vuex';
 
@@ -67,7 +77,7 @@ import { mapGetters } from 'vuex';
     Dropdown,
     AddButton
   },
-  computed: mapGetters(['basicInfo', 'resources', 'operations', 'fields']),
+  computed: mapGetters(['basicInfo', 'docsInfo', 'resources', 'operations', 'fields']),
   methods: {
     buildMetaParameters(): {} {
       const { name, auth, color, baseURL } = this.basicInfo;
@@ -184,6 +194,18 @@ import { mapGetters } from 'vuex';
 
       return mainParameters;
     },
+    buildDocsParameters(): {} {
+        const { name } = this.basicInfo;
+        const { serviceURL, introDescription, exampleUsage, workflowNumber } = this.docsInfo;
+
+        return {
+            serviceName: name,
+            serviceURL,
+            introDescription,
+            exampleUsage,
+            workflowNumber
+        };
+    },
     async simpleNode() {
       const requester = new Requester();
       const paramsBundle = {
@@ -220,7 +242,24 @@ import { mapGetters } from 'vuex';
       console.log(result);
       alert("Thank you for using the nodemaker! Check your output folder.")
     },
-    async place() {
+    async docsGen() {
+      const requester = new Requester();
+      const paramsBundle = {
+        metaParameters: this.buildMetaParameters(),
+        mainParameters: this.buildMainParameters(),
+        docsParameters: this.buildDocsParameters()
+      };
+
+      console.log(paramsBundle);
+
+      const result = await requester.request(
+        "docsgen-channel",
+        paramsBundle
+      );
+      console.log(result);
+      alert("Thank you for using the nodemaker! Check your output folder.")
+    },
+    async placeFunctional() {
       const requester = new Requester();
       const placementResult = await requester.request<PlacementChannelArgument>(
         "placement-channel",
@@ -229,6 +268,16 @@ import { mapGetters } from 'vuex';
       console.log(placementResult);
 
       alert(`Thank you for using the nodemaker! Check the n8n/packages/nodes-base/nodes/${this.basicInfo.name.replace(/\s/g, '')} folder for your code.`);
+    },
+    async placeDocumentation() {
+      const requester = new Requester();
+      const placementResult = await requester.request<PlacementChannelArgument>(
+        "placement-channel",
+        { filesToPlace: "documentation" }
+      );
+      console.log(placementResult);
+
+      alert(`Thank you for using the nodemaker! Check the n8n-docs/docs/nodes/nodes-library/nodes/${this.basicInfo.name.replace(/\s/g, '')} folder for your code.`);
     },
   },
 })

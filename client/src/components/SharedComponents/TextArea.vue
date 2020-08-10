@@ -5,7 +5,7 @@
         <i v-if="description !== ''" class="fas fa-info-circle icon" :title=description></i>
       </div>
       <div class="group">
-        <input 
+        <textarea 
           type="text" 
           ref="text_input"
           :placeholder="placeholder" 
@@ -23,7 +23,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import SmallButton from './SmallButton.vue';
 
 @Component({
-  name: 'InputField',
+  name: 'TextArea',
   components: {
     SmallButton
   },
@@ -56,7 +56,7 @@ export default class App extends Vue {}
     opacity: 0.6;
 }
 
-input {
+textarea {
     background: #F4F4F4;
     border: 1px solid #555555;
     box-sizing: border-box;
@@ -64,6 +64,7 @@ input {
     padding: .35rem;
     padding-left: .75rem;
     width: 13rem;
+    height: 6rem;
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
