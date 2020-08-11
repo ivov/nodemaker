@@ -52,7 +52,7 @@ To set up Nodemaker:
 
 ```sh
 git clone https://github.com/MLH-Fellowship/nodemaker.git
-npm run setup
+cd nodemaker && npm run setup
 ```
 
 To quickly see it working:
@@ -61,7 +61,7 @@ To quickly see it working:
 npm run nodegen
 ```
 
-With `nodegen`, Nodemaker will read the sample params in `parameters.ts` and generate a set of sample output files in `/output`.
+With `nodegen`, Nodemaker will read the built-in sample params and generate sample output files in `/output`.
 
 ## Operation
 
