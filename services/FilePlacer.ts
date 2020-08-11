@@ -1,14 +1,7 @@
 import fs from "fs";
 import { join } from "path";
 import relocate from "../utils/relocate";
-import {
-  isMainFuncFile,
-  isCredFuncFile,
-  isIconFile,
-  isMainDocFile,
-  isCredDocFile,
-  isFuncFileInTypeScript,
-} from "../utils/findFiles";
+import FileFinder from "./FileFinder";
 
 /**Responsible for placing the files at `/output` into their appropriate locations in the `n8n` and `n8n-docs` repos.*/
 export default class FilePlacer {
@@ -138,9 +131,9 @@ export default class FilePlacer {
 
   /**Verify that all the functionality files to be placed exist before placement.*/
   private verifyFunctionalityFilesToBePlaced() {
-    const mainFuncFile = this.outputFiles.find(isMainFuncFile);
-    const credFuncFile = this.outputFiles.find(isCredFuncFile);
-    const iconFile = this.iconCandidates.find(isIconFile);
+    const mainFuncFile = this.outputFiles.find(FileFinder.isMainFuncFile);
+    const credFuncFile = this.outputFiles.find(FileFinder.isCredFuncFile);
+    const iconFile = this.iconCandidates.find(FileFinder.isIconFile);
 
     if (!fs.existsSync(this.packageJson)) {
       throw Error("No package.json file found. Generate it before placement.");
@@ -178,8 +171,8 @@ export default class FilePlacer {
 
   /**Verify that all the documentation files to be placed exist before placement.*/
   private verifyDocumentationFilesToBePlaced() {
-    const mainDocFile = this.outputFiles.find(isMainDocFile);
-    const credDocFile = this.outputFiles.find(isCredDocFile);
+    const mainDocFile = this.outputFiles.find(FileFinder.isMainDocFile);
+    const credDocFile = this.outputFiles.find(FileFinder.isCredDocFile);
 
     if (!mainDocFile) {
       throw Error(
@@ -261,7 +254,7 @@ export default class FilePlacer {
    * - resource files `*Description.ts` (if any).*/
   private async placeFuncFilesInTypeScript() {
     const funcFilesInTypeScript = this.outputFiles.filter(
-      isFuncFileInTypeScript
+      FileFinder.isFuncFileInTypeScript
     );
 
     const destinationDir = join(
