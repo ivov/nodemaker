@@ -1,7 +1,7 @@
 import fs, { readdirSync } from "fs";
 import { join } from "path";
 import { promisify } from "util";
-import { allButGitKeepAndIconCandidatesDir } from "../utils/findFiles";
+import FileFinder from "./FileFinder";
 
 const deleteFile = promisify(fs.unlink);
 const deleteDir = promisify(fs.rmdir);
@@ -30,7 +30,7 @@ export default class DirectoryEmptier {
   /**Returns all filenames in the /output dir except for `.gitkeep` and the /icon-candidates dir and its contents.*/
   private getFilesToBeDeleted() {
     return readdirSync(this.outputDir).filter(
-      allButGitKeepAndIconCandidatesDir
+      FileFinder.isAnyButGitKeepAndIconCandidatesDir
     );
   }
 }

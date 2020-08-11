@@ -1,17 +1,12 @@
 import fs from "fs";
 import { join } from "path";
-import relocate from "../utils/relocate";
-import {
-  isMainFuncFile,
-  isCredFuncFile,
-  isIconFile,
-  isMainDocFile,
-  isCredDocFile,
-  isFuncFileInTypeScript,
-} from "../utils/findFiles";
+import FileFinder from "./FileFinder";
+import { promisify } from "util";
 
 /**Responsible for placing the files at `/output` into their appropriate locations in the `n8n` and `n8n-docs` repos.*/
 export default class FilePlacer {
+  private relocate = promisify(fs.rename);
+
   // ----------------------------------
   //         nodemaker repo
   // ----------------------------------
@@ -138,9 +133,9 @@ export default class FilePlacer {
 
   /**Verify that all the functionality files to be placed exist before placement.*/
   private verifyFunctionalityFilesToBePlaced() {
-    const mainFuncFile = this.outputFiles.find(isMainFuncFile);
-    const credFuncFile = this.outputFiles.find(isCredFuncFile);
-    const iconFile = this.iconCandidates.find(isIconFile);
+    const mainFuncFile = this.outputFiles.find(FileFinder.isMainFuncFile);
+    const credFuncFile = this.outputFiles.find(FileFinder.isCredFuncFile);
+    const iconFile = this.iconCandidates.find(FileFinder.isIconFile);
 
     if (!fs.existsSync(this.packageJson)) {
       throw Error("No package.json file found. Generate it before placement.");
@@ -178,8 +173,8 @@ export default class FilePlacer {
 
   /**Verify that all the documentation files to be placed exist before placement.*/
   private verifyDocumentationFilesToBePlaced() {
-    const mainDocFile = this.outputFiles.find(isMainDocFile);
-    const credDocFile = this.outputFiles.find(isCredDocFile);
+    const mainDocFile = this.outputFiles.find(FileFinder.isMainDocFile);
+    const credDocFile = this.outputFiles.find(FileFinder.isCredDocFile);
 
     if (!mainDocFile) {
       throw Error(
@@ -210,7 +205,7 @@ export default class FilePlacer {
 
     const source = join(this.outputDir, nodeDocFile);
 
-    await relocate(source, join(destinationDir, "README.md"));
+    await this.relocate(source, join(destinationDir, "README.md"));
 
     this.filesPlaced.push(nodeDocFile);
   }
@@ -229,7 +224,7 @@ export default class FilePlacer {
     const source = join(this.iconCandidatesDir, this.iconFile);
     const destination = join(destinationDir, this.iconFile);
 
-    await relocate(source, destination);
+    await this.relocate(source, destination);
 
     this.filesPlaced.push(this.iconFile);
   }
@@ -238,7 +233,7 @@ export default class FilePlacer {
   private async placePackageJson() {
     const destination = join(this.mainBaseDir, "package.json");
 
-    await relocate(this.packageJson, destination);
+    await this.relocate(this.packageJson, destination);
 
     this.filesPlaced.push("package.json");
   }
@@ -250,7 +245,7 @@ export default class FilePlacer {
     const source = join(this.outputDir, this.credFuncFile);
     const destination = join(this.mainCredentialsDir, this.credFuncFile);
 
-    await relocate(source, destination);
+    await this.relocate(source, destination);
 
     this.filesPlaced.push(this.credFuncFile);
   }
@@ -261,7 +256,7 @@ export default class FilePlacer {
    * - resource files `*Description.ts` (if any).*/
   private async placeFuncFilesInTypeScript() {
     const funcFilesInTypeScript = this.outputFiles.filter(
-      isFuncFileInTypeScript
+      FileFinder.isFuncFileInTypeScript
     );
 
     const destinationDir = join(
@@ -276,7 +271,7 @@ export default class FilePlacer {
     funcFilesInTypeScript.forEach(async (file) => {
       const source = join(this.outputDir, file);
       const destination = join(destinationDir, file);
-      await relocate(source, destination);
+      await this.relocate(source, destination);
     });
 
     this.filesPlaced.push(...funcFilesInTypeScript);
