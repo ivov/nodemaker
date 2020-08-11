@@ -315,7 +315,9 @@ Alternatively, to validate a parameter bundle built on the frontend, use the [`v
 
 ## Commands
 
-Output files are all generated in the `/output` dir. Generated files may contain lines commented with `TODO` and an explanation. This pinpoints the spot where custom logic needs to be entered in accordance with the API.
+Output files are all generated in the `/output` dir.
+
+**Coverage**: Output files do not contain 100% of the logic required for the node, because part of that logic always depends on the specific API and often cannot be predicted. The few sections requiring custom logic are pinpointed with `// TODO` comments and `TODO_` variables, together with an explanation of the logic that needs to be added in.
 
 ### `nodegen`
 
