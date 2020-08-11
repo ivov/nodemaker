@@ -12,10 +12,9 @@
 </p>
 
 <p align="center">
-  <a href="#overview">Overview</a> •
-  <a href="/docs/output-examples">Examples</a> •
   <a href="#installation">Installation</a> •
   <a href="#operation">Operation</a> •
+  <a href="/docs/output-examples">Examples</a> •
   <a href="/docs/cli-reference.md">Documentation</a>
 </p>
 
@@ -47,7 +46,31 @@ Developed as a **desktop app** and **CLI utility**, in MVP stage, as a capstone 
   Built with <b>TypeScript</b>, <b>Node</b>, <b>Electron</b> and <b>Vue</b>
 </p>
 
-## Overview
+## Installation
+
+To install Nodemaker:
+
+```sh
+git clone https://github.com/MLH-Fellowship/nodemaker.git
+npm i
+cd client && npm i
+```
+
+To quickly see it working:
+
+```sh
+cd .. # return to root dir
+npm run nodegen
+```
+
+With `nodegen`, Nodemaker will read the sample params in `parameters.ts` and generate a set of sample output files in `/output`.
+
+## Operation
+
+Nodemaker can be operated as a desktop app or as a CLI utility.
+
+- To run the desktop app: `npm run desktop`
+- To run the CLI, see the [CLI reference](/docs/cli-reference.md).
 
 Nodemaker generates two types of files:
 
@@ -62,7 +85,7 @@ Nodemaker generates two types of files:
 
 | ![](docs/images/screencaps/node.png) ![](docs/images/screencaps/credentials.png) |
 | :------------------------------------------------------------------------------: |
-|            Excerpts of `HackerNews.node.ts` and `GenericFunctions.ts`            |
+|          Auto-generated `HackerNews.node.ts` and `GenericFunctions.ts`           |
 
 <br />
 
@@ -74,7 +97,7 @@ Nodemaker generates two types of files:
 
 | ![](docs/images/screencaps/node-doc.png) ![](docs/images/screencaps/workflow.png) |
 | :-------------------------------------------------------------------------------: |
-|                  Excerpt of main `README.md` and `workflow.png`                   |
+|                   Auto-generated `README.md` and `workflow.png`                   |
 
 <br />
 
@@ -83,98 +106,14 @@ Once these files are generated, Nodemaker can:
 - relocate them in your copies of the [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs) repos, and
 - submit a sample workflow to the [n8n.io](https://n8n.io/workflows) collection.
 
-| ![](docs/images/screencaps/placement.png) <img src="docs/images/screencaps/workflow-submission.png" width="610"/>  |
-| :----------------------------------------------------------------------------------------------------------------: |
-| Node TypeScript files placed in `n8n` repo and automated workflow submission on [n8n.io](https://n8n.io/workflows) |
-
-## Installation
-
-### Nodemaker
-
-To set up Nodemaker:
-
-1. Clone this repository: `git clone https://github.com/MLH-Fellowship/nodemaker.git`
-2. Install backend dependencies: `npm i`
-3. Install frontend dependencies: `cd client && npm i`
-
-> **Note**: Only the backend dependencies are needed to run the CLI utility.
-
-### Main repos
-
-Nodemaker is a companion project to the main repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs). Nodemaker's output files are meant to be placed in these repos.
-
-Nodemaker's file placement service requires the `nodemaker` repo to be located alongside your copies of the `n8n` and `n8n-docs` repos. The screenshot generation service further requires `n8n` to be built.
-
-```bash
-.
-├── n8n
-├── n8n-docs
-└── nodemaker
-```
-
-To set up both main repos:
-
-**1. Install build tools and lerna**
-
-```bash
-# Windows
-npm install -g windows-build-tools
-
-# Linux
-apt-get install -y build-essential python
-
-# both
-npm i lerna -g
-```
-
-**2. Clone both repos**
-
-```bash
-git clone https://github.com/n8n-io/n8n.git
-git clone https://github.com/n8n-io/n8n-docs.git
-```
-
-**3. Build the `n8n` repo**
-
-```bash
-cd n8n
-lerna bootstrap --hoist
-npm run build
-```
-
-## Operation
-
-Nodemaker can be operated as a desktop app or as a CLI utility.
-
-### Desktop app
-
-> PENDING: Explanation of how to run and operate desktop app.
-
-**Note:** At MVP stage, `shotgen`, `flowgen`, `icongen` and `resize` are not available through the desktop app.
-
-### CLI utility
-
-1. Enter node params as explained [here](/docs/cli-reference.md#parameters).
-2. Run a script: `npm run ...`
-
-| Script     | Action                                                          | Docs                                       |
-| ---------- | --------------------------------------------------------------- | ------------------------------------------ |
-| `nodegen`  | Generate node functionality files in TypeScript.                | [Section](/docs/cli-reference.md#nodegen)  |
-| `docsgen`  | Generate node documentation files in Markdown.                  | [Section](/docs/cli-reference.md#docsgen)  |
-| `packgen`  | Generate an updated `package.json` file.                        | [Section](/docs/cli-reference.md#packgen)  |
-| `shotgen`  | Generate an in-app PNG screenshot.                              | [Section](/docs/cli-reference.md#shotgen)  |
-| `flowgen`  | Submit a sample workflow to [n8n.io](https://n8n.io/workflows). | [Section](/docs/cli-reference.md#flowgen)  |
-| `icongen`  | Generate five PNG images as icon candidates.                    | [Section](/docs/cli-reference.md#icongen)  |
-| `resize`   | Resize an icon candidate to a 60×60 px file.                    | [Section](/docs/cli-reference.md#icongen)  |
-| `place`    | Move files to the `n8n` and `n8n-docs` repos.                   | [Section](/docs/cli-reference.md#place)    |
-| `validate` | Validate properties in a params object.                         | [Section](/docs/cli-reference.md#validate) |
-| `empty`    | Clear the `/output` directory.                                  | ---                                        |
-| `desktop`  | Run the desktop app.                                            | ---                                        |
+| ![](docs/images/screencaps/placement.png) <img src="docs/images/screencaps/workflow-submission.png" width="610"/> |
+| :---------------------------------------------------------------------------------------------------------------: |
+|      Node files auto-placed in `n8n` repo and workflow auto-submitted on [n8n.io](https://n8n.io/workflows)       |
 
 ## Authors
 
-© 2020 Iván Ovejero and Erin McNulty
+© 2020 [Iván Ovejero](https://github.com/ivov) and [Erin McNulty](https://github.com/erin2722)
 
 ## License
 
-Distributed under the MIT License. See [LICENSE.md](LICENSE.md)
+Distributed under the MIT License. See [LICENSE.md](LICENSE.md).

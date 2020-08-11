@@ -4,12 +4,13 @@ Reference for operating the Nodemaker's CLI utility.
 
 **Table of Contents**
 
+- [Overview](#overview)
 - [Parameters](#parameters)
   - [`metaParameters`](#metaparameters)
   - [`regularNodeParameters` or `triggerNodeParameters`](#regularnodeparameters-or-triggernodeparameters)
   - [`docsParameters`](#docsparameters)
   - [Validating params](#validating-params)
-- [Scripts](#scripts)
+- [Commands](#commands)
   - [`nodegen`](#nodegen)
   - [`docsgen`](#docsgen)
   - [`packgen`](#packgen)
@@ -19,6 +20,31 @@ Reference for operating the Nodemaker's CLI utility.
   - [`resize`](#resize)
   - [`place`](#place)
   - [`validate`](#validate)
+
+## Overview
+
+The Nodemaker's CLI utility offers eleven commands.
+
+To run any command:
+
+1. Enter node params as explained [below](#parameters).
+2. Run a command: `npm run ...`
+
+| Command    | Action                                                          | Docs                 |
+| ---------- | --------------------------------------------------------------- | -------------------- |
+| `nodegen`  | Generate node functionality files in TypeScript.                | [Section](#nodegen)  |
+| `docsgen`  | Generate node documentation files in Markdown.                  | [Section](#docsgen)  |
+| `packgen`  | Generate an updated `package.json` file.                        | [Section](#packgen)  |
+| `shotgen`  | Generate an in-app PNG screenshot.                              | [Section](#shotgen)  |
+| `flowgen`  | Submit a sample workflow to [n8n.io](https://n8n.io/workflows). | [Section](#flowgen)  |
+| `icongen`  | Generate five PNG images as icon candidates.                    | [Section](#icongen)  |
+| `resize`   | Resize an icon candidate to a 60×60 px file.                    | [Section](#icongen)  |
+| `place`    | Move files to the `n8n` and `n8n-docs` repos.                   | [Section](#place)    |
+| `validate` | Validate properties in a params object.                         | [Section](#validate) |
+| `empty`    | Clear the `/output` directory.                                  | ---                  |
+| `desktop`  | Run the desktop app.                                            | ---                  |
+
+**Note:** At MVP stage, `shotgen`, `flowgen`, `icongen` and `resize` are not available through the desktop app.
 
 ## Parameters
 
@@ -58,11 +84,11 @@ type MetaParameters = {
 };
 ```
 
-For more type information on `MetaParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts#L74-L85).
+For more type information on `MetaParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts).
 
 ### `regularNodeParameters` or `triggerNodeParameters`
 
-Specific properties related to the API, for a regular or a trigger node. A **regular node** are called when the workflow is executed; a **trigger node** is called when the workflow is activated.
+Specific properties related to the API, for a regular or a trigger node. A **regular node** is called when the workflow is executed; a **trigger node** is called when the workflow is activated.
 
 <details><summary>Example of <code>regularNodeParameters</code></summary>
 
@@ -244,11 +270,26 @@ export const triggerNodeParameters: TriggerNodeParameters = {
 
 </details>
 
-For more type information on `RegularNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts#L136-L195).
+**Route parameter**
 
-For more type information on `TriggerNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts#L105-L134).
+In `RegularNodeParameters`, an operation's `endpoint` property may contain a variable surrounded by two `$$` markers. This variable represents a **route parameter** referencing one of the names of the fields in the operation.
 
-Field display restrictions are inferred from the structure of the params object, but if you need an additional field display restriction, add it with `extraDisplayRestriction: { fieldName: boolean }`. Refer to [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/6adfcc1f7415ccc4d8b165af51bf25631efb1dc9/globals.d.ts#L156-L170).
+```ts
+  Article: [
+    {
+      name: "Get",
+      description: "Get a Hacker News article",
+      endpoint: "items/$$articleId$$", // route parameter
+      requestMethod: "GET",
+      fields: [
+	      // ...
+```
+
+For more type information on `RegularNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts).
+
+For more type information on `TriggerNodeParameters`, see the global type definition.
+
+Field display restrictions are inferred from the structure of the params object, but if you need an additional field display restriction, add it with `extraDisplayRestriction: { fieldName: boolean }`. See the global type definition.
 
 ### `DocsParameters`
 
@@ -287,9 +328,11 @@ To validate that your params object conforms to the expected shape, type the obj
 
 Alternatively, to validate a parameter bundle built on the frontend, use the [`validate` script](#validate).
 
-## Scripts
+## Commands
 
-Output files are all generated in the `/output` dir. Generated files may contain lines commented with `TODO` and an explanation. This pinpoints the spot where custom logic needs to be entered in accordance with the API.
+Output files are all generated in the `/output` dir.
+
+**Coverage**: Output files do not contain 100% of the logic required for the node, because part of that logic always depends on the specific API and often cannot be predicted. The few sections requiring custom logic are pinpointed with `// TODO` comments and `TODO_` variables, together with an explanation of the logic that needs to be added in.
 
 ### `nodegen`
 
