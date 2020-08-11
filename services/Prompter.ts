@@ -8,7 +8,7 @@ export default class Prompter {
       type: "list",
       message:
         "Node generation type?\n  - Simple: Node resources in single file.\n  - Complex: Node resources in Description files.\n",
-      choices: ["Simple", "Complex"], // TODO - Replace with enum
+      choices: ["Simple", "Complex"],
     },
   ];
 
@@ -18,7 +18,7 @@ export default class Prompter {
       type: "list",
       message:
         "Node type?\n  - Regular: Called when the workflow is executed.\n  - Trigger: Called when the workflow is activated.\n",
-      choices: ["Regular", "Trigger"], // TODO - Replace with enum
+      choices: ["Regular", "Trigger"],
     },
   ];
 

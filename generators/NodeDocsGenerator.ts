@@ -63,7 +63,6 @@ export default class NodeDocsGenerator extends Generator {
     const nodeOperations: { [key: string]: string[] } = {};
 
     Object.keys(this.mainParameters).forEach((resource) => {
-      // TODO - temporary
       if (areTriggerNodeParameters(this.mainParameters)) {
         throw Error("Node operations cannot be generated for trigger nodes!");
       }
