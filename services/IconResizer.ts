@@ -2,28 +2,24 @@ import fs from "fs";
 import { join } from "path";
 import { promisify } from "util";
 import sharp from "sharp";
-import { metaParameters } from "../parameters";
 
 const readFile = promisify(fs.readFile);
 
 export default class ImageResizer {
-  private static iconCandidatesDir = join(
-    __dirname,
-    "..",
-    "..",
-    "output",
-    "icon-candidates"
-  );
+  constructor(private metaParameters: MetaParameters) {}
+
+  // prettier-ignore
+  private iconCandidatesDir = join(__dirname, "..", "..", "output", "icon-candidates");
 
   /**Resize the selected icon candidate into a 60×60 px PNG icon.*/
-  public static async resize(number: string) {
+  public async resize(number: string) {
     const filename = join(
       this.iconCandidatesDir,
       `icon-candidate-${number}.png`
     );
     const inputBuffer = await readFile(filename);
 
-    const outputFile = metaParameters.serviceName
+    const outputFile = this.metaParameters.serviceName
       .toLowerCase()
       .replace(/ /g, "");
 

@@ -1,7 +1,9 @@
 import IconResizer from "../services/IconResizer";
 import Prompter from "../services/Prompter";
+import { metaParameters } from "../parameters";
 
 (async () => {
   const { iconToResize } = await Prompter.forIconResizing();
-  IconResizer.resize(iconToResize);
+  const resizer = new IconResizer(metaParameters);
+  resizer.resize(iconToResize);
 })();
