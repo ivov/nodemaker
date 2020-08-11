@@ -20,3 +20,6 @@ export const isFuncFileInTypeScript = (file: string) =>
   !file.endsWith(".credentials.ts") &&
   !file.endsWith(".md") &&
   !file.endsWith(".txt");
+
+export const allButGitKeepAndIconCandidatesDir = (file: string) =>
+  file !== ".gitkeep" && file !== "icon-candidates";

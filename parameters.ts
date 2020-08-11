@@ -1,3 +1,5 @@
+import { getWorkflowUrl } from "./utils/getWorkflowNumber";
+
 export const metaParameters: MetaParameters = {
   serviceName: "Hacker News",
   authType: "OAuth2",
@@ -141,7 +143,7 @@ export const docsParameters: DocsParameters = {
   introDescription:
     "a social news website focusing on computer science and entrepreneurship",
   exampleUsage: "get an article from Hacker News",
-  workflowNumber: "123",
+  workflowUrl: getWorkflowUrl(),
 };
 
 export const triggerNodeParameters: TriggerNodeParameters = {
