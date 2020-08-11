@@ -25,6 +25,7 @@
   "author": "Iván Ovejero",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^4.1.0",
     "concurrently": "^5.2.0",
     "dotenv": "^8.2.0",
     "electron": "^9.1.1",
