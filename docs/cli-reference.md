@@ -84,7 +84,7 @@ type MetaParameters = {
 };
 ```
 
-For more type information on `MetaParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts#L74-L85).
+For more type information on `MetaParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts).
 
 ### `regularNodeParameters` or `triggerNodeParameters`
 
@@ -270,11 +270,26 @@ export const triggerNodeParameters: TriggerNodeParameters = {
 
 </details>
 
-For more type information on `RegularNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts#L136-L195).
+**Route parameter**
 
-For more type information on `TriggerNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts#L105-L134).
+In `RegularNodeParameters`, an operation's `endpoint` property may contain a variable surrounded by two `$$` markers. This variable represents a **route parameter** referencing one of the names of the fields in the operation.
 
-Field display restrictions are inferred from the structure of the params object, but if you need an additional field display restriction, add it with `extraDisplayRestriction: { fieldName: boolean }`. See [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/6adfcc1f7415ccc4d8b165af51bf25631efb1dc9/globals.d.ts#L156-L170).
+```ts
+  Article: [
+    {
+      name: "Get",
+      description: "Get a Hacker News article",
+      endpoint: "items/$$articleId$$", // route parameter
+      requestMethod: "GET",
+      fields: [
+	      // ...
+```
+
+For more type information on `RegularNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts).
+
+For more type information on `TriggerNodeParameters`, see the global type definition.
+
+Field display restrictions are inferred from the structure of the params object, but if you need an additional field display restriction, add it with `extraDisplayRestriction: { fieldName: boolean }`. See the global type definition.
 
 ### `DocsParameters`
 
