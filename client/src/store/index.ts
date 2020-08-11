@@ -9,6 +9,8 @@ import fields from './modules/fields';
 
 import docsInfo from './modules/docsInfo';
 
+import properties from './modules/properties';
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -18,5 +20,6 @@ export default new Vuex.Store({
     operations,
     fields,
     docsInfo,
+    properties,
   }
 })

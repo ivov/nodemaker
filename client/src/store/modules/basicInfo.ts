@@ -6,8 +6,7 @@ const state = {
         auth: "",
         color: "",
         baseURL: "",
-        tester: "",
-        
+        webhookEndpoint: "",
     },
     nodeType: "",
     documentation: false,

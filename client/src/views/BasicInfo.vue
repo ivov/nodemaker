@@ -20,7 +20,7 @@
           class="input"
           label="Auth" 
           description="The type of authorization your node uses"
-          v-bind:options="['No Auth', 'Access Token', 'OAuth1', 'OAuth2']" 
+          v-bind:options="['No Auth', 'API Key', 'OAuth2']" 
           :option=basicInfo.auth
           v-model=basicInfo.auth
         />
@@ -48,11 +48,21 @@
           :value=nodeType
           v-on:input="changeNodeType"
         />
+        <InputField 
+          class="input"
+          label="Webhook Endpoint"
+          description="The endpoint to register your webhook."
+          placeholder="/webhook" 
+          v-if="nodeType === 'Trigger Node'"
+          :value=basicInfo.webhookEndpoint
+          v-model=basicInfo.webhookEndpoint
+        />
         <SwitchComponent
           class="input"
           label="Enter in Documentation Info"
           description=""
           placeholder="http://hn.algolia.com/api/v1" 
+          v-if="nodeType === 'Regular Node'"
           :value=documentation
           v-on:input="toggleDocumentation" />
         <div v-if="documentation">
@@ -96,7 +106,7 @@
             text="Get Started" 
           />
         </router-link>
-        <router-link v-if="nodeType === 'Trigger Node'" to="/trigger/resouces">
+        <router-link v-if="nodeType === 'Trigger Node'" to="/trigger/properties">
           <ForwardButton 
             text="Get Started" 
           />
@@ -143,7 +153,6 @@ import { mapGetters } from 'vuex';
       this.$store.commit('setNodeType', prop);
     },
     toggleDocumentation() {
-      // this.documentation = !this.documentation;
       this.$store.commit('setDocumentation', !this.documentation);
     },
     submitInfo() {

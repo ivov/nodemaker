@@ -29,6 +29,26 @@ const routes = [
     name: 'Complete',
     component: () => import(/* webpackChunkName: "complete" */ '../views/RegularNode/Complete.vue')
   },
+  {
+    path: '/trigger/properties',
+    name: 'Events',
+    component: () => import(/* webpackChunkName: "properties" */ '../views/TriggerNode/Properties.vue')
+  },
+  {
+    path: '/trigger/options',
+    name: 'Events',
+    component: () => import(/* webpackChunkName: "options" */ '../views/TriggerNode/Options.vue')
+  },
+  {
+    path: '/trigger/fields',
+    name: 'Fields',
+    component: () => import(/* webpackChunkName: "fieldsTrigger" */ '../views/TriggerNode/Fields.vue')
+  },
+  {
+    path: '/trigger/complete',
+    name: 'Events',
+    component: () => import(/* webpackChunkName: "completeTrigger" */ '../views/TriggerNode/Complete.vue')
+  },
 ]
 
 const router = new VueRouter({
