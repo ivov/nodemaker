@@ -4,6 +4,7 @@ import {
   metaParameters,
   docsParameters,
 } from "../parameters";
+import Highlighter from "../services/Highlighter";
 
 (async () => {
   const paramsBundle = {
@@ -13,5 +14,10 @@ import {
   };
   const generator = new NodeDocsGenerator(paramsBundle);
   const result = await generator.run();
-  console.log(result);
+
+  Highlighter.showResult({
+    result,
+    successMessage: "Node documentation files successfully generated.",
+    inspectMessage: true,
+  });
 })();

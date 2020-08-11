@@ -6,6 +6,7 @@ import {
 } from "../parameters";
 import Prompter from "../services/Prompter";
 import { NodeTypeEnum } from "../utils/enums";
+import Highlighter from "../services/Highlighter";
 
 (async () => {
   const { nodeType } = await Prompter.forNodeType();
@@ -31,5 +32,10 @@ import { NodeTypeEnum } from "../utils/enums";
 
   const generator = new NodeFilesGenerator(paramsBundle);
   const result = await generator.run();
-  console.log(result);
+
+  Highlighter.showResult({
+    result,
+    successMessage: "Node functionality files successfully generated.",
+    inspectMessage: true,
+  });
 })();
