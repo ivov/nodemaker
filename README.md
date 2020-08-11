@@ -112,8 +112,8 @@ Once these files are generated, Nodemaker can:
 
 ## Authors
 
-© 2020 Iván Ovejero and Erin McNulty
+© 2020 [Iván Ovejero](https://github.com/ivov) and [Erin McNulty](https://github.com/erin2722)
 
 ## License
 
-Distributed under the MIT License. See [LICENSE.md](LICENSE.md)
+Distributed under the MIT License. See [LICENSE.md](LICENSE.md).
