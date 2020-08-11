@@ -85,7 +85,7 @@ Nodemaker generates two types of files:
 
 | ![](docs/images/screencaps/node.png) ![](docs/images/screencaps/credentials.png) |
 | :------------------------------------------------------------------------------: |
-|            Excerpts of `HackerNews.node.ts` and `GenericFunctions.ts`            |
+|          Auto-generated `HackerNews.node.ts` and `GenericFunctions.ts`           |
 
 <br />
 
@@ -97,7 +97,7 @@ Nodemaker generates two types of files:
 
 | ![](docs/images/screencaps/node-doc.png) ![](docs/images/screencaps/workflow.png) |
 | :-------------------------------------------------------------------------------: |
-|                  Excerpt of main `README.md` and `workflow.png`                   |
+|                   Auto-generated `README.md` and `workflow.png`                   |
 
 <br />
 
@@ -106,9 +106,9 @@ Once these files are generated, Nodemaker can:
 - relocate them in your copies of the [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs) repos, and
 - submit a sample workflow to the [n8n.io](https://n8n.io/workflows) collection.
 
-| ![](docs/images/screencaps/placement.png) <img src="docs/images/screencaps/workflow-submission.png" width="610"/>  |
-| :----------------------------------------------------------------------------------------------------------------: |
-| Node TypeScript files placed in `n8n` repo and automated workflow submission on [n8n.io](https://n8n.io/workflows) |
+| ![](docs/images/screencaps/placement.png) <img src="docs/images/screencaps/workflow-submission.png" width="610"/> |
+| :---------------------------------------------------------------------------------------------------------------: |
+|      Node files auto-placed in `n8n` repo and workflow auto-submitted on [n8n.io](https://n8n.io/workflows)       |
 
 ## Authors
 

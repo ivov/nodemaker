@@ -88,7 +88,7 @@ For more type information on `MetaParameters`, see [the global type definition](
 
 ### `regularNodeParameters` or `triggerNodeParameters`
 
-Specific properties related to the API, for a regular or a trigger node. A **regular node** are called when the workflow is executed; a **trigger node** is called when the workflow is activated.
+Specific properties related to the API, for a regular or a trigger node. A **regular node** is called when the workflow is executed; a **trigger node** is called when the workflow is activated.
 
 <details><summary>Example of <code>regularNodeParameters</code></summary>
 
@@ -274,7 +274,7 @@ For more type information on `RegularNodeParameters`, see [the global type defin
 
 For more type information on `TriggerNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts#L105-L134).
 
-Field display restrictions are inferred from the structure of the params object, but if you need an additional field display restriction, add it with `extraDisplayRestriction: { fieldName: boolean }`. Refer to [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/6adfcc1f7415ccc4d8b165af51bf25631efb1dc9/globals.d.ts#L156-L170).
+Field display restrictions are inferred from the structure of the params object, but if you need an additional field display restriction, add it with `extraDisplayRestriction: { fieldName: boolean }`. See [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/6adfcc1f7415ccc4d8b165af51bf25631efb1dc9/globals.d.ts#L156-L170).
 
 ### `DocsParameters`
 
