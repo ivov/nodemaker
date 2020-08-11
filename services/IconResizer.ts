@@ -23,12 +23,12 @@ export default class ImageResizer {
     );
     const inputBuffer = await readFile(filename);
 
-    const outputFilename = metaParameters.serviceName
+    const outputFile = metaParameters.serviceName
       .toLowerCase()
       .replace(/ /g, "");
 
     await sharp(inputBuffer)
       .resize({ width: 60, height: 60 })
-      .toFile(join(this.iconCandidatesDir, `${outputFilename}.png`));
+      .toFile(join(this.iconCandidatesDir, `${outputFile}.png`));
   }
 }
