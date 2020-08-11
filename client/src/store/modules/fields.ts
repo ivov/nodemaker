@@ -23,7 +23,7 @@ const state = {
 };
 
 const getters = {
-    fields: (state: any) => {return state.fields; },
+    fields: (state: any) => {return state.fields;},
 };
 
 const actions = {
@@ -70,12 +70,15 @@ const actions = {
 const mutations = {
     pushToResourceOperation: (state, { newObj, key }) => state.fields[key].resourceOperation.push(newObj),
     submitResourceOperation: (state, { newObj, fieldKey }) => state.fields[fieldKey].resourceOperation = newObj,
+
     createOption: (state, { fieldKey, option }) => Vue.set(state.fields[fieldKey], 'options', [option]),
     pushOption: (state, { fieldKey, option}) => state.fields[fieldKey].options.push(option),
     submitOptions: (state, { fieldKey, newObj }) => state.fields[fieldKey].options = newObj,
+
     createInnerOption: (state, { fieldKey, optionKey, option }) => Vue.set(state.fields[fieldKey].options[optionKey], 'options', [option]),
     pushInnerOption: (state, { fieldKey, optionKey, option }) => state.fields[fieldKey].options[optionKey].options.push(option),
     submitInnerOptions: (state, { fieldKey, optionKey, newObj }) => state.fields[fieldKey].options[optionKey].options = newObj,
+
     pushToFields: (state, field) => state.fields.push(field),
     submitFields: (state, fields) => state.fields = fields,
 };

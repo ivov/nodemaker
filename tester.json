@@ -1,0 +1,46 @@
+{
+    "metaParameters": {
+      "serviceName": "hacker news",
+      "auth": "OAuth2",
+      "nodeColor": "#ffffff",
+      "apiURL": "http://api.com/"
+    },
+    "mainParameters": {
+      "webhookEndpoint": "/automations/hooks",
+      "webhookProperties": [
+        {
+          "displayName": "Event",
+          "name": "event",
+          "required": false,
+          "description": "The events to trigger the webhook",
+          "type": "options",
+          "default": "subscriberActivated",
+          "options": [
+            {
+              "name": "Subscriber Activated",
+              "value": "subscriberActivated",
+              "description": "Whether the webhook is triggered when a subscriber is activated.",
+              "fields": []
+            },
+            {
+              "name": "Link Clicked",
+              "value": "linkClicked",
+              "description": "Whether the webhook is triggered when a link is clicked.",
+              "fields": [
+                {
+                  "displayName": "Initiating Link",
+                  "name": "initiatingLink",
+                  "description": "the link to initiate",
+                  "type": "string",
+                  "default": "",
+                  "required": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "nodeGenerationType": "Simple",
+    "nodeType": "Trigger"
+  }
