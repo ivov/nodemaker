@@ -97,8 +97,6 @@ To set up Nodemaker:
 2. Install backend dependencies: `npm i`
 3. Install frontend dependencies: `cd client && npm i`
 
-> **Note**: Only the backend dependencies are needed to run the CLI utility.
-
 ### Main repos
 
 Nodemaker is a companion project to the main repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs). Nodemaker's output files are meant to be placed in these repos.
