@@ -364,6 +364,8 @@ If `metaParameters.authType` is set to `"None"`, then no `*.credentials.ts` file
 
 ### `docsgen`
 
+> **Important**: `docsgen` is currently only available for regular nodes, not for trigger nodes.
+
 ```bash
 $ npm run docsgen
 ```
