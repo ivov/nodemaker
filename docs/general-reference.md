@@ -2,7 +2,9 @@
 
 ## Setup for official repos
 
-> This section explains how to set up the two official repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs). To install **Nodemaker**, refer back to the [README](../README.md).
+> This section explains how to set up the two official repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs). This is only needed for the Nodemaker's **automated placement** and **screenshot generation** services.<br><br> If instead you are looking set up the **Nodemaker** repo, refer back to the [README](../README.md#installation).
+
+### Setup for automated placement
 
 Nodemaker is a companion project to the official repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs). Nodemaker's output files are meant to be placed in your local copies of these official repos, through the Nodemaker's automated placement service.
 
@@ -22,9 +24,9 @@ And locate them alongside the `nodemaker` repo:
 └── nodemaker
 ```
 
-### Note on screenshot generation
+### Setup for screenshot generation
 
-To run the Nodemaker's screenshot generation service `shotgen`, you will need to also **build** the `n8n` repo.
+In addition, to run the Nodemaker's screenshot generation service `shotgen`, you will need to also **build** the `n8n` repo.
 
 ```sh
 # get build tools on Windows

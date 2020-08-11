@@ -4,12 +4,13 @@ Reference for operating the Nodemaker's CLI utility.
 
 **Table of Contents**
 
+- [Overview](#overview)
 - [Parameters](#parameters)
   - [`metaParameters`](#metaparameters)
   - [`regularNodeParameters` or `triggerNodeParameters`](#regularnodeparameters-or-triggernodeparameters)
   - [`docsParameters`](#docsparameters)
   - [Validating params](#validating-params)
-- [Scripts](#scripts)
+- [Commands](#commands)
   - [`nodegen`](#nodegen)
   - [`docsgen`](#docsgen)
   - [`packgen`](#packgen)
@@ -19,6 +20,31 @@ Reference for operating the Nodemaker's CLI utility.
   - [`resize`](#resize)
   - [`place`](#place)
   - [`validate`](#validate)
+
+## Overview
+
+The Nodemaker's CLI utility offers eleven commands.
+
+To run any command:
+
+1. Enter node params as explained [below](#parameters).
+2. Run a command: `npm run ...`
+
+| Command    | Action                                                          | Docs                 |
+| ---------- | --------------------------------------------------------------- | -------------------- |
+| `nodegen`  | Generate node functionality files in TypeScript.                | [Section](#nodegen)  |
+| `docsgen`  | Generate node documentation files in Markdown.                  | [Section](#docsgen)  |
+| `packgen`  | Generate an updated `package.json` file.                        | [Section](#packgen)  |
+| `shotgen`  | Generate an in-app PNG screenshot.                              | [Section](#shotgen)  |
+| `flowgen`  | Submit a sample workflow to [n8n.io](https://n8n.io/workflows). | [Section](#flowgen)  |
+| `icongen`  | Generate five PNG images as icon candidates.                    | [Section](#icongen)  |
+| `resize`   | Resize an icon candidate to a 60×60 px file.                    | [Section](#icongen)  |
+| `place`    | Move files to the `n8n` and `n8n-docs` repos.                   | [Section](#place)    |
+| `validate` | Validate properties in a params object.                         | [Section](#validate) |
+| `empty`    | Clear the `/output` directory.                                  | ---                  |
+| `desktop`  | Run the desktop app.                                            | ---                  |
+
+**Note:** At MVP stage, `shotgen`, `flowgen`, `icongen` and `resize` are not available through the desktop app.
 
 ## Parameters
 
@@ -287,7 +313,7 @@ To validate that your params object conforms to the expected shape, type the obj
 
 Alternatively, to validate a parameter bundle built on the frontend, use the [`validate` script](#validate).
 
-## Scripts
+## Commands
 
 Output files are all generated in the `/output` dir. Generated files may contain lines commented with `TODO` and an explanation. This pinpoints the spot where custom logic needs to be entered in accordance with the API.
 
