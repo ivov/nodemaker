@@ -101,7 +101,7 @@ type DocsParameters = {
   serviceUrl: string;
   introDescription: string;
   exampleUsage: string;
-  workflowNumber: string;
+  workflowUrl: string;
 };
 
 // ----------------------------------
