@@ -9,6 +9,5 @@ import Highlighter from "../services/Highlighter";
   Highlighter.showResult({
     result,
     successMessage: "Workflow submission on n8n.io successful.",
-    inspectMessage: true,
   });
 })();
