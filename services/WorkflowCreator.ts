@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import config from "../config";
 import { N8N_HOMEPAGE_URL } from "../utils/constants";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
 /**Responsible for logging into the n8n website and creating a workflow.*/
@@ -9,6 +9,8 @@ export default class WorkflowCreator {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page; // browser tab
   private nodeCodeSavePath = join("output", "unsaved_workflow.json");
+  private workflowUrlSavePath = join("output", "workflow-submission-url.txt");
+  private imageUploadUrlSavePath = join("output", "image-upload-url.txt"); // uploaded image URL
 
   constructor(private docsParameters: DocsParameters) {}
 
@@ -16,7 +18,7 @@ export default class WorkflowCreator {
     await this.init();
     await this.doLogin();
     await this.createWorkflow();
-    // await this.close() // TODO - uncomment once all functionality works
+    await this.close();
   }
 
   private async init() {
@@ -44,7 +46,7 @@ export default class WorkflowCreator {
     await this.page.type(passwordSelector, password);
     await this.page.click(loginButtonSelector);
 
-    await this.page.waitForNavigation({ waitUntil: "networkidle0" }); // due to auth redirection
+    await this.page.waitForNavigation({ waitUntil: "networkidle0" });
   }
 
   private async createWorkflow() {
@@ -56,7 +58,6 @@ export default class WorkflowCreator {
     const imageLinkTextInputSelector = 'input[placeholder="Image Text"]';
     const imageLinkUrlInputSelector = 'input[placeholder="Image Link"]';
     const imageLinkUrlSubmissionButtonSelector = ".sure";
-    const workflowSubmissionButtonSelector = ".main-button";
 
     const capitalizeFirstLetter = (string: string) =>
       string[0].toUpperCase() + string.slice(1);
@@ -78,17 +79,33 @@ export default class WorkflowCreator {
     });
 
     await this.page.type(imageLinkTextInputSelector, "Workflow");
-    await this.page.type(imageLinkUrlInputSelector, this.readUrlFromDisk());
+    await this.page.type(
+      imageLinkUrlInputSelector,
+      this.readImageUploadUrlFromDisk()
+    );
 
     await this.page.click(imageLinkUrlSubmissionButtonSelector);
 
-    // await this.page.click(workflowSubmissionButtonSelector); // TODO - uncomment once all functionality works
+    // TODO - Clicks inside `evaluate` because `this.page.click` fails to submit.
+    await this.page.evaluate(() => {
+      const btn = document.querySelector("button[type=submit]") as HTMLElement;
+      btn.click();
+    });
+
+    await this.page.waitForNavigation({ waitUntil: "networkidle0" });
+    await this.saveWorkflowUrlToDisk();
   }
 
-  /**TODO - Temporary function to read image upload URL from a TXT file. To be adjusted once UI needs are clear.*/
-  private readUrlFromDisk() {
-    const source = join("output", "image-upload-url.txt");
-    return readFileSync(source, "utf-8");
+  /**TODO - Temporary function to save workflow url into a TXT file.
+   * To be adjusted once UI is further developed.*/
+  private async saveWorkflowUrlToDisk() {
+    writeFileSync(this.workflowUrlSavePath, this.page.url(), "utf8");
+  }
+
+  /**TODO - Temporary function to read image upload URL from a TXT file.
+   * To be adjusted once UI is further developed.*/
+  private readImageUploadUrlFromDisk() {
+    return readFileSync(this.imageUploadUrlSavePath, "utf-8");
   }
 
   private async clearTextArea(textArea: string) {

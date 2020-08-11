@@ -12,7 +12,7 @@ export default class ScreenshotTaker {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page; // browser tab
   private pngSavePath = join("output", "workflow.png"); // in-app screenshot
-  private urlSavePath = join("output", "image-upload-url.txt"); // uploaded image URL
+  private imageUploadUrlSavePath = join("output", "image-upload-url.txt"); // uploaded image URL
 
   constructor(private metaParameters: MetaParameters) {}
 
@@ -76,7 +76,7 @@ export default class ScreenshotTaker {
 
   /**TODO - Temporary function to save image upload URL to a TXT file. To be adjusted once UI needs are clear.*/
   private saveUrlToDisk(url: string) {
-    writeFileSync(this.urlSavePath, url, "utf8");
+    writeFileSync(this.imageUploadUrlSavePath, url, "utf8");
   }
 
   private async getJsonNodeCode() {
