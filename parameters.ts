@@ -1,4 +1,4 @@
-import { getWorkflowUrl } from "./utils/getWorkflowNumber";
+import { getWorkflowUrl } from "./utils/getWorkflowUrl";
 
 export const metaParameters: MetaParameters = {
   serviceName: "Hacker News",
