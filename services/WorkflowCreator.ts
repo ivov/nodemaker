@@ -14,11 +14,16 @@ export default class WorkflowCreator {
 
   constructor(private docsParameters: DocsParameters) {}
 
-  public async run() {
-    await this.init();
-    await this.doLogin();
-    await this.createWorkflow();
-    await this.close();
+  public async run(): Promise<BackendOperationResult> {
+    try {
+      await this.init();
+      await this.doLogin();
+      await this.createWorkflow();
+      await this.close();
+      return { completed: true, error: false };
+    } catch (thrownError) {
+      return { completed: false, error: true, errorMessage: thrownError };
+    }
   }
 
   private async init() {

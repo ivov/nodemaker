@@ -16,12 +16,23 @@ export default class ScreenshotTaker {
 
   constructor(private metaParameters: MetaParameters) {}
 
+  public async run(): Promise<BackendOperationResult> {
+    try {
+      await this.init();
+      await this.useChromeInstance();
+      await this.uploadImage();
+      return { completed: true, error: false };
+    } catch (thrownError) {
+      return { completed: false, error: true, errorMessage: thrownError };
+    }
+  }
+
   public async init() {
     this.browser = await puppeteer.launch({ headless: false });
     this.page = await this.browser.newPage();
   }
 
-  public async run() {
+  public async useChromeInstance() {
     await this.page.goto(N8N_APP_LOCALHOST);
     await this.placeNewNodeOnCanvas();
     await this.connectStartToNewNode();

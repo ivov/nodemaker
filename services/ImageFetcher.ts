@@ -6,8 +6,21 @@ import config from "../config";
 
 /**Responsible for finding, fetching and saving to disk images for the icon candidates.*/
 export default class ImageFetcher {
-  imageObject: any;
-  imageLinks: string[] = [];
+  private imageObject: any;
+  private imageLinks: string[] = [];
+
+  constructor(private imageQuery: string) {}
+
+  public async run(): Promise<BackendOperationResult> {
+    try {
+      await this.fetchImageObject(this.imageQuery);
+      this.extractImageLinks();
+      this.downloadIconCandidates();
+      return { completed: true, error: false };
+    } catch (thrownError) {
+      return { completed: false, error: true, errorMessage: thrownError };
+    }
+  }
 
   /**Fetch an image object from Google's Custom Search Engine based on the input query.*/
   async fetchImageObject(query: string) {
