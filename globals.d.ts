@@ -124,7 +124,7 @@ type WebhookProperty = {
   name: string;
   required: boolean;
   description: string;
-  type: SingleValueFieldType | CollectionType | OptionsType;
+  type: SingleValueFieldType | OptionsType;
   default: FieldDefault;
   options?: WebhookPropertyOption[];
 };
@@ -187,7 +187,8 @@ type FieldDefault = SingleValueFieldDefault | ManyValuesFieldDefault;
 
 type SingleValueFieldDefault = string | number | boolean;
 
-type ManyValuesFieldDefault = {};
+type ManyValuesFieldDefault = {}; // for options/multioptions, I believe this should actually be a string containing the default option value
+// for example: https://github.com/MLH-Fellowship/n8n/blob/ebe2775701f9803165e14f28e11ad0610dc155a1/packages/nodes-base/nodes/ActiveCampaign/ConnectionDescription.ts#L42
 
 type ManyValuesGroupFieldOption = {
   name: string;
