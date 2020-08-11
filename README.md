@@ -89,56 +89,15 @@ Once these files are generated, Nodemaker can:
 
 ## Installation
 
-### Nodemaker
+To install Nodemaker:
 
-To set up Nodemaker:
-
-1. Clone this repository: `git clone https://github.com/MLH-Fellowship/nodemaker.git`
-2. Install backend dependencies: `npm i`
-3. Install frontend dependencies: `cd client && npm i`
-
-### Main repos
-
-Nodemaker is a companion project to the main repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs). Nodemaker's output files are meant to be placed in these repos.
-
-Nodemaker's file placement service requires the `nodemaker` repo to be located alongside your copies of the `n8n` and `n8n-docs` repos. The screenshot generation service further requires `n8n` to be built.
-
-```bash
-.
-├── n8n
-├── n8n-docs
-└── nodemaker
+```sh
+git clone https://github.com/MLH-Fellowship/nodemaker.git
+npm i
+cd client && npm i
 ```
 
-To set up both main repos:
-
-**1. Install build tools and lerna**
-
-```bash
-# Windows
-npm install -g windows-build-tools
-
-# Linux
-apt-get install -y build-essential python
-
-# both
-npm i lerna -g
-```
-
-**2. Clone both repos**
-
-```bash
-git clone https://github.com/n8n-io/n8n.git
-git clone https://github.com/n8n-io/n8n-docs.git
-```
-
-**3. Build the `n8n` repo**
-
-```bash
-cd n8n
-lerna bootstrap --hoist
-npm run build
-```
+To set up the official repos [n8n](https://github.com/n8n-io/n8n) and [n8n-docs](https://github.com/n8n-io/n8n-docs), see [here](/docs/general-reference.md#official-repos).
 
 ## Operation
 
