@@ -6,14 +6,14 @@ export default class Highlighter {
   static showResult(arg: HighlighterArgument) {
     const { result, successMessage, inspectMessage } = arg;
 
-    result.error
-      ? this.highlight("red", result.errorMessage)
-      : this.highlight(
+    result.completed
+      ? this.highlight(
           "green",
           "\n" +
             successMessage +
             (inspectMessage ? "\nPlease inspect the /output directory." : "")
-        );
+        )
+      : this.highlight("red", result.error);
   }
 
   /**Log a message with a colored background in the CLI.*/

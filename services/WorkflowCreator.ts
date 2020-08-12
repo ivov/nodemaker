@@ -22,9 +22,9 @@ export default class WorkflowCreator {
       await this.doLogin();
       await this.createWorkflow();
       await this.close();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

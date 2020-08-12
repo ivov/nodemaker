@@ -22,9 +22,9 @@ export default class ScreenshotTaker {
       await this.init();
       await this.useChromeInstance();
       await this.uploadImage();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

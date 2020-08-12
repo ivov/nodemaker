@@ -32,9 +32,9 @@ export default class NodeDocsGenerator extends Generator {
       }
 
       await this.verifyGeneratedDocsFiles();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

@@ -15,9 +15,9 @@ export default class DirectoryEmptier {
       this.getFilesToBeDeleted().forEach((file) =>
         this.deleteFile(join("output", file))
       );
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

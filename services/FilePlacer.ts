@@ -100,9 +100,9 @@ export default class FilePlacer {
       await this.placeFuncFilesInTypeScript();
       await this.placeIconFile();
       this.verifyPlacementSuccess();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 
@@ -119,9 +119,9 @@ export default class FilePlacer {
         this.placeDocFile(this.credDocFile);
       }
       this.verifyPlacementSuccess();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

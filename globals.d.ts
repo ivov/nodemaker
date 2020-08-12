@@ -36,12 +36,11 @@ type RequesterOutputType<T> =
 
 type BackendOperationResult = SuccessfulOperationResult | FailedOperationResult;
 
-type SuccessfulOperationResult = { completed: boolean; error: false };
+type SuccessfulOperationResult = { completed: true };
 
 type FailedOperationResult = {
-  completed: boolean;
-  error: true;
-  errorMessage: any;
+  completed: false;
+  error: any;
 };
 
 type PlacementChannelArgument = {
