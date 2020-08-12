@@ -37,15 +37,18 @@ module.exports = {
     getCredentialsString: (name, auth) =>
       name + (auth === "OAuth2" ? "OAuth2" : "") + "Api",
     /**Check if the endpoint has an extractable variable.*/
-    hasEndpointVariable: (endpoint) => endpoint.split("").includes("$"),
+    hasEndpointVariable: (endpoint) => endpoint.split("").includes(":"),
     /**Extract the variable from the endpoint.*/
-    getVariableFromEndpoint: (endpoint) => endpoint.match(/\$\$(.*)\$\$/)[1],
-    /**Reformat endpoint without variable boundary markers.*/
-    fixEndpoint: (endpoint) =>
-      endpoint
-        .replace(/\/\$\$/, "/${")
-        .replace(/\$\$$/, "}")
-        .replace(/\"/g, "`"),
+    getVariableFromEndpoint: (endpoint) => endpoint.match(/:(.*)(\/)?/)[1],
+    /**Reformat endpoint from colon version to string-interpolated version.*/
+    fixEndpoint: (endpoint) => {
+      const routeParameter = endpoint.match(/:(.*)(\/)?/)[1];
+      return endpoint.replace(
+        ":" + routeParameter,
+        "${" + routeParameter + "}"
+      );
+    },
+
     hasNumericalLimits: (field) => field.numericalLimits,
   },
 };

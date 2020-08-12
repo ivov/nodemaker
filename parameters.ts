@@ -12,7 +12,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Get",
       description: "Get a Hacker News article",
-      endpoint: "items/$$articleId$$",
+      endpoint: "items/:articleId",
       requestMethod: "GET",
       fields: [
         {
