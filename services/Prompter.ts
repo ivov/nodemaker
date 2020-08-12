@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
 
-/**Responsible for prompting the user to select choices or enter input for four generation operations. Only static fields and methods allowed.*/
+/**Responsible for prompting the user to select choices or enter input.*/
 export default class Prompter {
-  private static nodeGenerationTypePrompt = [
+  private static readonly nodeGenerationTypePrompt = [
     {
       name: "nodeGenerationType",
       type: "list",
@@ -12,7 +12,7 @@ export default class Prompter {
     },
   ];
 
-  private static nodeTypePrompt = [
+  private static readonly nodeTypePrompt = [
     {
       name: "nodeType",
       type: "list",
@@ -22,7 +22,7 @@ export default class Prompter {
     },
   ];
 
-  private static placementPrompt = [
+  private static readonly placementPrompt = [
     {
       name: "filesToPlace",
       type: "list",
@@ -32,7 +32,7 @@ export default class Prompter {
     },
   ];
 
-  private static iconQueryPrompt = [
+  private static readonly iconQueryPrompt = [
     {
       name: "imageQuery",
       type: "input",
@@ -40,7 +40,7 @@ export default class Prompter {
     },
   ];
 
-  private static iconNumberPrompt = [
+  private static readonly iconNumberPrompt = [
     {
       name: "iconToResize",
       type: "list",
