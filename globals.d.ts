@@ -53,6 +53,16 @@ type PackgenChannelArgument = MetaParameters;
 type EmptyChannelArgument = void;
 
 // ********************************************************************
+//                         CLI-related
+// ********************************************************************
+
+type HighlighterArgument = {
+  result: BackendOperationResult;
+  successMessage: string;
+  inspectMessage?: boolean;
+};
+
+// ********************************************************************
 //                         Bundle-related
 // ********************************************************************
 
