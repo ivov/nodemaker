@@ -96,7 +96,7 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 					<%_ for (let field of operation.fields) { _%>
 			{
 				displayName: '<%= field.name %>',
-				name: '<%= field.name %>',
+				name: '<%= h.camelify(field.name) %>',
 				<%_ if (field.name !== 'Additional Fields') { _%>
 				description: '<%= field.description %>',
 				<%_ } _%>

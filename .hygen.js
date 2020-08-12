@@ -12,7 +12,7 @@ module.exports = {
     camelify: (input) => {
       const isSingleWord = input.split(" ").length === 1;
       const uppercaseInitialLowercaseRest = (input) =>
-        input[0].toUpperCase() + input.slice(1);
+        input[0].toUpperCase() + input.slice(1).toLowerCase();
 
       if (isSingleWord) return input.toLowerCase();
 
