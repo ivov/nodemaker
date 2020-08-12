@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import SmallButton from './SmallButton';
+import SmallButton from './SmallButton.vue';
 
 
 @Component({
