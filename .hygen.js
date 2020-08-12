@@ -46,5 +46,6 @@ module.exports = {
         .replace(/\/\$\$/, "/${")
         .replace(/\$\$$/, "}")
         .replace(/\"/g, "`"),
+    hasNumericalLimits: (field) => field.numericalLimits,
   },
 };
