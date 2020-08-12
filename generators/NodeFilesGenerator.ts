@@ -8,7 +8,7 @@ import { areTriggerNodeParameters } from "../utils/typeGuards";
 /**Responsible for generating all node functionality files at `/output`:
  * - `*.node.ts`
  * - `GenericFunctions.ts`
- * - `.credentials.ts`
+ * - `*.credentials.ts`
  * - one or more `*Description.ts` files (in complex node generation)
  */
 export default class NodeFilesGenerator extends Generator {
