@@ -23,9 +23,7 @@ Reference for operating the Nodemaker's CLI utility.
 
 ## Overview
 
-The Nodemaker's CLI utility offers eleven commands.
-
-To run any command:
+To use the CLI utility:
 
 1. Enter node params as explained [below](#parameters).
 2. Run a command: `npm run ...`
@@ -98,7 +96,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Get",
       description: "Get a Hacker News article",
-      endpoint: "items/$$articleId$$",
+      endpoint: "items/:articleId",
       requestMethod: "GET",
       fields: [
         {
@@ -195,7 +193,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Get",
       description: "Get a Hacker News user",
-      endpoint: "users/$$username$$",
+      endpoint: "users/:username",
       requestMethod: "GET",
       fields: [
         {
@@ -209,7 +207,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Rename",
       description: "Rename a Hacker News user",
-      endpoint: "users/$$username$$",
+      endpoint: "users/:username",
       requestMethod: "PUT",
       fields: [
         {
@@ -272,17 +270,39 @@ export const triggerNodeParameters: TriggerNodeParameters = {
 
 **Route parameter**
 
-In `RegularNodeParameters`, an operation's `endpoint` property may contain a variable surrounded by two `$$` markers. This variable represents a **route parameter** referencing one of the names of the fields in the operation.
+In `regularNodeParameters`, an operation's `endpoint` property may contain a route parameter, signalled by a colon `:`. The parameter references one of the (camelCased) names of the fields in the operation.
+
+`regularNodeParameters` with an endpoint with a route parameter:
 
 ```ts
   Article: [
     {
       name: "Get",
       description: "Get a Hacker News article",
-      endpoint: "items/$$articleId$$", // route parameter
+      endpoint: "items/:articleId", // route parameter referencing camelCased name of field
       requestMethod: "GET",
       fields: [
+        {
+          name: "Article ID",
+          description: "The ID of the Hacker News article to be returned",
+          type: "string",
+          default: "",
+        },
 	      // ...
+```
+
+Output with route parameter in use:
+
+```ts
+if (operation === 'get') {
+
+  const articleId = this.getNodeParameter('articleId', i);
+  const endpoint = `items/${articleId}`;
+
+  const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
+  // TODO: Use additionalFields.fieldName in `qs` or in `body` or as boolean flag
+
+  responseData = await hackerNewsApiRequest.call(this, 'GET', endpoint, body, qs);
 ```
 
 For more type information on `RegularNodeParameters`, see [the global type definition](https://github.com/MLH-Fellowship/nodemaker/blob/0e2756722f8b8f262ab3bf65e005c24c97c6ce0a/globals.d.ts).

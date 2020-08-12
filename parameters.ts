@@ -109,7 +109,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Get",
       description: "Get a Hacker News user",
-      endpoint: "users/$$username$$",
+      endpoint: "users/:username",
       requestMethod: "GET",
       fields: [
         {
@@ -123,7 +123,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Rename",
       description: "Rename a Hacker News user",
-      endpoint: "users/$$username$$",
+      endpoint: "users/:username",
       requestMethod: "PUT",
       fields: [
         {
