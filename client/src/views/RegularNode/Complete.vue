@@ -6,32 +6,52 @@
         header="Thank you for using the nodemaker."
         instructions="Choose your file configurations below. The nodemaker will put the generated file into the output folder."
       />
-      <div class="centerButton stacked">
-          <GenericButton 
-            class="input"
-            text="Generate *.node.ts, GenericFunctions.ts, and *.credentials.ts." 
-            @click.native="simpleNode()"
+      <div class="stacked">
+          <Checkbox 
+            label="Generate *.node.ts, GenericFunctions.ts, and *.credentials.ts." 
+            idInfo="box1"
+            :value=basicNodeGen
+            v-model=basicNodeGen
           />
-          <GenericButton 
-            class="input"
-            text="Generate *.node.ts, GenericFunctions.ts, *.Description.ts, and *.credentials.ts." 
-            @click.native="complexNode()"
+          <Checkbox 
+            label="Generate *.node.ts, GenericFunctions.ts, *.Description.ts, and *.credentials.ts." 
+            idInfo="box2"
+            :value=complexNodeGen
+            v-model=complexNodeGen
           />
-           <GenericButton 
-            class="input"
-            text="Generate a node functionality doc file and a node credential doc file in markdown (if you filled out the optional documentation parameters)." 
-            @click.native="docsGen()"
+          <Checkbox 
+            label="Generate an updated package.json file." 
+            idInfo="box3"
+            :value=packageGen
+            v-model=packageGen
           />
-          <GenericButton 
-            class="input"
-            text="Place the generated node files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
-            @click.native="placeFunctional()"
+          <Checkbox 
+            v-if="documentation"
+            label="Generate a node functionality doc file and a node credential doc file in markdown (if you filled out the optional documentation parameters)." 
+            idInfo="box4"
+            :value=docs
+            v-model=docs
           />
-          <GenericButton 
-            class="input"
-            text="Place the generated documentation files into the proper n8n-docs folders (must have file structure specified on nodemaker docs)." 
-            @click.native="placeDocumentation()"
+          <Checkbox 
+            label="Place the generated node files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
+            idInfo="box5"
+            :value=placeNode
+            v-model=placeNode
           />
+          <Checkbox 
+            v-if="documentation"
+            label="Place the generated documentation files into the proper n8n-docs folders (must have file structure specified on nodemaker docs)." 
+            idInfo="box6"
+            :value=placeDocs
+            v-model=placeDocs
+          />
+          <div class="centerButton">
+            <GenericButton 
+              class="input"
+              text="Submit" 
+              @click.native="submit()"
+            />
+          </div>
       </div>
     </div>
     <div id="previewBox">
@@ -59,7 +79,7 @@ import ForwardButton from '../../components/SharedComponents/ForwardButton.vue';
 import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
 import GenericButton from '../../components/SharedComponents/GenericButton.vue';
 import InputField from '../../components/SharedComponents/InputField.vue';
-import Dropdown from '../../components/SharedComponents/Dropdown.vue';
+import Checkbox from '../../components/SharedComponents/Checkbox.vue';
 import AddButton from '../../components/SharedComponents/AddButton.vue';
 
 import Requester from '../../../Requester';
@@ -74,11 +94,42 @@ import { mapGetters } from 'vuex';
     BackwardButton,
     GenericButton,
     InputField,
-    Dropdown,
+    Checkbox,
     AddButton
   },
-  computed: mapGetters(['basicInfo', 'docsInfo', 'resources', 'operations', 'fields']),
+  data: () => {
+    return {
+      basicNodeGen: false,
+      complexNodeGen: false,
+      packageGen: false,
+      docs: false,
+      placeNode: false,
+      placeDocs: false
+    }
+  },
+  computed: mapGetters(['basicInfo', 'documentation', 'docsInfo', 'resources', 'operations', 'fields']),
   methods: {
+    async submit(): {} {
+      if(this.basicNodeGen) {
+        await this.simpleNode();
+      }
+      if(this.complexNodeGen) {
+        await this.complexNode();
+      }
+      if(this.packageGen) {
+        await this.packageGenerator();
+      }
+      if(this.docs) {
+        await this.docsGen();
+      }
+      if(this.placeNode) {
+        await this.placeFunctional();
+      }
+      if(this.placeDocs) {
+        await this.placeDocumentation();
+      }
+      alert("All done! Thank you for using the nodemaker.")
+    },
     buildMetaParameters(): {} {
       const { name, auth, color, baseURL } = this.basicInfo;
       return {
@@ -222,7 +273,6 @@ import { mapGetters } from 'vuex';
         paramsBundle
       );
       console.log(result);
-      alert("Thank you for using the nodemaker! Check your output folder.")
     },
     async complexNode() {
       const requester = new Requester();
@@ -240,7 +290,18 @@ import { mapGetters } from 'vuex';
         paramsBundle
       );
       console.log(result);
-      alert("Thank you for using the nodemaker! Check your output folder.")
+    },
+    async packageGenerator() {
+      const requester = new Requester();
+      const metaParameters = this.buildMetaParameters();
+
+      console.log(metaParameters);
+
+      const result = await requester.request(
+        "packgen-channel",
+        metaParameters
+      );
+      console.log(result);
     },
     async docsGen() {
       const requester = new Requester();
@@ -257,7 +318,6 @@ import { mapGetters } from 'vuex';
         paramsBundle
       );
       console.log(result);
-      alert("Thank you for using the nodemaker! Check your output folder.")
     },
     async placeFunctional() {
       const requester = new Requester();
@@ -266,8 +326,6 @@ import { mapGetters } from 'vuex';
         { filesToPlace: "functionality" }
       );
       console.log(placementResult);
-
-      alert(`Thank you for using the nodemaker! Check the n8n/packages/nodes-base/nodes/${this.basicInfo.name.replace(/\s/g, '')} folder for your code.`);
     },
     async placeDocumentation() {
       const requester = new Requester();
@@ -276,8 +334,6 @@ import { mapGetters } from 'vuex';
         { filesToPlace: "documentation" }
       );
       console.log(placementResult);
-
-      alert(`Thank you for using the nodemaker! Check the n8n-docs/docs/nodes/nodes-library/nodes/${this.basicInfo.name.replace(/\s/g, '')} folder for your code.`);
     },
   },
 })
@@ -322,8 +378,7 @@ export default class App extends Vue {}
 .stacked {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
+    justify-content: space-between;
 }
 </style>
 

@@ -6,17 +6,32 @@
         header="Thank you for using the nodemaker."
         instructions="Choose your file configurations below. The nodemaker will put the generated file into the output folder."
       />
-      <div class="centerButton stacked">
-          <GenericButton 
-            class="input"
-            text="Generate *.node.ts, GenericFunctions.ts, and *.credentials.ts." 
-            @click.native="simpleNode()"
+      <div class="stacked">
+          <Checkbox 
+            label="Generate *.node.ts, GenericFunctions.ts, and *.credentials.ts." 
+            idInfo="box1"
+            :value=basicNodeGen
+            v-model=basicNodeGen
           />
-          <GenericButton 
-            class="input"
-            text="Place the generated node files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
-            @click.native="placeFunctional()"
+          <Checkbox 
+            label="Generate an updated package.json file." 
+            idInfo="box3"
+            :value=packageGen
+            v-model=packageGen
           />
+          <Checkbox 
+            label="Place the generated node files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
+            idInfo="box5"
+            :value=placeNode
+            v-model=placeNode
+          />
+          <div class="centerButton">
+            <GenericButton 
+              class="input"
+              text="Submit" 
+              @click.native="submit()"
+            />
+          </div>
       </div>
     </div>
     <div id="previewBox">
@@ -44,7 +59,7 @@ import ForwardButton from '../../components/SharedComponents/ForwardButton.vue';
 import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
 import GenericButton from '../../components/SharedComponents/GenericButton.vue';
 import InputField from '../../components/SharedComponents/InputField.vue';
-import Dropdown from '../../components/SharedComponents/Dropdown.vue';
+import Checkbox from '../../components/SharedComponents/Checkbox.vue';
 import AddButton from '../../components/SharedComponents/AddButton.vue';
 
 import Requester from '../../../Requester';
@@ -59,16 +74,35 @@ import { mapGetters } from 'vuex';
     BackwardButton,
     GenericButton,
     InputField,
-    Dropdown,
+    Checkbox,
     AddButton
   },
   computed: mapGetters(['basicInfo', 'properties', 'fields']),
+  data: () => {
+    return {
+      basicNodeGen: false,
+      packageGen: false,
+      placeNode: false,
+    }
+  },
   methods: {
     toCamelCase(str) {
       return str
           .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
           .replace(/\s/g, '')
           .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+    },
+    async submit(): {} {
+      if(this.basicNodeGen) {
+        await this.simpleNode();
+      }
+      if(this.packageGen) {
+        await this.packageGenerator();
+      }
+      if(this.placeNode) {
+        await this.placeFunctional();
+      }
+      alert("All done! Thank you for using the nodemaker.")
     },
     buildMetaParameters(): {} {
       const { name, auth, color, baseURL } = this.basicInfo;
@@ -234,6 +268,18 @@ import { mapGetters } from 'vuex';
       console.log(result);
       alert("Thank you for using the nodemaker! Check your output folder.")
     },
+    async packageGenerator() {
+      const requester = new Requester();
+      const metaParameters = this.buildMetaParameters();
+
+      console.log(metaParameters);
+
+      const result = await requester.request(
+        "packgen-channel",
+        metaParameters
+      );
+      console.log(result);
+    },
     async placeFunctional() {
       const requester = new Requester();
       const placementResult = await requester.request<PlacementChannelArgument>(
@@ -288,7 +334,6 @@ export default class App extends Vue {}
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    align-items: center;
 }
 </style>
 
