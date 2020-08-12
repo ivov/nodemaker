@@ -83,12 +83,12 @@ export default class ScreenshotTaker {
 
     const response = await fetch(url, options);
     const jsonResponse = await response.json();
-    this.saveUrlToDisk(jsonResponse.data.url);
+    this.saveImageUploadUrl(jsonResponse.data.url);
   }
 
   /**TODO - Temporary function to save image upload URL to a TXT file.
-   * To be adjusted once UI needs is further developed.*/
-  private saveUrlToDisk(url: string) {
+   * To be adjusted once UI is further developed.*/
+  private saveImageUploadUrl(url: string) {
     writeFileSync(this.imageUploadUrlSavePath, url, "utf8");
   }
 
