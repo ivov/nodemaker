@@ -1,36 +1,37 @@
-import fs, { readdirSync } from "fs";
+import fs from "fs";
 import { join } from "path";
 import { promisify } from "util";
 import FileFinder from "./FileFinder";
 
-const deleteFile = promisify(fs.unlink);
-const deleteDir = promisify(fs.rmdir);
-
 export default class DirectoryEmptier {
-  private outputDir = join(__dirname, "..", "..", "output");
-  private iconCandidatesDir = join(this.outputDir, "icon-candidates");
+  private readonly outputDir = join(__dirname, "..", "..", "output");
+  private readonly iconCandidatesDir = join(this.outputDir, "icon-candidates");
+  private readonly deleteFile = promisify(fs.unlink);
+  private readonly deleteDir = promisify(fs.rmdir);
 
   public async run(): Promise<BackendOperationResult> {
     try {
       await this.deleteIconCandidatesDir();
-      const files = this.getFilesToBeDeleted();
-      files.forEach((file) => deleteFile(join("output", file)));
+      this.getFilesToBeDeleted().forEach((file) =>
+        this.deleteFile(join("output", file))
+      );
       return { completed: true, error: false };
     } catch (thrownError) {
       return { completed: false, error: true, errorMessage: thrownError };
     }
   }
 
+  /**Delete the output/icon-candidates dir.*/
   private async deleteIconCandidatesDir() {
     if (fs.existsSync(this.iconCandidatesDir)) {
-      await deleteDir(this.iconCandidatesDir, { recursive: true });
+      await this.deleteDir(this.iconCandidatesDir, { recursive: true });
     }
   }
 
-  /**Returns all filenames in the /output dir except for `.gitkeep` and the /icon-candidates dir and its contents.*/
+  /**Return all filenames in the /output dir except for `.gitkeep` and the output/icon-candidates dir and its contents.*/
   private getFilesToBeDeleted() {
-    return readdirSync(this.outputDir).filter(
-      FileFinder.isAnyButGitKeepAndIconCandidatesDir
-    );
+    return fs
+      .readdirSync(this.outputDir)
+      .filter(FileFinder.isAnyButGitKeepAndIconCandidatesDir);
   }
 }
