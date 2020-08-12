@@ -26,22 +26,28 @@
             v-model=packageGen
           />
           <Checkbox 
+            label="Empty the output directory before generation" 
+            idInfo="box4"
+            :value=empty
+            v-model=empty
+          />
+          <Checkbox 
             v-if="documentation"
             label="Generate a node functionality doc file and a node credential doc file in markdown (if you filled out the optional documentation parameters)." 
-            idInfo="box4"
+            idInfo="box5"
             :value=docs
             v-model=docs
           />
           <Checkbox 
             label="Place the generated node files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
-            idInfo="box5"
+            idInfo="box6"
             :value=placeNode
             v-model=placeNode
           />
           <Checkbox 
             v-if="documentation"
             label="Place the generated documentation files into the proper n8n-docs folders (must have file structure specified on nodemaker docs)." 
-            idInfo="box6"
+            idInfo="box7"
             :value=placeDocs
             v-model=placeDocs
           />
@@ -86,6 +92,8 @@ import Requester from '../../../Requester';
 
 import { mapGetters } from 'vuex';
 
+const requester = new Requester();
+
 @Component({
   name: 'Fields',
   components: {
@@ -102,6 +110,7 @@ import { mapGetters } from 'vuex';
       basicNodeGen: false,
       complexNodeGen: false,
       packageGen: false,
+      empty: false,
       docs: false,
       placeNode: false,
       placeDocs: false
@@ -110,6 +119,9 @@ import { mapGetters } from 'vuex';
   computed: mapGetters(['basicInfo', 'documentation', 'docsInfo', 'resources', 'operations', 'fields']),
   methods: {
     async submit(): {} {
+      if(this.empty) {
+        await this.emptyOutput();
+      }
       if(this.basicNodeGen) {
         await this.simpleNode();
       }
@@ -258,7 +270,6 @@ import { mapGetters } from 'vuex';
         };
     },
     async simpleNode() {
-      const requester = new Requester();
       const paramsBundle = {
         metaParameters: this.buildMetaParameters(),
         mainParameters: this.buildMainParameters(),
@@ -275,7 +286,7 @@ import { mapGetters } from 'vuex';
       console.log(result);
     },
     async complexNode() {
-      const requester = new Requester();
+      
       const paramsBundle = {
         metaParameters: this.buildMetaParameters(),
         mainParameters: this.buildMainParameters(),
@@ -292,7 +303,7 @@ import { mapGetters } from 'vuex';
       console.log(result);
     },
     async packageGenerator() {
-      const requester = new Requester();
+      
       const metaParameters = this.buildMetaParameters();
 
       console.log(metaParameters);
@@ -303,8 +314,14 @@ import { mapGetters } from 'vuex';
       );
       console.log(result);
     },
+    async emptyOutput() {
+      const result = await requester.request(
+        "empty-channel"
+      );
+      console.log(result);
+    },
     async docsGen() {
-      const requester = new Requester();
+      
       const paramsBundle = {
         metaParameters: this.buildMetaParameters(),
         mainParameters: this.buildMainParameters(),
@@ -320,7 +337,7 @@ import { mapGetters } from 'vuex';
       console.log(result);
     },
     async placeFunctional() {
-      const requester = new Requester();
+      
       const placementResult = await requester.request<PlacementChannelArgument>(
         "placement-channel",
         { filesToPlace: "functionality" }
@@ -328,7 +345,7 @@ import { mapGetters } from 'vuex';
       console.log(placementResult);
     },
     async placeDocumentation() {
-      const requester = new Requester();
+      
       const placementResult = await requester.request<PlacementChannelArgument>(
         "placement-channel",
         { filesToPlace: "documentation" }

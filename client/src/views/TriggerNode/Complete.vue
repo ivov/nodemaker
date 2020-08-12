@@ -15,13 +15,19 @@
           />
           <Checkbox 
             label="Generate an updated package.json file." 
-            idInfo="box3"
+            idInfo="box2"
             :value=packageGen
             v-model=packageGen
           />
           <Checkbox 
+            label="Empty the output directory before generation" 
+            idInfo="box3"
+            :value=empty
+            v-model=empty
+          />
+          <Checkbox 
             label="Place the generated node files into the proper n8n folders (must have file structure specified on nodemaker docs)." 
-            idInfo="box5"
+            idInfo="box4"
             :value=placeNode
             v-model=placeNode
           />
@@ -66,6 +72,8 @@ import Requester from '../../../Requester';
 
 import { mapGetters } from 'vuex';
 
+const requester = new Requester();
+
 @Component({
   name: 'Fields',
   components: {
@@ -82,6 +90,7 @@ import { mapGetters } from 'vuex';
     return {
       basicNodeGen: false,
       packageGen: false,
+      empty: false,
       placeNode: false,
     }
   },
@@ -93,6 +102,9 @@ import { mapGetters } from 'vuex';
           .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
     },
     async submit(): {} {
+      if(this.empty) {
+        await this.emptyOutput();
+      }
       if(this.basicNodeGen) {
         await this.simpleNode();
       }
@@ -267,6 +279,12 @@ import { mapGetters } from 'vuex';
       );
       console.log(result);
       alert("Thank you for using the nodemaker! Check your output folder.")
+    },
+    async emptyOutput() {
+      const result = await requester.request(
+        "empty-channel"
+      );
+      console.log(result);
     },
     async packageGenerator() {
       const requester = new Requester();
