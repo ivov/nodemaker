@@ -24,6 +24,7 @@ type RequesterInputType =
   | PackgenChannelArgument
   | EmptyChannelArgument;
 
+// TODO - Refactor once UI is finished
 // prettier-ignore
 type RequesterOutputType<T> =
     T extends string ? string :
@@ -34,14 +35,9 @@ type RequesterOutputType<T> =
     T extends EmptyChannelArgument ? BackendOperationResult :
     never;
 
-type BackendOperationResult = SuccessfulOperationResult | FailedOperationResult;
-
-type SuccessfulOperationResult = { completed: true };
-
-type FailedOperationResult = {
-  completed: false;
-  error: any;
-};
+type BackendOperationResult =
+  | { completed: true }
+  | { completed: false; error: any };
 
 type PlacementChannelArgument = {
   filesToPlace: "functionality" | "documentation";
@@ -135,14 +131,14 @@ type WebhookProperty = {
   description: string;
   type: SingleValueFieldType | CollectionType | OptionsType;
   default: FieldDefault;
-  options?: WebhookPropertyOption[];
+  options?: WebhookPropertyOption[]; // only for `type: OptionsType`
 };
 
 type WebhookPropertyOption = {
   name: string;
   description: string;
   value: string;
-  fields?: WebhookPropertyOptionField[];
+  fields?: WebhookPropertyOptionField[]; // only for `type: OptionsType` in `WebhookProperty`
 };
 
 type WebhookPropertyOptionField = OperationField & {
