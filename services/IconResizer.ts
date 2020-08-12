@@ -3,13 +3,13 @@ import { join } from "path";
 import { promisify } from "util";
 import sharp from "sharp";
 
-const readFile = promisify(fs.readFile);
-
 export default class ImageResizer {
-  constructor(private metaParameters: MetaParameters, private number: string) {}
+  private readonly readFile = promisify(fs.readFile);
 
   // prettier-ignore
-  private iconCandidatesDir = join(__dirname, "..", "..", "output", "icon-candidates");
+  private readonly iconCandidatesDir = join(__dirname, "..", "..", "output", "icon-candidates");
+
+  constructor(private metaParameters: MetaParameters, private number: string) {}
 
   public async run(): Promise<BackendOperationResult> {
     try {
@@ -26,7 +26,7 @@ export default class ImageResizer {
       this.iconCandidatesDir,
       `icon-candidate-${number}.png`
     );
-    const inputBuffer = await readFile(filename);
+    const inputBuffer = await this.readFile(filename);
 
     const outputFile = this.metaParameters.serviceName
       .toLowerCase()
