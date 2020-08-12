@@ -11,17 +11,29 @@ import { readFileSync, writeFileSync } from "fs";
 export default class ScreenshotTaker {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page; // browser tab
-  private pngSavePath = join("output", "workflow.png"); // in-app screenshot
-  private imageUploadUrlSavePath = join("output", "image-upload-url.txt"); // uploaded image URL
+  private readonly pngSavePath = join("output", "workflow.png"); // in-app screenshot
+  // prettier-ignore
+  private readonly imageUploadUrlSavePath = join("output", "image-upload-url.txt"); // uploaded image URL
 
   constructor(private metaParameters: MetaParameters) {}
+
+  public async run(): Promise<BackendOperationResult> {
+    try {
+      await this.init();
+      await this.useChromeInstance();
+      await this.uploadImage();
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
+    }
+  }
 
   public async init() {
     this.browser = await puppeteer.launch({ headless: false });
     this.page = await this.browser.newPage();
   }
 
-  public async run() {
+  public async useChromeInstance() {
     await this.page.goto(N8N_APP_LOCALHOST);
     await this.placeNewNodeOnCanvas();
     await this.connectStartToNewNode();
@@ -35,8 +47,8 @@ export default class ScreenshotTaker {
     const nodeDivSelector = ".node-item.clickable.active";
     const closeButtonSelector = ".close-button.clickable.close-on-click";
 
-    await this.page.waitFor(1000); // because waiting for UI does not work
-    await this.page.mouse.click(400, 300); // spot where node will appear
+    await this.page.waitFor(1000); // waiting for UI element fails
+    await this.page.mouse.click(400, 300); // spot where new node will appear
     await this.page.click(nodeCreatorButtonSelector);
     await this.page.type(nodeFilterSelector, this.metaParameters.serviceName);
 
@@ -71,11 +83,12 @@ export default class ScreenshotTaker {
 
     const response = await fetch(url, options);
     const jsonResponse = await response.json();
-    this.saveUrlToDisk(jsonResponse.data.url);
+    this.saveImageUploadUrl(jsonResponse.data.url);
   }
 
-  /**TODO - Temporary function to save image upload URL to a TXT file. To be adjusted once UI needs are clear.*/
-  private saveUrlToDisk(url: string) {
+  /**TODO - Temporary function to save image upload URL to a TXT file.
+   * To be adjusted once UI is further developed.*/
+  private saveImageUploadUrl(url: string) {
     writeFileSync(this.imageUploadUrlSavePath, url, "utf8");
   }
 

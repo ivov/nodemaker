@@ -101,6 +101,12 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 				description: '<%= field.description %>',
 				<%_ } _%>
 				type: '<%= field.type %>',
+				<%_ if (h.hasNumericalLimits(field)) { _%>
+				typeOptions: {
+					minValue: <%= field.numericalLimits.minLimit %>,
+					maxValue: <%= field.numericalLimits.maxLimit %>
+				},
+				<%_ } _%>
 				required: <%= field.name !== 'additionalFields' ? true : false %>,
 				default: <%_ if (field.default === true || field.default === false || typeof field.default === "number") { _%>
 				<%_ %> <%= field.default _%>,

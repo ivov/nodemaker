@@ -1,5 +1,6 @@
 import FilePlacer from "../services/FilePlacer";
 import Prompter from "../services/Prompter";
+import Highlighter from "../services/Highlighter";
 
 (async () => {
   const { filesToPlace } = await Prompter.forPlacement();
@@ -10,5 +11,8 @@ import Prompter from "../services/Prompter";
       ? await filePlacer.placeNodeFunctionalityFiles()
       : await filePlacer.placeNodeDocumentationFiles();
 
-  console.log(result);
+  Highlighter.showResult({
+    result,
+    successMessage: "Placement of files successful.",
+  });
 })();

@@ -1,28 +1,28 @@
 import inquirer from "inquirer";
 
-/**Responsible for prompting the user to select choices or enter input for four generation operations. Only static fields and methods allowed.*/
+/**Responsible for prompting the user to select choices or enter input.*/
 export default class Prompter {
-  private static nodeGenerationTypePrompt = [
+  private static readonly nodeGenerationTypePrompt = [
     {
       name: "nodeGenerationType",
       type: "list",
       message:
         "Node generation type?\n  - Simple: Node resources in single file.\n  - Complex: Node resources in Description files.\n",
-      choices: ["Simple", "Complex"], // TODO - Replace with enum
+      choices: ["Simple", "Complex"],
     },
   ];
 
-  private static nodeTypePrompt = [
+  private static readonly nodeTypePrompt = [
     {
       name: "nodeType",
       type: "list",
       message:
         "Node type?\n  - Regular: Called when the workflow is executed.\n  - Trigger: Called when the workflow is activated.\n",
-      choices: ["Regular", "Trigger"], // TODO - Replace with enum
+      choices: ["Regular", "Trigger"],
     },
   ];
 
-  private static placementPrompt = [
+  private static readonly placementPrompt = [
     {
       name: "filesToPlace",
       type: "list",
@@ -32,7 +32,7 @@ export default class Prompter {
     },
   ];
 
-  private static iconQueryPrompt = [
+  private static readonly iconQueryPrompt = [
     {
       name: "imageQuery",
       type: "input",
@@ -40,7 +40,7 @@ export default class Prompter {
     },
   ];
 
-  private static iconNumberPrompt = [
+  private static readonly iconNumberPrompt = [
     {
       name: "iconToResize",
       type: "list",

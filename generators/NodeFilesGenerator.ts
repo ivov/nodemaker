@@ -27,21 +27,22 @@ export default class NodeFilesGenerator extends Generator {
 
   /**Generate all node functionality files.*/
   async run(): Promise<BackendOperationResult> {
-    this.generateMainNodeFile();
-
-    this.generateGenericFunctionsFile();
-
-    if (this.nodeGenerationType === NodeGenerationEnum.Complex)
-      this.generateResourceDescriptionFile();
-
-    if (this.metaParameters.authType !== AuthEnum.None)
-      this.generateCredentialsFile();
-
     try {
+      this.generateMainNodeFile();
+      this.generateGenericFunctionsFile();
+
+      if (this.nodeGenerationType === NodeGenerationEnum.Complex) {
+        this.generateResourceDescriptionFile();
+      }
+
+      if (this.metaParameters.authType !== AuthEnum.None) {
+        this.generateCredentialsFile();
+      }
+
       this.verifyGeneratedFuncFiles();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

@@ -6,11 +6,26 @@ import config from "../config";
 
 /**Responsible for finding, fetching and saving to disk images for the icon candidates.*/
 export default class ImageFetcher {
-  imageObject: any;
-  imageLinks: string[] = [];
+  private imageObject: any;
+  private imageLinks: string[] = [];
+  // prettier-ignore
+  private readonly iconCandidatesDir = join(__dirname, "..", "..", "output", "icon-candidates");
+
+  constructor(private imageQuery: string) {}
+
+  public async run(): Promise<BackendOperationResult> {
+    try {
+      await this.fetchImageObject(this.imageQuery);
+      this.extractImageLinks();
+      this.downloadIconCandidates();
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
+    }
+  }
 
   /**Fetch an image object from Google's Custom Search Engine based on the input query.*/
-  async fetchImageObject(query: string) {
+  private async fetchImageObject(query: string) {
     const endpoint = `
     ${CUSTOM_SEARCH_API_URL}?
     q="${query}"&
@@ -28,26 +43,25 @@ export default class ImageFetcher {
   }
 
   /**Extract all the URLs of the image candidates in the image object.*/
-  extractImageLinks() {
+  private extractImageLinks() {
     this.imageObject.items.forEach((item: any) =>
       this.imageLinks.push(item.link)
     );
   }
 
   /**Download and write to disk all the image candidates.*/
-  downloadIconCandidates() {
+  private downloadIconCandidates() {
     this.imageLinks.forEach(async (imageLink, index) => {
       const response = await fetch(imageLink);
 
-      const destination = join("output", "icon-candidates");
-
-      if (!fs.existsSync(destination)) {
-        fs.mkdirSync(destination);
+      if (!fs.existsSync(this.iconCandidatesDir)) {
+        fs.mkdirSync(this.iconCandidatesDir);
       }
 
       const outputFile = fs.createWriteStream(
-        join(destination, `icon-candidate-${index + 1}.png`)
+        join(this.iconCandidatesDir, `icon-candidate-${index + 1}.png`)
       );
+
       response.body.pipe(outputFile);
     });
   }

@@ -48,22 +48,20 @@ Developed as a **desktop app** and **CLI utility**, in MVP stage, as a capstone 
 
 ## Installation
 
-To install Nodemaker:
+To set up Nodemaker:
 
 ```sh
 git clone https://github.com/MLH-Fellowship/nodemaker.git
-npm i
-cd client && npm i
+cd nodemaker && npm run setup
 ```
 
 To quickly see it working:
 
 ```sh
-cd .. # return to root dir
 npm run nodegen
 ```
 
-With `nodegen`, Nodemaker will read the sample params in `parameters.ts` and generate a set of sample output files in `/output`.
+With `nodegen`, Nodemaker will read the built-in sample params and generate sample output files in `/output`.
 
 ## Operation
 

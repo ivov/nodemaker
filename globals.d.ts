@@ -24,6 +24,7 @@ type RequesterInputType =
   | PackgenChannelArgument
   | EmptyChannelArgument;
 
+// TODO - Refactor once UI is finished
 // prettier-ignore
 type RequesterOutputType<T> =
     T extends string ? string :
@@ -34,15 +35,9 @@ type RequesterOutputType<T> =
     T extends EmptyChannelArgument ? BackendOperationResult :
     never;
 
-type BackendOperationResult = SuccessfulOperationResult | FailedOperationResult;
-
-type SuccessfulOperationResult = { completed: boolean; error: false };
-
-type FailedOperationResult = {
-  completed: boolean;
-  error: true;
-  errorMessage: any;
-};
+type BackendOperationResult =
+  | { completed: true }
+  | { completed: false; error: any };
 
 type PlacementChannelArgument = {
   filesToPlace: "functionality" | "documentation";
@@ -51,6 +46,16 @@ type PlacementChannelArgument = {
 type PackgenChannelArgument = MetaParameters;
 
 type EmptyChannelArgument = void;
+
+// ********************************************************************
+//                         CLI-related
+// ********************************************************************
+
+type HighlighterArgument = {
+  result: BackendOperationResult;
+  successMessage: string;
+  inspectMessage?: boolean;
+};
 
 // ********************************************************************
 //                         Bundle-related
@@ -126,14 +131,14 @@ type WebhookProperty = {
   description: string;
   type: SingleValueFieldType | CollectionType | OptionsType;
   default: FieldDefault;
-  options?: WebhookPropertyOption[];
+  options?: WebhookPropertyOption[]; // only for `type: OptionsType`
 };
 
 type WebhookPropertyOption = {
   name: string;
   description: string;
   value: string;
-  fields?: WebhookPropertyOptionField[];
+  fields?: WebhookPropertyOptionField[]; // only for `type: OptionsType` in `WebhookProperty`
 };
 
 type WebhookPropertyOptionField = OperationField & {
@@ -167,6 +172,7 @@ type SingleValueOperationField = {
   type: SingleValueFieldType;
   default: SingleValueFieldDefault;
   extraDisplayRestriction?: { [key: string]: boolean };
+  numericalLimits?: { minLimit: number; maxLimit: number }; // for `type: number` only
 };
 
 type ManyValuesGroupField = {
