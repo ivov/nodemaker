@@ -143,7 +143,7 @@ export const docsParameters: DocsParameters = {
   introDescription:
     "a social news website focusing on computer science and entrepreneurship",
   exampleUsage: "get an article from Hacker News",
-  workflowUrl: getWorkflowUrl(),
+  workflowUrl: getWorkflowUrl() || "https://n8n.io/workflows/123",
 };
 
 export const triggerNodeParameters: TriggerNodeParameters = {
