@@ -172,6 +172,7 @@ type SingleValueOperationField = {
   type: SingleValueFieldType;
   default: SingleValueFieldDefault;
   extraDisplayRestriction?: { [key: string]: boolean };
+  numericalLimits?: { minLimit: number; maxLimit: number }; // for `type: number` only
 };
 
 type ManyValuesGroupField = {
