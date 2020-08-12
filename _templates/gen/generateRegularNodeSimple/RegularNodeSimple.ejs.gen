@@ -87,7 +87,7 @@ export class <%= h.classify(metaParameters.serviceName) %> implements INodeType 
 				default: '<%= h.camelify(mainParameters[resource][0].name) %>',
 				description: 'Operation to perform',
 			},
-			<% }); %>
+			<%_ }); _%>
 			// ----------------------------------
 			//         Fields
 			// ----------------------------------
