@@ -5,23 +5,30 @@ import { promisify } from "util";
 
 /**Responsible for placing the files at `/output` into their appropriate locations in the `n8n` and `n8n-docs` repos.*/
 export default class FilePlacer {
-  private relocate = promisify(fs.rename);
+  // ----------------------------------
+  //         General
+  // ----------------------------------
+
+  private readonly relocate = promisify(fs.rename);
+
+  // array of files to be relocated - used for verification
+  private filesPlaced: string[] = [];
 
   // ----------------------------------
   //         nodemaker repo
   // ----------------------------------
 
   // /output
-  private outputDir: string;
+  private readonly outputDir = join(__dirname, "..", "..", "output");
 
   // /output/icon-candidates
-  private iconCandidatesDir: string;
+  private readonly iconCandidatesDir = join(this.outputDir, "icon-candidates");
 
   // files at /output excluding icon candidates
-  private outputFiles: string[];
+  private readonly outputFiles = fs.readdirSync(this.outputDir);
 
   // output/package.json
-  private packageJson: string;
+  private readonly packageJson = join(this.outputDir, "package.json");
 
   // output/*.node.ts
   private mainFuncFile: string;
@@ -41,49 +48,36 @@ export default class FilePlacer {
   // icon candidates at /output/icon-candidates
   private iconCandidates: string[];
 
-  // array of files to be relocated - used for verification
-  private filesPlaced: string[] = [];
-
   // ----------------------------------
   //         n8n repo
   // ----------------------------------
 
   // /packages/nodes-base/
-  private mainBaseDir: string;
+  // prettier-ignore
+  private readonly mainBaseDir = join(__dirname, "..", "..", "..", "n8n", "packages", "nodes-base");
 
-  // /packages/nodes-base/nodes at n8n → node functionality file
-  private mainNodesDir: string;
+  // /packages/nodes-base/nodes at n8n → node functionality files
+  private readonly mainNodesDir = join(this.mainBaseDir, "nodes");
 
   // /packages/nodes-base/credentials at n8n → node credential file
-  private mainCredentialsDir: string;
+  private readonly mainCredentialsDir = join(this.mainBaseDir, "credentials");
 
   // ----------------------------------
   //         n8n-docs repo
   // ----------------------------------
 
   // docs/nodes/
-  private docsNodesDir: string;
-
-  // docs/nodes/nodes-library/nodes → node functionality documentation file
-  private docsFunctionalityDir: string;
-
-  // docs/nodes/credentials at n8n-docs → node credential documentation file
-  private docsCredentialsDir: string;
-
   // prettier-ignore
+  private readonly docsNodesDir = join(__dirname, "..", "..", "..", "n8n-docs", "docs", "nodes");
+
+  // docs/nodes/nodes-library/nodes
+  // prettier-ignore
+  private readonly docsFunctionalityDir = join(this.docsNodesDir, "nodes-library", "nodes");
+
+  // docs/nodes/credentials
+  private readonly docsCredentialsDir = join(this.docsNodesDir, "credentials");
+
   constructor() {
-    this.outputDir = join(__dirname, "..", "..", "output");
-    this.iconCandidatesDir = join(this.outputDir, "icon-candidates");
-    this.mainBaseDir = join(__dirname, "..", "..", "..", "n8n", "packages", "nodes-base");
-    this.mainNodesDir = join(this.mainBaseDir, "nodes");
-    this.mainCredentialsDir = join(this.mainBaseDir, "credentials");
-    this.docsNodesDir = join(__dirname, "..", "..", "..", "n8n-docs", "docs", "nodes");
-    this.docsFunctionalityDir = join(this.docsNodesDir, "nodes-library", "nodes");
-    this.docsCredentialsDir = join(this.docsNodesDir, "credentials");
-
-    this.outputFiles = fs.readdirSync(this.outputDir);
-    this.packageJson = join(this.outputDir, "package.json");
-
     if (fs.existsSync(this.iconCandidatesDir)) {
       this.iconCandidates = fs.readdirSync(this.iconCandidatesDir);
     }
@@ -94,7 +88,7 @@ export default class FilePlacer {
    * - `package.json`,
    * - `*.credentials.ts`,
    * - `GenericFunctions.ts`,
-   * - the node icon, and
+   * - the node PNG icon, and
    * - any resource files.
    *
    * Note: Returns a promise in order to conform to channel usage.*/
@@ -106,9 +100,9 @@ export default class FilePlacer {
       await this.placeFuncFilesInTypeScript();
       await this.placeIconFile();
       this.verifyPlacementSuccess();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 
@@ -125,13 +119,13 @@ export default class FilePlacer {
         this.placeDocFile(this.credDocFile);
       }
       this.verifyPlacementSuccess();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 
-  /**Verify that all the functionality files to be placed exist before placement.*/
+  /**Verify if all the node functionality files to be placed exist before placement, and store references to them.*/
   private verifyFunctionalityFilesToBePlaced() {
     const mainFuncFile = this.outputFiles.find(FileFinder.isMainFuncFile);
     const credFuncFile = this.outputFiles.find(FileFinder.isCredFuncFile);
@@ -171,7 +165,7 @@ export default class FilePlacer {
     });
   }
 
-  /**Verify that all the documentation files to be placed exist before placement.*/
+  /**Verify if the main documentation file to be placed exists before placement, and store references to the main documentation file and the credentials documentation file.*/
   private verifyDocumentationFilesToBePlaced() {
     const mainDocFile = this.outputFiles.find(FileFinder.isMainDocFile);
     const credDocFile = this.outputFiles.find(FileFinder.isCredDocFile);
@@ -232,9 +226,7 @@ export default class FilePlacer {
   /**Place `output/package.json` at `n8n/packages/nodes-base/package.json`. The target `package.json` is overwritten.*/
   private async placePackageJson() {
     const destination = join(this.mainBaseDir, "package.json");
-
     await this.relocate(this.packageJson, destination);
-
     this.filesPlaced.push("package.json");
   }
 

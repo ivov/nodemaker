@@ -21,9 +21,9 @@ export default class PackageJsonGenerator extends Generator {
       this.insertCredentialPathIntoPackageJson();
       await sleep(1000); // to ensure both insertions succeed
       this.insertNodePathIntoPackageJson();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

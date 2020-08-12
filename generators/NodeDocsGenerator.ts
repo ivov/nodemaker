@@ -24,17 +24,17 @@ export default class NodeDocsGenerator extends Generator {
   }
 
   public async run(): Promise<BackendOperationResult> {
-    this.generateNodeMainDocs();
-
-    if (this.metaParameters.authType !== AuthEnum.None) {
-      this.generateNodeCredentialDocs();
-    }
-
     try {
+      this.generateNodeMainDocs();
+
+      if (this.metaParameters.authType !== AuthEnum.None) {
+        this.generateNodeCredentialDocs();
+      }
+
       await this.verifyGeneratedDocsFiles();
-      return { completed: true, error: false };
-    } catch (thrownError) {
-      return { completed: false, error: true, errorMessage: thrownError };
+      return { completed: true };
+    } catch (error) {
+      return { completed: false, error };
     }
   }
 

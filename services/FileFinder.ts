@@ -1,21 +1,28 @@
-/**Responsible for identifying files in the `/output`  dir.*/
+/**Container of boolean checks to identify files in the `/output` dir.*/
 export default class FileFinder {
-  public static isMainFuncFile = (file: string) => file.endsWith(".node.ts");
+  /**Identify `*.node.ts`.*/
+  public static readonly isMainFuncFile = (file: string) =>
+    file.endsWith(".node.ts");
 
-  public static isCredFuncFile = (file: string) =>
+  /**Identify `*.credentials.ts`.*/
+  public static readonly isCredFuncFile = (file: string) =>
     file.endsWith(".credentials.ts");
 
-  public static isIconFile = (file: string) =>
+  /**Identify final PNG icon inside output/icon-candidates dir.*/
+  public static readonly isIconFile = (file: string) =>
     !file.startsWith("icon-candidate");
 
-  public static isMainDocFile = (file: string) =>
+  /**Identify the main node documentation file.*/
+  public static readonly isMainDocFile = (file: string) =>
     file.endsWith(".md") && !file.endsWith("Credentials.md");
 
-  public static isCredDocFile = (file: string) =>
+  /**Identify the main credentials documentation file.*/
+  public static readonly isCredDocFile = (file: string) =>
     file.endsWith("Credentials.md");
 
-  // TODO: Refactor
-  public static isFuncFileInTypeScript = (file: string) => {
+  /**Identify node functionality files in TypeScript.*/
+  public static readonly isFuncFileInTypeScript = (file: string) => {
+    // TODO: Refactor
     return (
       file !== ".gitkeep" &&
       file !== "package.json" &&
@@ -28,6 +35,7 @@ export default class FileFinder {
     );
   };
 
+  /**Identify all files in the /output dir except for `.gitkeep` and the /icon-candidates dir.*/
   public static isAnyButGitKeepAndIconCandidatesDir = (file: string) =>
     file !== ".gitkeep" && file !== "icon-candidates";
 }

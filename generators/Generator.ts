@@ -1,17 +1,19 @@
 /**Container for methods shared by child generators.*/
 export default class Generator {
-  /**Prefix a command with an env var and the path to hygen, and remove readability formatting.*/
-  formatCommand(command: string) {
-    const formattedCommand =
-      `env HYGEN_OVERWRITE=1
-      node node_modules/hygen/dist/bin.js
-       ` + command;
+  /**Format a command by adding a prefix and removing whitespaces included in the codebase for readability.*/
+  protected formatCommand(command: string) {
+    return this.addPrefix(command).replace(/\s{2}/g, "").trim();
+  }
 
-    return formattedCommand.replace(/\s{2}/g, "").trim();
+  /**Prefix a command with an env var and the path to hygen.*/
+  private addPrefix(command: string) {
+    return (
+      "env HYGEN_OVERWRITE=1 node node_modules/hygen/dist/bin.js" + command
+    );
   }
 
   /**Create a service credential name string based on auth type.*/
-  getServiceCredentialName(metaParameters: MetaParameters) {
+  protected getServiceCredentialName(metaParameters: MetaParameters) {
     const serviceName = metaParameters.serviceName.replace(/\s/g, "");
     return (
       serviceName +
