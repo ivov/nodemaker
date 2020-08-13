@@ -7,9 +7,9 @@
         subtitle="This tool is designed to help developers create their own n8n nodes."
         instructions="To get started, enter in your node’s name, authorization method, color, and API base url."
       />
-      <div class="inputContainer">
+      <div class="width25">
         <InputField 
-          class="input"
+          class="my-15"
           label="Name"
           description=""
           placeholder="Hacker News" 
@@ -17,7 +17,7 @@
           v-model=basicInfo.name
         />
         <Dropdown 
-          class="input"
+          class="my-15"
           label="Auth" 
           description="The type of authorization your node uses"
           v-bind:options="['No Auth', 'API Key', 'OAuth2']" 
@@ -25,7 +25,7 @@
           v-model=basicInfo.auth
         />
         <InputField 
-          class="input"
+          class="my-15"
           label="Color"
           description=""
           placeholder="#ffffff" 
@@ -33,7 +33,7 @@
           v-model=basicInfo.color
         />
         <InputField 
-          class="input"
+          class="my-15"
           label="API Base URL"
           description="The base URL for your node's API endpoints"
           placeholder="http://hn.algolia.com/api/v1" 
@@ -41,7 +41,7 @@
           v-model=basicInfo.baseURL
         />
         <Dropdown 
-          class="input"
+          class="my-15"
           label="Node Type" 
           description=""
           v-bind:options="['Regular Node', 'Trigger Node']" 
@@ -49,7 +49,7 @@
           v-on:input="changeNodeType"
         />
         <InputField 
-          class="input"
+          class="my-15"
           label="Webhook Endpoint"
           description="The endpoint to register your webhook."
           placeholder="/webhook" 
@@ -58,7 +58,7 @@
           v-model=basicInfo.webhookEndpoint
         />
         <SwitchComponent
-          class="input"
+          class="my-15"
           label="Enter in Documentation Info"
           description=""
           placeholder="http://hn.algolia.com/api/v1" 
@@ -67,7 +67,7 @@
           v-on:input="toggleDocumentation" />
         <div v-if="documentation">
           <InputField 
-          class="input"
+          class="my-15"
           label="Homepage URL"
           description=""
           placeholder="https://news.ycombinator.com" 
@@ -75,7 +75,7 @@
           v-model=docsInfo.serviceURL
         />
         <TextArea
-          class="input"
+          class="my-15"
           label="Description" 
           description=""
           placeholder="A social news website focusing on computer science and entrepreneurship."
@@ -83,7 +83,7 @@
           v-model=docsInfo.introDescription
         />
         <InputField 
-          class="input"
+          class="my-15"
           label="Example Usage Name"
           description="The name of the example workflow on n8n's site."
           placeholder="Get an article from Hacker News" 
@@ -91,7 +91,7 @@
           v-model=docsInfo.exampleUsage
         />
         <InputField 
-          class="input"
+          class="my-15"
           label="Workflow Number"
           description="The id number of the example workflow on n8n's site."
           placeholder="123"
@@ -100,7 +100,7 @@
         />
         </div>
       </div>
-      <div class="centerButton">
+      <div class="mt-3">
         <router-link v-if="nodeType === 'Regular Node'" to="/regular/resources">
           <ForwardButton 
             text="Get Started" 
@@ -166,35 +166,3 @@ import { mapGetters } from 'vuex';
 })
 export default class App extends Vue {}
 </script>
-
-<style scoped>
-.home {
-  display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-}
-#optionsBox, #previewBox {
-    background-color: white;
-    width: 35rem;
-    margin: 2rem;
-    padding: 2rem;
-    border-radius: 1rem;
-}
-
-.instructions {
-  margin-bottom: 2rem;
-}
-
-.input {
-  margin: 1.5rem 0rem;
-}
-
-.inputContainer {
-  width: 25rem;
-}
-
-.centerButton {
-  margin-top: 3rem;
-  text-align: center;
-}
-</style>
