@@ -56,14 +56,11 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { Component, Vue } from 'vue-property-decorator';
-
-import Instructions from '../../components/SharedComponents/Instructions.vue';
-import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
-import GenericButton from '../../components/SharedComponents/GenericButton.vue';
-import Checkbox from '../../components/SharedComponents/Checkbox.vue';
+<script>
+import Instructions from '../../components/Instructions.vue';
+import BackwardButton from '../../components/BackwardButton.vue';
+import GenericButton from '../../components/GenericButton.vue';
+import Checkbox from '../../components/Checkbox.vue';
 
 import Requester from '../../../Requester';
 
@@ -71,7 +68,7 @@ import { mapGetters } from 'vuex';
 
 const requester = new Requester();
 
-@Component({
+export default {
   name: 'Fields',
   components: {
     Instructions,
@@ -95,7 +92,7 @@ const requester = new Requester();
           .replace(/\s/g, '')
           .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
     },
-    async submit(): {} {
+    async submit()  {
       if(this.empty) {
         await this.emptyOutput();
       }
@@ -110,7 +107,7 @@ const requester = new Requester();
       }
       alert("All done! Thank you for using the nodemaker.")
     },
-    buildMetaParameters(): {} {
+    buildMetaParameters() {
       const { name, auth, color, baseURL } = this.basicInfo;
       return {
         serviceName: name,
@@ -119,7 +116,7 @@ const requester = new Requester();
         apiURL: baseURL
       };
     },
-    buildMainParameters(): {} {
+    buildMainParameters() {
       let mainParameters = {
         webhookEndpoint: this.basicInfo.webhookEndpoint,
         webhookProperties: []
@@ -291,16 +288,14 @@ const requester = new Requester();
     },
     async placeFunctional() {
       const requester = new Requester();
-      const placementResult = await requester.request<PlacementChannelArgument>(
+      const placementResult = await requester.request(
         "placement-channel",
         { filesToPlace: "functionality" }
       );
       console.log(placementResult);
     },
   },
-})
-
-export default class App extends Vue {}
+}
 </script>
 
 <style scoped>

@@ -4,28 +4,34 @@
         <label>{{label}}: </label>
         <i v-if="description !== ''" class="fas fa-info-circle icon" :title=description></i>
       </div>
-      <textarea 
-        type="text" 
-        ref="text_input"
-        :placeholder="placeholder" 
-        :value="value"
-        @input="input" />
+      <div class="group">
+        <input 
+          type="text" 
+          ref="text_input"
+          :placeholder="placeholder" 
+          :value="value"
+          @input="input" />
+          <SmallButton v-if="add" @click.native="$emit('plus')" />
+          <SmallButton v-if="cancel" @click.native="$emit('del')" cancel=true />
+        </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script>
+import SmallButton from './SmallButton.vue';
 
-@Component({
-  name: 'TextArea',
-  props: ["label", "placeholder", "value", "description"],
+export default {
+  name: 'InputField',
+  components: {
+    SmallButton
+  },
+  props: ["label", "placeholder", "value", "add", "cancel", "description"],
   methods: {
     input() {
       this.$emit('input', this.$refs.text_input.value);
     }
   }
-})
-export default class App extends Vue {}
+}
 </script>
 
 <style scoped>
@@ -47,7 +53,7 @@ export default class App extends Vue {}
     opacity: 0.6;
 }
 
-textarea {
+input {
     background: #F4F4F4;
     border: 1px solid #555555;
     box-sizing: border-box;
@@ -55,7 +61,6 @@ textarea {
     padding: .35rem;
     padding-left: .75rem;
     width: 13rem;
-    height: 6rem;
     font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

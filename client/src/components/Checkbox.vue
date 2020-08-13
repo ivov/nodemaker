@@ -9,24 +9,16 @@
   </p>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-import SmallButton from './SmallButton.vue';
-
-@Component({
+<script>
+export default {
   name: 'InputField',
-  components: {
-    SmallButton
-  },
   props: ["label", "value", "idInfo"],
   methods: {
     input() {
       this.$emit('input', this.$refs.check.value);
     }
   }
-})
-export default class App extends Vue {}
+}
 </script>
 
 <style scoped>

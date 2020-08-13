@@ -122,26 +122,21 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { Component, Vue } from 'vue-property-decorator';
-
-import Instructions from '../components/SharedComponents/Instructions.vue';
-import ForwardButton from '../components/SharedComponents/ForwardButton.vue';
-import BackwardButton from '../components/SharedComponents/BackwardButton.vue';
-import InputField from '../components/SharedComponents/InputField.vue';
-import Dropdown from '../components/SharedComponents/Dropdown.vue';
-import TextArea from '../components/SharedComponents/TextArea.vue';
-import SwitchComponent from '../components/SharedComponents/Switch.vue';
+<script>
+import Instructions from '../components/Instructions.vue';
+import ForwardButton from '../components/ForwardButton.vue';
+import InputField from '../components/InputField.vue';
+import Dropdown from '../components/Dropdown.vue';
+import TextArea from '../components/TextArea.vue';
+import SwitchComponent from '../components/Switch.vue';
 
 import { mapGetters } from 'vuex';
 
-@Component({
+export default {
   name: 'BasicInfo',
   components: {
     Instructions,
     ForwardButton,
-    BackwardButton,
     InputField,
     Dropdown,
     TextArea,
@@ -163,6 +158,5 @@ import { mapGetters } from 'vuex';
       }
     }
   }
-})
-export default class App extends Vue {}
+}
 </script>
