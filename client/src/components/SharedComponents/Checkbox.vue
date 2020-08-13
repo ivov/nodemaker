@@ -76,19 +76,6 @@ export default class App extends Vue {}
   opacity: 1;
   transform: scale(1);
 }
-/* disabled checkbox */
-[type="checkbox"]:disabled:not(:checked) + label:before,
-[type="checkbox"]:disabled:checked + label:before {
-  box-shadow: none;
-  border-color: #bbb;
-  background-color: #ddd;
-}
-[type="checkbox"]:disabled:checked + label:after {
-  color: #999;
-}
-[type="checkbox"]:disabled + label {
-  color: #aaa;
-}
 
 /* hover style just for information */
 label:hover:before {

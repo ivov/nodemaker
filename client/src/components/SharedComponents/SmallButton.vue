@@ -30,14 +30,4 @@ button {
     font-weight: bold;
     margin-left: .2rem;
 }
-
-.button {
-    display: flex;
-    align-content: center;
-    justify-content: space-evenly;
-}
-
-.icon {
-    line-height: normal;
-}
 </style>

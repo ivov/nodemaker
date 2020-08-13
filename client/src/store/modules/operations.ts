@@ -16,15 +16,6 @@ const state = {
 
 const getters = {
     operations: (state: any) => {return state.operations},
-    operationNames: (state: any) => {
-        const nameList: any = [];
-
-        state.operations.forEach(operation => {
-            nameList.push(operation.name);
-        });
-
-        return nameList;
-    },
     operationWithResourceNames: (state: any) => {
         const nameList: any = [];
 
@@ -37,12 +28,23 @@ const getters = {
 };
 
 const actions = {
-    submitOperations({ commit }, operations) {
-        commit('submitOperations', operations);
+    addOperation({ commit }) {
+        const operation = {
+            key: state.operations.length,
+            resource: "",
+            name: "",
+            description: "",
+            endpoint: "",
+            requestMethod: "",
+            cancel: true
+        };
+
+        commit('pushToOperations', operation);
     },
 };
 
 const mutations = {
+    pushToOperations: (state, operation) => state.operations.push(operation),
     submitOperations: (state, operations) => state.operations = operations,
 };
 

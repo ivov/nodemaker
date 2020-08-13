@@ -24,12 +24,19 @@ const getters = {
 };
 
 const actions = {
-    submitResources({ commit }, resources) {
-        commit('submitResources', resources);
-    },
+    addResource({ commit }) {
+        const resource = {
+          key: state.resources.length,
+          text: "",
+          cancel: true
+        };
+  
+        commit('pushToResources', resource);
+      },
 };
 
 const mutations = {
+    pushToResources: (state, resource) => state.resources.push(resource),
     submitResources: (state, resources) => state.resources = resources,
 };
 

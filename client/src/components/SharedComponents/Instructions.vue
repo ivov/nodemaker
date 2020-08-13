@@ -1,5 +1,5 @@
 :<template>
-  <div>
+  <div class="inscructions">
       <h1>{{header}}</h1>
       <h3>{{subtitle}}</h3>
       <h4>{{instructions}}</h4>
@@ -22,6 +22,10 @@ export default class App extends Vue {}
 </script>
 
 <style scoped>
+.instructions {
+  margin-bottom: 1rem;
+}
+
 h1, h3, h4 {
     margin: 0;
     padding: 0;

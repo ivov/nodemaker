@@ -8,9 +8,9 @@
         instructions="Enter in each resource name."
       />
       <div class="box" v-bind:key="resource.key" v-for="resource in resources">
-        <div class="inputContainer">
+        <div class="width25">
           <InputField 
-            class="input"
+            class="my-1"
             label="Resource"
             placeholder="Article"
             description=""
@@ -19,7 +19,7 @@
           />
         </div>
         <SmallButton 
-          class="delete" 
+          class="ml-3" 
           v-if="resource.cancel"
           @click.native="removeResource(resource.key)" 
           :cancel=resource.cancel />
@@ -27,11 +27,11 @@
       <div class="centerButton">
           <AddButton @click.native="addResource()" text="Add another resource" />
       </div>
-      <div class="centerButton finalButton">
+      <div class="centerButton mt-3">
         <router-link to="/regular/operations">
           <ForwardButton 
             text="Select Your Operations"
-            @click.native="submitResources(resources)" 
+            @click.native="$store.commit('submitResources', resources)" 
           />
          </router-link>
       </div>
@@ -45,7 +45,7 @@
         <router-link to="/">
           <BackwardButton 
             text="Edit the previous selections" 
-            @click.native="submitResources(resources)"
+            @click.native="$store.commit('submitResources', resources)"
           />
         </router-link>
       </div>
@@ -77,16 +77,7 @@ import { mapGetters, mapActions} from 'vuex';
   },
   computed: mapGetters(['resources']),
   methods: {
-    ...mapActions(['submitResources']),
-    addResource() {
-      this.resources.push({
-        key: this.resources.length,
-        text: "",
-        cancel: true
-      });
-
-      this.$store.commit('submitResources', this.resources);
-    },
+    ...mapActions(['addResource']),
     removeResource(resourceKey) {
       this.$store.commit('submitResources', this.resources.filter(resource => resource.key !== resourceKey));
     },
@@ -95,48 +86,4 @@ import { mapGetters, mapActions} from 'vuex';
 
 export default class App extends Vue {}
 </script>
-
-<style scoped>
-.home {
-  display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-}
-#optionsBox, #previewBox {
-    background-color: white;
-    width: 35rem;
-    margin: 2rem;
-    padding: 2rem;
-    border-radius: 1rem;
-}
-
-.instructions {
-  margin-bottom: 2rem;
-}
-
-.input {
-  margin: 1rem 0rem;
-}
-
-.inputContainer {
-  width: 25rem;
-}
-
-.box {
-  display: flex;
-  align-items: center;
-}
-
-.delete {
-  margin-left: 3rem;
-}
-
-.centerButton {
-  text-align: center;
-}
-
-.finalButton {
-   margin-top: 3rem;
-}
-</style>
 

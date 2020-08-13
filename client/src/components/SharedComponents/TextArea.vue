@@ -4,30 +4,21 @@
         <label>{{label}}: </label>
         <i v-if="description !== ''" class="fas fa-info-circle icon" :title=description></i>
       </div>
-      <div class="group">
-        <textarea 
-          type="text" 
-          ref="text_input"
-          :placeholder="placeholder" 
-          :value="value"
-          @input="input" />
-          <SmallButton v-if="add" @click.native="$emit('plus')" />
-          <SmallButton v-if="cancel" @click.native="$emit('del')" cancel=true />
-        </div>
+      <textarea 
+        type="text" 
+        ref="text_input"
+        :placeholder="placeholder" 
+        :value="value"
+        @input="input" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import SmallButton from './SmallButton.vue';
-
 @Component({
   name: 'TextArea',
-  components: {
-    SmallButton
-  },
-  props: ["label", "placeholder", "value", "add", "cancel", "description"],
+  props: ["label", "placeholder", "value", "description"],
   methods: {
     input() {
       this.$emit('input', this.$refs.text_input.value);

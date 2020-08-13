@@ -8,9 +8,9 @@
         instructions="Enter in each operations resource, name, description, endpoint, and request method."
       />
       <div class="box" v-bind:key="operation.key" v-for="operation in operations">
-        <div class="inputContainer">
+        <div class="width25">
           <Dropdown 
-            class="input"
+            class="my-15"
             label="Resource" 
             description="The resource to operate on"
             v-bind:options="resourceNames" 
@@ -18,7 +18,7 @@
             v-model=operation.resource
           />
           <InputField 
-            class="input"
+            class="my-15"
             label="Operation Name"
             placeholder="Get" 
             description=""
@@ -26,7 +26,7 @@
             v-model=operation.name
           />
           <InputField 
-            class="input"
+            class="my-15"
             label="Description"
             placeholder="Get a Hacker News article." 
             description=""
@@ -34,7 +34,7 @@
             v-model=operation.description
           />
           <InputField 
-            class="input"
+            class="my-15"
             label="Endpoint"
             placeholder="/items/$$articleId$$" 
             description="The endpoint to associate with the operation. Wrap variables in dollar signs with the associated field name in the middle: $$var_name$$"
@@ -42,7 +42,7 @@
             v-model=operation.endpoint
           />
           <Dropdown 
-            class="input"
+            class="my-15"
             label="Request Method" 
             description=""
             v-bind:options="['GET', 'POST', 'PATCH', 'PUT', 'DELETE']" 
@@ -52,7 +52,7 @@
           <hr>
         </div>
         <SmallButton 
-          class="delete" 
+          class="ml-3" 
           v-if="operation.cancel"
           @click.native="removeOperation(operation.key)" 
           :cancel=operation.cancel />
@@ -63,11 +63,11 @@
             @click.native="addOperation()" 
             />
       </div>
-      <div class="centerButton finalButton">
+      <div class="centerButton mt-3">
         <router-link to="/regular/fields">
             <ForwardButton 
                 text="Select Your Fields" 
-                @click.native="submitOperations(operations)"
+                @click.native="$store.commit('submitOperations', operations)"
             />
         </router-link>
       </div>
@@ -81,7 +81,7 @@
         <router-link to="/regular/resources">
           <BackwardButton 
             text="Edit the previous selections" 
-            @click.native="submitOperations(operations)"
+            @click.native="$store.commit('submitOperations', operations)"
           />
         </router-link>
       </div>
@@ -115,20 +115,7 @@ import { mapGetters, mapActions} from 'vuex';
   },
   computed: mapGetters(['resourceNames', 'operations']),
   methods: {
-    ...mapActions(['submitOperations']),
-    addOperation() {
-        this.operations.push({
-            key: this.operations.length,
-            resource: "",
-            name: "",
-            description: "",
-            endpoint: "",
-            requestMethod: "",
-            cancel: true
-        });
-
-        this.$store.commit('submitOperations', this.operations);
-    },
+    ...mapActions(['addOperation']),
     removeOperation(operationKey) {
       this.$store.commit('submitOperations', this.operations.filter(operation => operation.key !== operationKey));
     }
@@ -137,48 +124,4 @@ import { mapGetters, mapActions} from 'vuex';
 
 export default class App extends Vue {}
 </script>
-
-<style scoped>
-.home {
-  display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-}
-#optionsBox, #previewBox {
-    background-color: white;
-    width: 35rem;
-    margin: 2rem;
-    padding: 2rem;
-    border-radius: 1rem;
-}
-
-.instructions {
-  margin-bottom: 2rem;
-}
-
-.input {
-  margin: 1.5rem 0rem;
-}
-
-.inputContainer {
-  width: 25rem;
-}
-
-.box {
-  display: flex;
-  align-items: center;
-}
-
-.delete {
-  margin-left: 3rem;
-}
-
-.centerButton {
-  text-align: center;
-}
-
-.finalButton {
-   margin-top: 3rem;
-}
-</style>
 
