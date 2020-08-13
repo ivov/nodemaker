@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts">
-/* eslint no-unused-vars: "warn" */
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
@@ -30,16 +29,6 @@ button {
     color: white;
     font-weight: bold;
     width: 15rem;
-}
-
-.button {
-    display: flex;
-    align-content: center;
-    justify-content: space-evenly;
-}
-
-.icon {
-    line-height: normal;
 }
 
 /* Icon Back */

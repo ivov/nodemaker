@@ -44,6 +44,31 @@ const actions = {
 
         commit('createPropertyOption', { propertyKey, option });
     },
+    addProperty({ commit }) {
+        const property = {
+            key: state.properties.length,
+            resource: "",
+            name: "",
+            description: "",
+            endpoint: "",
+            requestMethod: "",
+            default: "",
+            cancel: true
+        };
+
+        commit('pushProperty', property);
+    },
+    addPropertyOption({ commit }, propertyKey) {
+        const option = {
+          name: "",
+          description: "",
+          key: state.properties[propertyKey].options.length,
+          add: false,
+          cancel: true
+        };
+  
+        commit('pushPropertyOption', { propertyKey, option });
+    },
 };
 
 const mutations = {

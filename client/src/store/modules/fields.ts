@@ -27,6 +27,38 @@ const getters = {
 };
 
 const actions = {
+  addField({ commit }) {
+    const field = {
+        key: state.fields.length,
+        resourceOperation: [
+          {
+            key: 0,
+            value: "",
+            resource: "",
+            operation: "",
+            add: true,
+            cancel: false
+          }
+        ],
+        type: "",
+        name: "",
+        description: "",
+        default: "",
+        cancel: true
+      };
+
+      commit('pushToFields', field);
+    },
+    addResourceOperation({ commit }, key) {
+      const newObj = {
+        key: state.fields[key].resourceOperation.length,
+        text: "",
+        add: false,
+        cancel: true
+      };
+
+      commit('pushToResourceOperation', { newObj, key });
+    },
     createOption({ commit }, fieldKey: any) {
       const option = {
         name: "",
@@ -38,6 +70,17 @@ const actions = {
 
       commit('createOption', { fieldKey, option });
     },
+    addOption({ commit }, fieldKey) {
+      const option = {
+        name: "",
+        description: "",
+        key: state.fields[fieldKey].options.length,
+        add: false,
+        cancel: true
+      };
+
+      commit('pushOption', { fieldKey, option });
+    },
     createInnerOption({ commit }, { fieldKey, optionKey }) {
       const option = {
         name: "",
@@ -48,6 +91,17 @@ const actions = {
       };
 
       commit('createInnerOption', { fieldKey, optionKey, option });
+    },
+    addInnerOption({ commit }, { fieldKey, optionKey }) {
+      const option = {
+        name: "",
+        description: "",
+        key: state.fields[fieldKey].options[optionKey].options.length,
+        add: false,
+        cancel: true
+      };
+
+      commit('pushInnerOption', { fieldKey, optionKey, option });
     },
     createCollectionOption({ commit }, fieldKey: any) {
       const option = {
@@ -62,8 +116,18 @@ const actions = {
 
       commit('createOption', { fieldKey, option });
     },
-    submitFields({ commit }, fields) {
-        commit('submitFields', fields);
+    addCollectionOption({ commit }, fieldKey) {
+      const option = {
+        key: this.fields[fieldKey].options.length,
+        type: "",
+        name: "",
+        description: "",
+        default: "",
+        add: false,
+        cancel: true
+      };
+
+      commit('pushOption', { fieldKey, option });
     },
 };
 

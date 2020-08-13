@@ -35,11 +35,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "properties" */ '../views/TriggerNode/Properties.vue')
   },
   {
-    path: '/trigger/options',
-    name: 'Events',
-    component: () => import(/* webpackChunkName: "options" */ '../views/TriggerNode/Options.vue')
-  },
-  {
     path: '/trigger/fields',
     name: 'Fields',
     component: () => import(/* webpackChunkName: "fieldsTrigger" */ '../views/TriggerNode/Fields.vue')

@@ -7,9 +7,9 @@
         instructions="Enter in each property's name, description, type, and required property."
       />
       <div class="box" v-bind:key="property.key" v-for="property in properties">
-        <div class="inputContainer">
+        <div class="width25">
           <InputField 
-            class="input"
+            class="my-15"
             label="Property Name"
             placeholder="Event" 
             description=""
@@ -17,7 +17,7 @@
             v-model=property.displayName
           />
           <InputField 
-            class="input"
+            class="my-15"
             label="Description"
             placeholder="The events that can trigger the webhook and whether they are enabled." 
             description=""
@@ -25,7 +25,7 @@
             v-model=property.description
           />
           <InputField 
-            class="input"
+            class="my-15"
             label="Default"
             placeholder="" 
             description=""
@@ -33,14 +33,14 @@
             v-model=property.default
           />
           <SwitchComponent
-            class="input"
+            class="my-15"
             label="Required"
             description=""
             :value=property.required
-            v-on:input="toggleRequired(property.key)"
+            v-on:my-15="toggleRequired(property.key)"
           />
           <Dropdown 
-            class="input"
+            class="my-15"
             label="Type" 
             description=""
             @change.native="adjustPropertyParams(property.key, property.type)"
@@ -53,7 +53,7 @@
             <div class="box innerText" v-bind:key="option.key" v-for="option in property.options">
               <div class="option optionBox">
                 <InputField 
-                  class="input"
+                  class="my-15"
                   label="Option Name"
                   placeholder="Comment" 
                   description=""
@@ -61,7 +61,7 @@
                   v-model=option.name
                 />
                 <InputField 
-                  class="input"
+                  class="my-15"
                   label="Description"
                   placeholder="Returns query results filtered by comment tag."
                   description="" 
@@ -72,7 +72,7 @@
               <SmallButton 
                 class="deleteOption" 
                 v-if="option.add"
-                @click.native="addOption(property.key)" 
+                @click.native="addPropertyOption(property.key)" 
                 :cancel=option.cancel />
               <SmallButton 
                 class="deleteOption" 
@@ -84,7 +84,7 @@
           <hr>
         </div>
         <SmallButton 
-          class="delete" 
+          class="ml-3" 
           v-if="property.cancel"
           @click.native="removeProperty(property.key)" 
           :cancel=property.cancel />
@@ -95,7 +95,7 @@
             @click.native="addProperty()" 
             />
       </div>
-      <div class="centerButton finalButton">
+      <div class="centerButton mt-3">
         <router-link to="/trigger/fields">
             <ForwardButton 
                 text="Select Your Fields" 
@@ -150,43 +150,18 @@ import { mapGetters, mapActions } from 'vuex';
   },
   computed: mapGetters(['properties']),
   methods: {
-    ...mapActions(['createPropertyOption']),
-    addProperty() {
-        this.properties.push({
-            key: this.properties.length,
-            resource: "",
-            name: "",
-            description: "",
-            endpoint: "",
-            requestMethod: "",
-            default: "",
-            cancel: true
-        });
-
-        this.$store.commit('submitProperties', this.properties);
-    },
-    removeProperty(propertyKey) {
-      this.$store.commit('submitProperties', this.properties.filter(property => property.key !== propertyKey));
-    },
-    toggleRequired(propertyKey) {
-      const newValue = !this.properties[propertyKey].required;
-      this.$store.commit('toggleRequired', { propertyKey, newValue });
-    },
+    ...mapActions(['createPropertyOption', 'addProperty', 'addPropertyOption']),
     adjustPropertyParams(propertyKey, type) {
       if(type === "Options" || type === "Multioptions") {
         this.createPropertyOption(propertyKey);
       }
     },
-    addOption(propertyKey) {
-      const option = {
-        name: "",
-        description: "",
-        key: this.properties[propertyKey].options.length,
-        add: false,
-        cancel: true
-      };
-
-      this.$store.commit('pushPropertyOption', { propertyKey, option });
+    toggleRequired(propertyKey) {
+      const newValue = !this.properties[propertyKey].required;
+      this.$store.commit('toggleRequired', { propertyKey, newValue });
+    },
+    removeProperty(propertyKey) {
+      this.$store.commit('submitProperties', this.properties.filter(property => property.key !== propertyKey));
     },
     removeOption(propertyKey, optionKey) {
       const newObj = this.properties[propertyKey].options.filter(option => option.key !== optionKey);
@@ -197,48 +172,3 @@ import { mapGetters, mapActions } from 'vuex';
 
 export default class App extends Vue {}
 </script>
-
-<style scoped>
-.home {
-  display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-}
-#optionsBox, #previewBox {
-    background-color: white;
-    width: 35rem;
-    margin: 2rem;
-    padding: 2rem;
-    border-radius: 1rem;
-}
-
-.instructions {
-  margin-bottom: 2rem;
-}
-
-.input {
-  margin: 1.5rem 0rem;
-}
-
-.inputContainer {
-  width: 25rem;
-}
-
-.box {
-  display: flex;
-  align-items: center;
-}
-
-.delete {
-  margin-left: 3rem;
-}
-
-.centerButton {
-  text-align: center;
-}
-
-.finalButton {
-   margin-top: 3rem;
-}
-</style>
-
