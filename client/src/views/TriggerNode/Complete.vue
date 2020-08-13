@@ -62,11 +62,10 @@ import BackwardButton from '../../components/BackwardButton.vue';
 import GenericButton from '../../components/GenericButton.vue';
 import Checkbox from '../../components/Checkbox.vue';
 
-import Requester from '../../../Requester';
+import RoutesMixin from '../../mixins/routes-mixin';
+import ParamsBuilderMixin from '../../mixins/params-build-mixin';
 
 import { mapGetters } from 'vuex';
-
-const requester = new Requester();
 
 export default {
   name: 'Fields',
@@ -77,6 +76,7 @@ export default {
     Checkbox,
   },
   computed: mapGetters(['basicInfo', 'properties', 'fields']),
+  mixins: [RoutesMixin, ParamsBuilderMixin],
   data: () => {
     return {
       basicNodeGen: false,
@@ -86,213 +86,28 @@ export default {
     }
   },
   methods: {
-    toCamelCase(str) {
-      return str
-          .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
-          .replace(/\s/g, '')
-          .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
-    },
     async submit()  {
+      const metaParameters = this.buildMetaParameters(this.basicInfo);
+      const mainParameters = this.buildMainTriggerParameters(this.basicInfo.webhookEndpoint, this.properties, this.fields);
       if(this.empty) {
         await this.emptyOutput();
       }
       if(this.basicNodeGen) {
-        await this.simpleNode();
+        const paramsBundle = {
+          metaParameters,
+          mainParameters,
+          nodeGenerationType: "Simple",
+          nodeType: "Trigger",
+        };
+        await this.simpleNode(paramsBundle);
       }
       if(this.packageGen) {
-        await this.packageGenerator();
+        await this.packageGenerator(metaParameters);
       }
       if(this.placeNode) {
         await this.placeFunctional();
       }
       alert("All done! Thank you for using the nodemaker.")
-    },
-    buildMetaParameters() {
-      const { name, auth, color, baseURL } = this.basicInfo;
-      return {
-        serviceName: name,
-        auth,
-        nodeColor: color,
-        apiURL: baseURL
-      };
-    },
-    buildMainParameters() {
-      let mainParameters = {
-        webhookEndpoint: this.basicInfo.webhookEndpoint,
-        webhookProperties: []
-      };
-
-      const mapFieldTypes = {
-        'String': 'string',
-        'Options': 'options',
-        'Multioptions': 'multiOptions',
-        'Boolean': 'boolean',
-        'Number': 'number',
-        'Collection': 'collection',
-        'Fixed Collection': 'fixedCollection'
-      };
-
-      this.properties.forEach(property => {
-        const { displayName, required, description, type } = property;
-
-        let defaultValue = property.default;
-        if(type === "Number") {
-          defaultValue = Number(defaultValue);
-        } else if(type === "Boolean") {
-          defaultValue = Boolean(defaultValue);
-        }
-
-        const propertyObj = {
-          displayName,
-          name: this.toCamelCase(displayName),
-          required,
-          description,
-          type: mapFieldTypes[type],
-          default: defaultValue,
-          options: []
-        };
-
-        if(["Options", "Multioptions"].includes(type)) {
-            property.options.forEach(option => {
-              propertyObj.options.push({
-                name: option.name,
-                value: this.toCamelCase(option.name),
-                description: option.description,
-                fields: []
-              });
-            });
-        } else {
-          delete propertyObj.options;
-        }
-
-        mainParameters.webhookProperties.push(propertyObj);
-      });
-
-      if(this.fields[0].name !== "") {
-        this.fields.forEach(field => {
-          // fix the default for first-layer options
-          let defaultValue = field.default;
-          if(field.type === "Number") {
-            defaultValue = Number(defaultValue);
-          } else if(field.type === "Boolean") {
-            defaultValue = Boolean(defaultValue);
-          } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(field.type)) {
-            defaultValue = JSON.parse(defaultValue);
-          }
-
-          const fieldObj = {
-            displayName: field.name,
-            name: this.toCamelCase(field.name),
-            description: field.description,
-            type: mapFieldTypes[field.type],
-            default: defaultValue,
-            required: true,
-            options: []
-          };
-
-          if(field.name === "Additional Fields") {
-            delete fieldObj.description;
-          }
-          if(field.options === undefined || field.options.length === 0 || field.options[0].name === "") {
-            delete fieldObj.options;
-          } else if(field.type === "Collection" || field.type === "Fixed Collection") {
-            field.options.forEach(option => {
-              // fix the default for internal options
-              let defaultValue = option.default;
-              if(option.type === "Number") {
-                defaultValue = Number(defaultValue);
-              } else if(option.type === "Boolean") {
-                defaultValue = Boolean(defaultValue);
-              } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(option.type)) {
-                defaultValue = JSON.parse(defaultValue);
-              }
-
-              //handle internal options, which will never be a collection
-              let innerOptions = [];
-              if(option.options !== undefined && option.options !== null) {
-                option.options.forEach(innerOption => {
-                  innerOptions.push({
-                    name: innerOption.name,
-                    description: innerOption.description
-                  })
-                });
-              }
-
-              fieldObj.options.push({
-                name: option.name,
-                description: option.description,
-                type: mapFieldTypes[option.type],
-                default: defaultValue,
-                options: innerOptions
-              });
-
-              if(fieldObj.options[fieldObj.options.length - 1].options.length === 0) {
-                delete fieldObj.options[fieldObj.options.length - 1].options;
-              }
-            });
-          } else {
-            field.options.forEach(option => {
-              fieldObj.options.push({
-                name: option.name,
-                description: option.description
-              });
-            });
-          }
-
-          field.resourceOperation.forEach(resourceOp => {
-            const [ property, option ] = resourceOp.value.split(" : ");
-            const propertyIndex = mainParameters.webhookProperties.findIndex(prop => prop.displayName === property);
-            const optionIndex = mainParameters.webhookProperties[propertyIndex].options.findIndex(op => op.name === option);
-            mainParameters.webhookProperties[propertyIndex].options[optionIndex].fields.push(fieldObj);
-          });
-        });
-      }
-
-      return mainParameters;
-    },
-    async simpleNode() {
-      const requester = new Requester();
-      const paramsBundle = {
-        metaParameters: this.buildMetaParameters(),
-        mainParameters: this.buildMainParameters(),
-        nodeGenerationType: "Simple",
-        nodeType: "Trigger",
-      };
-
-      console.log(paramsBundle);
-
-      const result = await requester.request(
-        "nodegen-channel",
-        paramsBundle
-      );
-      console.log(result);
-      alert("Thank you for using the nodemaker! Check your output folder.")
-    },
-    async emptyOutput() {
-      const result = await requester.request(
-        "empty-channel"
-      );
-      console.log(result);
-    },
-    async packageGenerator() {
-      const requester = new Requester();
-      const metaParameters = this.buildMetaParameters();
-
-      console.log(metaParameters);
-
-      const result = await requester.request(
-        "packgen-channel",
-        metaParameters
-      );
-      console.log(result);
-    },
-    async placeFunctional() {
-      const requester = new Requester();
-      const placementResult = await requester.request(
-        "placement-channel",
-        { filesToPlace: "functionality" }
-      );
-      console.log(placementResult);
     },
   },
 }

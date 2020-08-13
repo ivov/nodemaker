@@ -100,7 +100,7 @@
         />
         </div>
       </div>
-      <div class="mt-3">
+      <div class="mt-3 centerButton">
         <router-link v-if="nodeType === 'Regular Node'" to="/regular/resources">
           <ForwardButton 
             text="Get Started" 

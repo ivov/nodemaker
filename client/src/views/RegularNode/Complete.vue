@@ -82,11 +82,10 @@ import BackwardButton from '../../components/BackwardButton.vue';
 import GenericButton from '../../components/GenericButton.vue';
 import Checkbox from '../../components/Checkbox.vue';
 
-import Requester from '../../../Requester';
+import RoutesMixin from '../../mixins/routes-mixin';
+import ParamsBuilderMixin from '../../mixins/params-build-mixin';
 
 import { mapGetters } from 'vuex';
-
-const requester = new Requester();
 
 export default {
   name: 'Fields',
@@ -96,6 +95,7 @@ export default {
     GenericButton,
     Checkbox,
   },
+  mixins: [RoutesMixin, ParamsBuilderMixin],
   data: () => {
     return {
       basicNodeGen: false,
@@ -110,20 +110,40 @@ export default {
   computed: mapGetters(['basicInfo', 'documentation', 'docsInfo', 'resources', 'operations', 'fields']),
   methods: {
     async submit(){
+      const metaParameters = this.buildMetaParameters(this.basicInfo);
+      const mainParameters = this.buildMainParameters(this.resources, this.operations, this.fields);
+
       if(this.empty) {
         await this.emptyOutput();
       }
       if(this.basicNodeGen) {
-        await this.simpleNode();
+        const paramsBundle = {
+          metaParameters,
+          mainParameters,
+          nodeGenerationType: "Simple",
+          nodeType: "Regular",
+        };
+        await this.simpleNode(paramsBundle);
       }
       if(this.complexNodeGen) {
-        await this.complexNode();
+        const paramsBundle = {
+          metaParameters,
+          mainParameters,
+          nodeGenerationType: "Complex",
+          nodeType: "Regular",
+        };
+        await this.simpleNode(paramsBundle);
       }
       if(this.packageGen) {
-        await this.packageGenerator();
+        await this.packageGenerator(metaParameters);
       }
       if(this.docs) {
-        await this.docsGen();
+        const paramsBundle = {
+          metaParameters,
+          mainParameters,
+          docsParameters: this.buildDocsParameters(this.basicInfo, this.docsInfo)
+        };
+        await this.docsGen(paramsBundle);
       }
       if(this.placeNode) {
         await this.placeFunctional();
@@ -132,211 +152,6 @@ export default {
         await this.placeDocumentation();
       }
       alert("All done! Thank you for using the nodemaker.")
-    },
-    buildMetaParameters() {
-      const { name, auth, color, baseURL } = this.basicInfo;
-      return {
-        serviceName: name,
-        auth,
-        nodeColor: color,
-        apiURL: baseURL
-      };
-    },
-    buildMainParameters() {
-      let mainParameters = {};
-
-      const mapFieldTypes = {
-        'String': 'string',
-        'Options': 'options',
-        'Multioptions': 'multiOptions',
-        'Boolean': 'boolean',
-        'Number': 'number',
-        'Collection': 'collection',
-        'Fixed Collection': 'fixedCollection'
-      };
-
-      this.resources.forEach(resource => {
-        mainParameters[resource.text] = [];
-      });
-
-      this.operations.forEach(operation => {
-        mainParameters[operation.resource].push({
-          name: operation.name,
-          description: operation.description,
-          endpoint: operation.endpoint,
-          requestMethod: operation.requestMethod,
-          fields: []
-        })
-      });
-
-      if(this.fields[0].name !== "") {
-        this.fields.forEach(field => {
-          // fix the default for first-layer options
-          let defaultValue = field.default;
-          if(field.type === "Number") {
-            defaultValue = Number(defaultValue);
-          } else if(field.type === "Boolean") {
-            defaultValue = Boolean(defaultValue);
-          } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(field.type)) {
-            defaultValue = JSON.parse(defaultValue);
-          }
-
-          const fieldObj = {
-            name: field.name,
-            description: field.description,
-            type: mapFieldTypes[field.type],
-            default: defaultValue,
-            options: []
-          };
-
-          if(field.name === "Additional Fields") {
-            delete fieldObj.description;
-          }
-          if(field.options === undefined || field.options.length === 0 || field.options[0].name === "") {
-            delete fieldObj.options;
-          } else if(field.type === "Collection" || field.type === "Fixed Collection"){
-            field.options.forEach(option => {
-              // fix the default for internal options
-              let defaultValue = option.default;
-              if(option.type === "Number") {
-                defaultValue = Number(defaultValue);
-              } else if(option.type === "Boolean") {
-                defaultValue = Boolean(defaultValue);
-              } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(option.type)) {
-                defaultValue = JSON.parse(defaultValue);
-              }
-
-              //handle internal options, which will never be a collection
-              let innerOptions = [];
-              if(option.options !== undefined && option.options !== null) {
-                option.options.forEach(innerOption => {
-                  innerOptions.push({
-                    name: innerOption.name,
-                    description: innerOption.description
-                  })
-                });
-              }
-
-              fieldObj.options.push({
-                name: option.name,
-                description: option.description,
-                type: mapFieldTypes[option.type],
-                default: defaultValue,
-                options: innerOptions
-              });
-
-              if(fieldObj.options[fieldObj.options.length - 1].options.length === 0) {
-                delete fieldObj.options[fieldObj.options.length - 1].options;
-              }
-            });
-          } else {
-            field.options.forEach(option => {
-              fieldObj.options.push({
-                name: option.name,
-                description: option.description
-              });
-            });
-          }
-
-          field.resourceOperation.forEach(resourceOp => {
-            const [ operation, resource ] = resourceOp.value.split(" : ");
-            const operationToUpdate = mainParameters[resource].findIndex(op => op.name === operation);   
-            mainParameters[resource][operationToUpdate].fields.push(fieldObj);
-          });
-        });
-      }
-
-      return mainParameters;
-    },
-    buildDocsParameters() {
-        const { name } = this.basicInfo;
-        const { serviceURL, introDescription, exampleUsage, workflowNumber } = this.docsInfo;
-
-        return {
-            serviceName: name,
-            serviceURL,
-            introDescription,
-            exampleUsage,
-            workflowNumber
-        };
-    },
-    async simpleNode() {
-      const paramsBundle = {
-        metaParameters: this.buildMetaParameters(),
-        mainParameters: this.buildMainParameters(),
-        nodeGenerationType: "Simple",
-        nodeType: "Regular",
-      };
-
-      console.log(paramsBundle);
-
-      const result = await requester.request(
-        "nodegen-channel",
-        paramsBundle
-      );
-      console.log(result);
-    },
-    async complexNode() { 
-      const paramsBundle = {
-        metaParameters: this.buildMetaParameters(),
-        mainParameters: this.buildMainParameters(),
-        nodeGenerationType: "Complex",
-        nodeType: "Regular",
-      };
-
-      console.log(paramsBundle);
-
-      const result = await requester.request(
-        "nodegen-channel",
-        paramsBundle
-      );
-      console.log(result);
-    },
-    async packageGenerator() {
-      const metaParameters = this.buildMetaParameters();
-
-      console.log(metaParameters);
-
-      const result = await requester.request(
-        "packgen-channel",
-        metaParameters
-      );
-      console.log(result);
-    },
-    async emptyOutput() {
-      const result = await requester.request(
-        "empty-channel"
-      );
-      console.log(result);
-    },
-    async docsGen() {
-      const paramsBundle = {
-        metaParameters: this.buildMetaParameters(),
-        mainParameters: this.buildMainParameters(),
-        docsParameters: this.buildDocsParameters()
-      };
-
-      console.log(paramsBundle);
-
-      const result = await requester.request(
-        "docsgen-channel",
-        paramsBundle
-      );
-      console.log(result);
-    },
-    async placeFunctional() {
-      const placementResult = await requester.request(
-        "placement-channel",
-        { filesToPlace: "functionality" }
-      );
-      console.log(placementResult);
-    },
-    async placeDocumentation() {
-      const placementResult = await requester.request(
-        "placement-channel",
-        { filesToPlace: "documentation" }
-      );
-      console.log(placementResult);
     },
   },
 }
