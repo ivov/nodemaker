@@ -13,7 +13,7 @@ import Highlighter from "../services/Highlighter";
 
   let nodeGenerationType: NodeGenerationType;
 
-  // regular node may be simple or complex, trigger node is simple
+  // regular node may be simple or complex, trigger node is always simple
   nodeType === NodeTypeEnum.Regular
     ? ({ nodeGenerationType } = await Prompter.forNodeGenerationType())
     : (nodeGenerationType = "Simple");

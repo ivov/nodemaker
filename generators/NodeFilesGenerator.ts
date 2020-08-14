@@ -1,14 +1,19 @@
 import { execSync as exec } from "child_process"; // sync to facilitate subsequent verification
 import { join } from "path";
+import { sortBy } from "underscore";
 import Generator from "./Generator";
 import { NodeGenerationEnum, AuthEnum } from "../utils/enums";
 import { readdirSync } from "fs";
-import { areTriggerNodeParameters } from "../utils/typeGuards";
+import {
+  areTriggerNodeParameters,
+  isManyValuesGroupField,
+  isOptionWithMaxNesting,
+} from "../utils/typeGuards";
 
 /**Responsible for generating all node functionality files at `/output`:
  * - `*.node.ts`
  * - `GenericFunctions.ts`
- * - `.credentials.ts`
+ * - `*.credentials.ts`
  * - one or more `*Description.ts` files (in complex node generation)
  */
 export default class NodeFilesGenerator extends Generator {
@@ -28,6 +33,8 @@ export default class NodeFilesGenerator extends Generator {
   /**Generate all node functionality files.*/
   async run(): Promise<BackendOperationResult> {
     try {
+      this.sortOptionsAlphabetically();
+
       this.generateMainNodeFile();
       this.generateGenericFunctionsFile();
 
@@ -43,6 +50,31 @@ export default class NodeFilesGenerator extends Generator {
       return { completed: true };
     } catch (error) {
       return { completed: false, error };
+    }
+  }
+
+  /**Sort all options (first and second/max nested) in `regularNodeParameters` alphabetically. See n8n submission guidelines:
+   * _"Ensure that all the options are ordered alphabetically, unless a different order is needed for a specific reason"_
+   * https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md#checklist-before-submitting-a-new-node"*/
+  // prettier-ignore
+  private sortOptionsAlphabetically() {
+    if (areTriggerNodeParameters(this.mainParameters)) return; // skip trigger node params
+
+    for (let resource in this.mainParameters) {
+      this.mainParameters[resource].forEach((operation) => {
+        operation.fields.forEach((field) => {
+          // first nested level
+          if (isManyValuesGroupField(field)) {
+            field.options = sortBy(field.options, (option) => option.name);
+            field.options.forEach((option) => {
+              // second/max nested level
+              if (isOptionWithMaxNesting(option)) {
+                option.options = sortBy(option.options, (option) => option.name);
+              }
+            });
+          }
+        });
+      });
     }
   }
 

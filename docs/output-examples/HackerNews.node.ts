@@ -79,7 +79,7 @@ export class HackerNews implements INodeType {
 				default: 'get',
 				description: 'Operation to perform',
 			},
-						{
+			{
 				displayName: 'Operation',
 				name: 'operation',
 				type: 'options',
@@ -105,13 +105,12 @@ export class HackerNews implements INodeType {
 				default: 'get',
 				description: 'Operation to perform',
 			},
-			
 			// ----------------------------------
 			//         Fields
 			// ----------------------------------
 			{
 				displayName: 'Article ID',
-				name: 'Article ID',
+				name: 'articleId',
 				description: 'The ID of the Hacker News article to be returned',
 				type: 'string',
 				required: true,
@@ -129,7 +128,7 @@ export class HackerNews implements INodeType {
 			},
 			{
 				displayName: 'Additional Fields',
-				name: 'Additional Fields',
+				name: 'additionalFields',
 				type: 'collection',
 				required: true,
 				default: {},
@@ -154,7 +153,7 @@ export class HackerNews implements INodeType {
 			},
 			{
 				displayName: 'Return All',
-				name: 'Return All',
+				name: 'returnAll',
 				description: 'Whether to return all results or only up to a limit',
 				type: 'boolean',
 				required: true,
@@ -172,7 +171,7 @@ export class HackerNews implements INodeType {
 			},
 			{
 				displayName: 'Limit',
-				name: 'Limit',
+				name: 'limit',
 				description: 'Limit of Hacker News articles to be returned for the query',
 				type: 'number',
 				required: true,
@@ -193,7 +192,7 @@ export class HackerNews implements INodeType {
 			},
 			{
 				displayName: 'Additional Fields',
-				name: 'Additional Fields',
+				name: 'additionalFields',
 				type: 'collection',
 				required: true,
 				default: {},
@@ -262,7 +261,7 @@ export class HackerNews implements INodeType {
 			},
 			{
 				displayName: 'Username',
-				name: 'Username',
+				name: 'username',
 				description: 'The Hacker News user to be returned',
 				type: 'string',
 				required: true,
@@ -280,7 +279,7 @@ export class HackerNews implements INodeType {
 			},
 			{
 				displayName: 'Username',
-				name: 'Username',
+				name: 'username',
 				description: 'The Hacker News user to be renamed',
 				type: 'string',
 				required: true,

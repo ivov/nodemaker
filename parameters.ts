@@ -1,7 +1,7 @@
 import { getWorkflowSubmissionUrl } from "./utils/getWorkflowSubmissionUrl";
 
 export const metaParameters: MetaParameters = {
-  serviceName: "Hacker News",
+  serviceName: "Nodemaker News",
   authType: "OAuth2",
   nodeColor: "#ff6600",
   apiUrl: "http://hn.algolia.com/api/v1/",
@@ -11,13 +11,13 @@ export const regularNodeParameters: RegularNodeParameters = {
   Article: [
     {
       name: "Get",
-      description: "Get a Hacker News article",
+      description: "Get a Nodemaker News article",
       endpoint: "items/$$articleId$$",
       requestMethod: "GET",
       fields: [
         {
           name: "Article ID",
-          description: "The ID of the Hacker News article to be returned",
+          description: "The ID of the Nodemaker News article to be returned",
           type: "string",
           default: "",
         },
@@ -39,7 +39,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     },
     {
       name: "Get All",
-      description: "Get all Hacker News articles",
+      description: "Get all Nodemaker News articles",
       endpoint: "search?",
       requestMethod: "GET",
       fields: [
@@ -52,7 +52,7 @@ export const regularNodeParameters: RegularNodeParameters = {
         {
           name: "Limit",
           description:
-            "Limit of Hacker News articles to be returned for the query",
+            "Limit of Nodemaker News articles to be returned for the query",
           type: "number",
           default: 5,
           extraDisplayRestriction: { "Return All": true },
@@ -64,13 +64,23 @@ export const regularNodeParameters: RegularNodeParameters = {
           default: {},
           options: [
             {
-              name: "Keyword",
+              name: "Tags",
               description: "The keyword for filtering the results of the query",
-              type: "string",
+              type: "multiOptions",
               default: "",
+              options: [
+                {
+                  name: "Feature1",
+                  description: "Some description",
+                },
+                {
+                  name: "Feature2",
+                  description: "Some other description",
+                },
+              ],
             },
             {
-              name: "Tags",
+              name: "Keyword",
               description: "Tags for filtering the results of the query",
               type: "multiOptions",
               default: {},
@@ -110,13 +120,13 @@ export const regularNodeParameters: RegularNodeParameters = {
   User: [
     {
       name: "Get",
-      description: "Get a Hacker News user",
+      description: "Get a Nodemaker News user",
       endpoint: "users/$$username$$",
       requestMethod: "GET",
       fields: [
         {
           name: "Username",
-          description: "The Hacker News user to be returned",
+          description: "The Nodemaker News user to be returned",
           type: "string",
           default: "",
         },
@@ -124,13 +134,13 @@ export const regularNodeParameters: RegularNodeParameters = {
     },
     {
       name: "Rename",
-      description: "Rename a Hacker News user",
+      description: "Rename a Nodemaker News user",
       endpoint: "users/$$username$$",
       requestMethod: "PUT",
       fields: [
         {
           name: "Username",
-          description: "The Hacker News user to be renamed",
+          description: "The Nodemaker News user to be renamed",
           type: "string",
           default: "",
         },
@@ -140,11 +150,11 @@ export const regularNodeParameters: RegularNodeParameters = {
 };
 
 export const docsParameters: DocsParameters = {
-  serviceName: "Hacker News",
+  serviceName: "Nodemaker News",
   serviceUrl: "https://news.ycombinator.com",
   introDescription:
     "a social news website focusing on computer science and entrepreneurship",
-  exampleUsage: "get an article from Hacker News",
+  exampleUsage: "get an article from Nodemaker News",
   workflowUrl: getWorkflowSubmissionUrl(),
 };
 

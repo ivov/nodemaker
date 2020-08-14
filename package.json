@@ -35,7 +35,8 @@
     "node-fetch": "^2.6.0",
     "puppeteer": "^5.2.1",
     "sharp": "^0.25.4",
-    "typescript-is": "^0.16.3"
+    "typescript-is": "^0.16.3",
+    "underscore": "^1.10.2"
   },
   "devDependencies": {
     "@types/inquirer": "^6.5.0",
@@ -43,6 +44,7 @@
     "@types/node-fetch": "^2.5.7",
     "@types/puppeteer": "^3.0.1",
     "@types/sharp": "^0.25.1",
+    "@types/underscore": "^1.10.21",
     "ttypescript": "^1.5.10",
     "typescript": "^3.9.6"
   }

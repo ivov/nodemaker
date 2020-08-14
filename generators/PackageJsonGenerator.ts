@@ -7,34 +7,49 @@ import { PACKAGE_JSON_URL } from "../utils/constants";
 import sleep from "../utils/sleep";
 
 export default class PackageJsonGenerator extends Generator {
+  private readonly localPackageJsonPath = join("output", "package.json");
   private packageJsonData: any;
-  private localPackageJsonPath: string;
 
   constructor(private metaParameters: MetaParameters) {
     super();
-    this.localPackageJsonPath = join("output", "package.json");
   }
 
   public async run(): Promise<BackendOperationResult> {
     try {
-      await this.retrievePackageJson();
-      this.insertCredentialPathIntoPackageJson();
+      await this.getPackageJson();
+      this.verifyIfNodeToBeCreatedExists();
+      this.savePackageJson();
+      this.insertCredentialInPackageJson();
       await sleep(1000); // to ensure both insertions succeed
-      this.insertNodePathIntoPackageJson();
+      this.insertNodeInPackageJson();
       return { completed: true };
     } catch (error) {
       return { completed: false, error };
     }
   }
 
-  /**Download `package.json` from `packages/nodes-base` from official repo and store it at `/output` dir.*/
-  public async retrievePackageJson() {
-    const packageJsonData = await this.fetchPackageJson();
-    this.savePackageJson(packageJsonData);
+  /**Verify if the service name of the node to be created already exists in the package.json of the official n8n repo.*/
+  private verifyIfNodeToBeCreatedExists() {
+    const nodeToBeCreated = this.metaParameters.serviceName.replace(/\s/, "");
+
+    for (let node of this.packageJsonData.n8n.nodes) {
+      let existingNode = node.match(/dist\/nodes\/(.*)\.node\.js/)[1];
+
+      // remove dir name if it exists
+      if (existingNode.split("").includes("/")) {
+        existingNode = existingNode.replace(/.*\//, "");
+      }
+
+      if (nodeToBeCreated === existingNode) {
+        throw Error(
+          "The node you are trying to create already exists in the official n8n repo.\nPlease change the serviceName of the node in metaParameters in parameters.ts."
+        );
+      }
+    }
   }
 
   /**Insert the new node credential at their appropriate location in `package.json`.*/
-  public insertCredentialPathIntoPackageJson() {
+  private insertCredentialInPackageJson() {
     const command = this.formatCommand(`
     gen updateCredentialPackageJson
       --serviceCredential ${this.getServiceCredentialName(this.metaParameters)}
@@ -45,7 +60,7 @@ export default class PackageJsonGenerator extends Generator {
   }
 
   /**Insert the new node at their appropriate location in `package.json`.*/
-  public insertNodePathIntoPackageJson() {
+  private insertNodeInPackageJson() {
     const { serviceName } = this.metaParameters;
     const formattedServiceName = serviceName.replace(/\s/, "");
 
@@ -58,24 +73,18 @@ export default class PackageJsonGenerator extends Generator {
     exec(command);
   }
 
-  /**Get contents of `package.json` from `packages/nodes-base` from official repo.*/
-  private async fetchPackageJson() {
+  /**Get contents of `package.json` from `packages/nodes-base` from the official n8n repo.*/
+  private async getPackageJson() {
     const response = await fetch(PACKAGE_JSON_URL);
-    return response.json();
+    this.packageJsonData = await response.json();
   }
 
   /**Write contents of `package.json` from `packages/nodes-base` from official repo in /output dir.*/
-  private async savePackageJson(packageJsonData: any) {
+  private savePackageJson() {
     fs.writeFileSync(
       this.localPackageJsonPath,
-      JSON.stringify(packageJsonData, null, 2)
+      JSON.stringify(this.packageJsonData, null, 2)
     );
-    this.packageJsonData = this.readPackageJson();
-  }
-
-  /**Parse `package.json` into JSON object.*/
-  private readPackageJson() {
-    return JSON.parse(fs.readFileSync(this.localPackageJsonPath).toString());
   }
 
   /**Find the credential right after which the new node credential is to be inserted in `package.json`.*/
@@ -91,7 +100,9 @@ export default class PackageJsonGenerator extends Generator {
       return relevantString.replace(".credentials.js", "");
     }
 
-    throw Error("No spot for node credential path insertion found!");
+    throw Error(
+      "No spot for node credential path insertion found in package.json retrieved from official n8n repository."
+    );
   }
 
   /**Find the node right after which the new node is to be inserted in `package.json`.*/
@@ -100,7 +111,9 @@ export default class PackageJsonGenerator extends Generator {
       const pathMatch = node.match(/dist\/nodes\/(.*)\.node\.js/);
 
       if (pathMatch === null) {
-        throw Error("No path match found in package.json retrieved from repo!");
+        throw Error(
+          "No path match found in package.json retrieved from official n8n repository."
+        );
       }
 
       const relevantString = pathMatch[1];
@@ -110,6 +123,8 @@ export default class PackageJsonGenerator extends Generator {
       }
       return relevantString.replace(".node.js", "");
     }
-    throw Error("No spot for node path insertion found!");
+    throw Error(
+      "No spot for node path insertion found in package.json retrieved from official n8n repository."
+    );
   }
 }
