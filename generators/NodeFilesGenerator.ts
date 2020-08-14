@@ -1,5 +1,6 @@
 import { execSync as exec } from "child_process"; // sync to facilitate subsequent verification
 import { join } from "path";
+import { sortBy } from "underscore";
 import Generator from "./Generator";
 import { NodeGenerationEnum, AuthEnum } from "../utils/enums";
 import { readdirSync } from "fs";
@@ -20,8 +21,6 @@ export default class NodeFilesGenerator extends Generator {
   private mainParameters: MainParameters;
   private nodeGenerationType: NodeGenerationType;
   private nodeType: NodeType;
-  private firstNestedOptionNamesPerField: string[][] = [];
-  private maxNestedOptionNamesPerField: string[][] = [];
 
   constructor(paramsBundle: NodegenParamsBundle) {
     super();
@@ -32,13 +31,9 @@ export default class NodeFilesGenerator extends Generator {
   }
 
   /**Generate all node functionality files.*/
-  async run(
-    options: { checkSorting: boolean } = { checkSorting: true }
-  ): Promise<BackendOperationResult> {
+  async run(): Promise<BackendOperationResult> {
     try {
-      if (options.checkSorting) {
-        this.verifyOptionsSorting();
-      }
+      this.sortOptionsAlphabetically();
 
       this.generateMainNodeFile();
       this.generateGenericFunctionsFile();
@@ -58,71 +53,29 @@ export default class NodeFilesGenerator extends Generator {
     }
   }
 
-  /**Verify if all options (first and second/max nested) in `regularNodeParameters` are ordered alphabetically per field.*/
-  private verifyOptionsSorting() {
-    this.extractOptionNames();
-    this.compareAgainstSorted(this.firstNestedOptionNamesPerField);
-    this.compareAgainstSorted(this.maxNestedOptionNamesPerField);
-  }
-
-  /**Extract option names per field (first and second/max nested) and store them in private fields.
-   * Example:
-   * ```ts
-   * [
-   *     [ 'Feature1', 'Feature2' ], // options per field
-   *     [ 'FeatureA', 'FeatureB', 'FeatureC', 'FeatureD' ] // options per field
-   * ]
-   * ```
-   */
+  /**Sort all options (first and second/max nested) in `regularNodeParameters` alphabetically. See n8n submission guidelines:
+   * _"Ensure that all the options are ordered alphabetically, unless a different order is needed for a specific reason"_
+   * https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md#checklist-before-submitting-a-new-node"*/
   // prettier-ignore
-  private extractOptionNames() {
+  private sortOptionsAlphabetically() {
     if (areTriggerNodeParameters(this.mainParameters)) return; // skip trigger node params
 
-    // traverse regular node params to reach options
     for (let resource in this.mainParameters) {
       this.mainParameters[resource].forEach((operation) => {
         operation.fields.forEach((field) => {
-
           // first nested level
-          let firstNested: string[] = [];
           if (isManyValuesGroupField(field)) {
+            field.options = sortBy(field.options, (option) => option.name);
             field.options.forEach((option) => {
-              firstNested.push(option.name);
-
               // second/max nested level
-              let maxNested: string[] = [];
               if (isOptionWithMaxNesting(option)) {
-                option.options.forEach((option) => maxNested.push(option.name));
-                this.maxNestedOptionNamesPerField.push(maxNested);
+                option.options = sortBy(option.options, (option) => option.name);
               }
             });
-
-            this.firstNestedOptionNamesPerField.push(firstNested);
           }
         });
       });
     }
-  }
-
-  private compareAgainstSorted(optionsToCompare: string[][]) {
-    const errorMessageFooter =
-      "\n\nBased on n8n submission guidelines: 'Ensure that all the options are ordered alphabetically, unless a different order is needed for a specific reason' https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md#checklist-before-submitting-a-new-node";
-
-    optionsToCompare.forEach((fieldOptions) => {
-      if (fieldOptions.length > 1) {
-        const sortedFieldOptions = [...fieldOptions].sort();
-
-        fieldOptions.forEach((optionName, index) => {
-          if (optionName !== sortedFieldOptions[index]) {
-            throw Error(
-              "Options not alphabetically sorted:\n" +
-                fieldOptions.join(", ") +
-                errorMessageFooter
-            );
-          }
-        });
-      }
-    });
   }
 
   /**Generate `*.node.ts` (regular node) or `*Trigger.node.ts` (trigger node), with a different version for simple or complex node generation.*/

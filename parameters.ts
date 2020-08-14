@@ -62,7 +62,7 @@ export const regularNodeParameters: RegularNodeParameters = {
           default: {},
           options: [
             {
-              name: "Keyword",
+              name: "Tags",
               description: "The keyword for filtering the results of the query",
               type: "multiOptions",
               default: "",
@@ -78,7 +78,7 @@ export const regularNodeParameters: RegularNodeParameters = {
               ],
             },
             {
-              name: "Tags",
+              name: "Keyword",
               description: "Tags for filtering the results of the query",
               type: "multiOptions",
               default: {},
