@@ -382,6 +382,8 @@ If `metaParameters.authType` is set to `"None"`, then no `*.credentials.ts` file
   <img src="images/screencaps/nodegen-prompt.png"/>
 </p>
 
+**Note:** Per the [n8n submission guidelines](https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md#checklist-before-submitting-a-new-node), this operation auto-sorts all `options` in the node parameters in alphabetical order.
+
 ### `docsgen`
 
 > **Important**: `docsgen` is currently only available for regular nodes, not for trigger nodes.
@@ -406,6 +408,8 @@ $ npm run packgen
 <p align="center">
   <img src="images/screencaps/packageJson.png"/>
 </p>
+
+**Note:** This operation disallows insertion of a node in the `package.json` if its name already exists in the listing.
 
 ### `shotgen`
 
