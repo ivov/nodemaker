@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.png" width="315" />
+  <img src="docs/images/nodemaker-banner.png" width="315" />
 </p>
 
 <p align="center">

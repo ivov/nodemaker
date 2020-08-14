@@ -356,7 +356,7 @@ Output files are all generated in the `/output` dir.
 
 ### `nodegen`
 
-```bash
+```sh
 $ npm run nodegen
 ```
 
@@ -382,11 +382,13 @@ If `metaParameters.authType` is set to `"None"`, then no `*.credentials.ts` file
   <img src="images/screencaps/nodegen-prompt.png"/>
 </p>
 
+**Note:** Per the [n8n submission guidelines](https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md#checklist-before-submitting-a-new-node), this operation auto-sorts all `options` in the node parameters in alphabetical order.
+
 ### `docsgen`
 
 > **Important**: `docsgen` is currently only available for regular nodes, not for trigger nodes.
 
-```bash
+```sh
 $ npm run docsgen
 ```
 
@@ -397,7 +399,7 @@ $ npm run docsgen
 
 ### `packgen`
 
-```bash
+```sh
 $ npm run packgen
 ```
 
@@ -407,11 +409,13 @@ $ npm run packgen
   <img src="images/screencaps/packageJson.png"/>
 </p>
 
+**Note:** This operation disallows insertion of a node in the `package.json` if its name already exists in the listing.
+
 ### `shotgen`
 
 > **Important:** `shotgen` requires credentials. See below.
 
-```bash
+```sh
 $ npm run shotgen
 ```
 
@@ -438,7 +442,7 @@ There are two ways to run `shotgen`:
 
 Concurrent startup requires the `nodemaker` repo to be located alongside your copy of the `n8n` repo.
 
-```bash
+```sh
 .
 ├── n8n
 └── nodemaker
@@ -457,7 +461,7 @@ Imgbb requires credentials. To generate them:
 5. Create an `.env` file in `/config`.
 6. Enter your API key as `IMGBB_API_KEY` in the `.env` file.
 
-```bash
+```sh
 IMGBB_API_KEY="6d17c6..."
 ```
 
@@ -465,7 +469,7 @@ IMGBB_API_KEY="6d17c6..."
 
 > **Important:** `flowgen` requires credentials. See below.
 
-```bash
+```sh
 $ npm run flowgen
 ```
 
@@ -475,7 +479,7 @@ $ npm run flowgen
 
 To log in to [n8n.io](https://n8n.io), `flowgen` needs credentials for a n8n account. Create an account at [n8n.io](https://n8n.io) and enter your credentials as env vars in the `.env` file you created at `/config`:
 
-```bash
+```sh
 N8N_LOGIN_USERNAME="name@example.com"
 N8N_LOGIN_PASSWORD="abc123"
 ```
@@ -484,7 +488,7 @@ N8N_LOGIN_PASSWORD="abc123"
 
 > **Important:** `icongen` requires credentials. See below.
 
-```bash
+```sh
 $ npm run icongen
 ```
 
@@ -524,7 +528,7 @@ To generate a Google Cloud Platform project API key:
 
 End result in `/config/.env`:
 
-```bash
+```sh
 GOOGLE_IMAGE_SEARCH_ENGINE_ID="01782..."
 GOOGLE_PROJECT_API_KEY="AIzaS..."
 ```
@@ -533,7 +537,7 @@ Google's Custom Search Engine is limited to 100 free requests a day.
 
 ### `resize`
 
-```bash
+```sh
 $ npm run resize
 ```
 
@@ -541,9 +545,15 @@ $ npm run resize
 
 Per n8n codebase conventions, the output PNG filename is camelCased.
 
+<p align="center">
+  <img src="images/screencaps/resize-prompt.png"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/screencaps/resize-icon-candidates.png"/>
+</p>
+
 ### `place`
 
-```bash
+```sh
 $ npm run place
 ```
 
@@ -557,7 +567,7 @@ $ npm run place
 
 `place` requires the `nodemaker` repo to be located alongside your copies of the `n8n` and `n8n-docs` repos.
 
-```bash
+```sh
 .
 ├── n8n
 ├── n8n-docs
@@ -566,7 +576,7 @@ $ npm run place
 
 ### `validate`
 
-```bash
+```sh
 $ npm run validate
 ```
 
