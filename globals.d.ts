@@ -177,6 +177,7 @@ type SingleValueOperationField = {
 
 type ManyValuesGroupField = {
   name: string;
+  description: string;
   type: CollectionType | OptionsType;
   default: ManyValuesFieldDefault;
   options: ManyValuesGroupFieldOption[];
@@ -188,6 +189,8 @@ type SingleValueFieldType = "string" | "number" | "boolean";
 type OptionsType = "options" | "multiOptions";
 
 type CollectionType = "collection" | "fixedCollection";
+
+type FieldType = SingleValueFieldType | OptionsType | CollectionType;
 
 type FieldDefault = SingleValueFieldDefault | ManyValuesFieldDefault;
 
@@ -206,4 +209,90 @@ type ManyValuesGroupFieldOption = {
 type MaxNestedFieldOption = {
   name: string;
   description: string;
+};
+
+
+// ********************************************************************
+//                        Frontend Types
+// ********************************************************************
+type FrontendNodeType = NodeType | "";
+
+type BasicInfo = MetaParameters & {
+  webhookEndpoint: string;
+};
+
+type BasicInfoState = {
+  basicInfo: BasicInfo;
+  nodeType: FrontendNodeType;
+  documentation: boolean;
+};
+
+type DocsInfoState = {
+  docsInfo: DocsParameters
+};
+
+type FrontendResource = {
+  key: number;
+  text: string;
+  cancel: boolean;
+};
+
+type ResourcesState = {
+  resources: FrontendResource[];
+};
+
+type FrontendOperation = Operation & {
+  key: number;
+  resource: string;
+  add?: boolean;
+  cancel?: boolean;
+};
+
+type OperationsState = {
+  operations: FrontendOperation[];
+};
+
+type AssociatedProps = {
+  key: number;
+  value: string;
+  add?: boolean;
+  cancel?: boolean;
+};
+
+type FrontendField = OperationField & {
+  key: number,
+  resourceOperation: AssociatedProps[],
+  options: FrontendOption[];
+};
+
+type FrontendProperty = WebhookProperty & {
+  key: number
+  resource: string
+  cancel?: boolean
+}
+
+type PropertyState = {
+  properties: FrontendProperty[]
+}
+
+type OptionsOption = MaxNestedFieldOption & {
+  key: number;
+  add?: boolean;
+  cancel?: boolean;
+};
+
+type CollectionOption = ManyValuesGroupFieldOption & {
+  key: number;
+  add?: boolean;
+  cancel?: boolean;
+};
+
+type FrontendOption = CollectionOption | OptionsOption;
+
+type FieldsState = {
+  fields: FrontendField[];
+};
+
+type MainParametersBuilder = MainParameters & { 
+  [key: string]: any 
 };

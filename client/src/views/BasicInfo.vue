@@ -13,38 +13,38 @@
           label="Name"
           description=""
           placeholder="Hacker News" 
-          :value=basicInfo.name
-          v-model=basicInfo.name
+          :value=basicInfo.serviceName
+          v-model=basicInfo.serviceName
         />
         <Dropdown 
           class="my-15"
           label="Auth" 
           description="The type of authorization your node uses"
           v-bind:options="['No Auth', 'API Key', 'OAuth2']" 
-          :option=basicInfo.auth
-          v-model=basicInfo.auth
+          :option=basicInfo.authType
+          v-model=basicInfo.authType
         />
         <InputField 
           class="my-15"
           label="Color"
           description=""
           placeholder="#ffffff" 
-          :value=basicInfo.color
-          v-model=basicInfo.color
+          :value=basicInfo.nodeColor
+          v-model=basicInfo.nodeColor
         />
         <InputField 
           class="my-15"
           label="API Base URL"
           description="The base URL for your node's API endpoints"
           placeholder="http://hn.algolia.com/api/v1" 
-          :value=basicInfo.baseURL
-          v-model=basicInfo.baseURL
+          :value=basicInfo.apiUrl
+          v-model=basicInfo.apiUrl
         />
         <Dropdown 
           class="my-15"
           label="Node Type" 
           description=""
-          v-bind:options="['Regular Node', 'Trigger Node']" 
+          v-bind:options="['Regular', 'Trigger']" 
           :value=nodeType
           v-on:input="changeNodeType"
         />
@@ -53,7 +53,7 @@
           label="Webhook Endpoint"
           description="The endpoint to register your webhook."
           placeholder="/webhook" 
-          v-if="nodeType === 'Trigger Node'"
+          v-if="nodeType === 'Trigger'"
           :value=basicInfo.webhookEndpoint
           v-model=basicInfo.webhookEndpoint
         />
@@ -62,7 +62,7 @@
           label="Enter in Documentation Info"
           description=""
           placeholder="http://hn.algolia.com/api/v1" 
-          v-if="nodeType === 'Regular Node'"
+          v-if="nodeType === 'Regular'"
           :value=documentation
           v-on:input="toggleDocumentation" />
         <div v-if="documentation">
@@ -71,8 +71,8 @@
           label="Homepage URL"
           description=""
           placeholder="https://news.ycombinator.com" 
-          :value=docsInfo.serviceURL
-          v-model=docsInfo.serviceURL
+          :value=docsInfo.serviceUrl
+          v-model=docsInfo.serviceUrl
         />
         <TextArea
           class="my-15"
@@ -92,21 +92,21 @@
         />
         <InputField 
           class="my-15"
-          label="Workflow Number"
-          description="The id number of the example workflow on n8n's site."
-          placeholder="123"
-          :value=docsInfo.workflowNumber
-          v-model=docsInfo.workflowNumber
+          label="Workflow URL"
+          description="The url of the example workflow on n8n's site."
+          placeholder="https://n8n.io/workflows/608"
+          :value=docsInfo.workflowUrl
+          v-model=docsInfo.workflowUrl
         />
         </div>
       </div>
       <div class="mt-3 centerButton">
-        <router-link v-if="nodeType === 'Regular Node'" to="/regular/resources">
+        <router-link v-if="nodeType === 'Regular'" to="/regular/resources">
           <ForwardButton 
             text="Get Started" 
           />
         </router-link>
-        <router-link v-if="nodeType === 'Trigger Node'" to="/trigger/properties">
+        <router-link v-if="nodeType === 'Trigger'" to="/trigger/properties">
           <ForwardButton 
             text="Get Started" 
           />

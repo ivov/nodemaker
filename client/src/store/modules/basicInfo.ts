@@ -1,11 +1,10 @@
-// @ts-nocheck
-
-const state = {
+const state: BasicInfoState = {
     basicInfo: {
-        name: "",
-        auth: "",
-        color: "",
-        baseURL: "",
+        serviceName: "",
+        //@ts-ignore because of the empty string
+        authType: "",
+        nodeColor: "",
+        apiUrl: "",
         webhookEndpoint: "",
     },
     nodeType: "",
@@ -13,15 +12,15 @@ const state = {
 };
 
 const getters = {
-    basicInfo: (state: any) => {return state.basicInfo;},
-    nodeType: (state) => {return state.nodeType},
-    documentation: (state) => {return state.documentation},
+    basicInfo: (state: BasicInfoState): BasicInfo => {return state.basicInfo;},
+    nodeType: (state: BasicInfoState): FrontendNodeType => {return state.nodeType},
+    documentation: (state: BasicInfoState): boolean => {return state.documentation},
 };
 
 const mutations = {
-    submitBasicInfo: (state: any, info: any) => state.basicInfo = info,
-    setNodeType: (state, nodeType) => state.nodeType = nodeType,
-    setDocumentation: (state, documentation) => state.documentation = documentation,
+    submitBasicInfo: (state: BasicInfoState, info: BasicInfo) => state.basicInfo = info,
+    setNodeType: (state: BasicInfoState, nodeType: FrontendNodeType) => state.nodeType = nodeType,
+    setDocumentation: (state: BasicInfoState, documentation: boolean) => state.documentation = documentation,
 };
 
 export default {

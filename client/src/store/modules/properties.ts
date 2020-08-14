@@ -1,14 +1,13 @@
-// @ts-nocheck
-
 import Vue from 'vue';
 
-const state = {
+const state: PropertyState = {
     properties: [
         {
             key: 0,
             displayName: "",
             required: false,
             description: "",
+            //@ts-ignore for empty string
             type: "",
             default: "",
           }
@@ -16,9 +15,9 @@ const state = {
 };
 
 const getters = {
-    properties: (state: any) => {return state.properties},
-    propertyNames: (state: any) => {
-        let names = [];
+    properties: (state: PropertyState): FrontendProperty[] => {return state.properties},
+    propertyNames: (state: PropertyState): string[] => {
+        let names: string[] = [];
 
         state.properties.forEach(property => {
             if(property.options !== undefined) {
@@ -33,8 +32,8 @@ const getters = {
 };
 
 const actions = {
-    createPropertyOption({ commit }, propertyKey: any) {
-        const option = {
+    createPropertyOption({ commit }: any, propertyKey: number) {
+        const option: OptionsOption = {
             name: "",
             description: "",
             key: 0,
@@ -44,24 +43,26 @@ const actions = {
 
         commit('createPropertyOption', { propertyKey, option });
     },
-    addProperty({ commit }) {
-        const property = {
+    addProperty({ commit }: any) {
+        const property: FrontendProperty = {
             key: state.properties.length,
             resource: "",
-            name: "",
+            displayName: "",
             description: "",
-            endpoint: "",
-            requestMethod: "",
             default: "",
+            //@ts-ignore for empty string
+            type: "",
+            required: false,
             cancel: true
         };
 
         commit('pushProperty', property);
     },
-    addPropertyOption({ commit }, propertyKey) {
-        const option = {
+    addPropertyOption({ commit }: any, propertyKey: number) {
+        const option: WebhookPropertyOption = {
           name: "",
           description: "",
+          //@ts-ignore
           key: state.properties[propertyKey].options.length,
           add: false,
           cancel: true
@@ -72,14 +73,15 @@ const actions = {
 };
 
 const mutations = {
-    toggleRequired: (state, { propertyKey, newValue }) => Vue.set(state.properties[propertyKey], 'required', newValue),
+    toggleRequired: (state: PropertyState, { propertyKey, newValue }: { propertyKey: number; newValue: boolean}) => Vue.set(state.properties[propertyKey], 'required', newValue),
 
-    pushProperty: (state, property) => state.properties.push(property),
-    submitProperties: (state, properties) => state.properties = properties,
+    pushProperty: (state: PropertyState, property: FrontendProperty) => state.properties.push(property),
+    submitProperties: (state: PropertyState, properties: FrontendProperty[]) => state.properties = properties,
 
-    createPropertyOption: (state, { propertyKey, option }) => Vue.set(state.properties[propertyKey], 'options', [option]),
-    pushPropertyOption: (state, { propertyKey, option}) => state.properties[propertyKey].options.push(option),
-    submitPropertyOptions: (state, { propertyKey, newObj }) => state.properties[propertyKey].options = newObj,
+    createPropertyOption: (state: PropertyState, { propertyKey, option }: { propertyKey: number; option: WebhookPropertyOption }) => Vue.set(state.properties[propertyKey], 'options', [option]),
+    //@ts-ignore will not be undefined
+    pushPropertyOption: (state: PropertyState, { propertyKey, option}: { propertyKey: number; option: WebhookPropertyOption }) => state.properties[propertyKey].options.push(option),
+    submitPropertyOptions: (state: PropertyState, { propertyKey, newObj }: { propertyKey: number; newObj: WebhookPropertyOption[] }) => state.properties[propertyKey].options = newObj,
 };
 
 export default {

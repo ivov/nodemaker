@@ -1,6 +1,4 @@
-// @ts-nocheck
-
-const state = {
+const state: ResourcesState = {
     resources: [ 
         {
             key: 0,
@@ -11,9 +9,9 @@ const state = {
 };
 
 const getters = {
-    resources: (state: any) => {return state.resources},
-    resourceNames: (state: any) => {
-        const nameList: any = [];
+    resources: (state: ResourcesState): FrontendResource[] => {return state.resources},
+    resourceNames: (state: ResourcesState): string[] => {
+        const nameList: string[] = [];
 
         state.resources.forEach(resource => {
             nameList.push(resource.text);
@@ -24,8 +22,8 @@ const getters = {
 };
 
 const actions = {
-    addResource({ commit }) {
-        const resource = {
+    addResource({ commit }: any) {
+        const resource: FrontendResource = {
           key: state.resources.length,
           text: "",
           cancel: true
@@ -36,8 +34,8 @@ const actions = {
 };
 
 const mutations = {
-    pushToResources: (state, resource) => state.resources.push(resource),
-    submitResources: (state, resources) => state.resources = resources,
+    pushToResources: (state: ResourcesState, resource: FrontendResource) => state.resources.push(resource),
+    submitResources: (state: ResourcesState, resources: FrontendResource[]) => state.resources = resources,
 };
 
 export default {
