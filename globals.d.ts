@@ -207,3 +207,7 @@ type MaxNestedFieldOption = {
   name: string;
   description: string;
 };
+
+type OptionWithMaxNesting = ManyValuesGroupFieldOption & {
+  options: MaxNestedFieldOption[];
+}; // only used for type guard

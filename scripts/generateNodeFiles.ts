@@ -31,7 +31,7 @@ import Highlighter from "../services/Highlighter";
   };
 
   const generator = new NodeFilesGenerator(paramsBundle);
-  const result = await generator.run();
+  const result = await generator.run({ checkSorting: false });
 
   Highlighter.showResult({
     result,

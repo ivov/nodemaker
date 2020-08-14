@@ -3,7 +3,11 @@ import { join } from "path";
 import Generator from "./Generator";
 import { NodeGenerationEnum, AuthEnum } from "../utils/enums";
 import { readdirSync } from "fs";
-import { areTriggerNodeParameters } from "../utils/typeGuards";
+import {
+  areTriggerNodeParameters,
+  isManyValuesGroupField,
+  isOptionWithMaxNesting,
+} from "../utils/typeGuards";
 
 /**Responsible for generating all node functionality files at `/output`:
  * - `*.node.ts`
@@ -16,6 +20,8 @@ export default class NodeFilesGenerator extends Generator {
   private mainParameters: MainParameters;
   private nodeGenerationType: NodeGenerationType;
   private nodeType: NodeType;
+  private firstNestedOptionNamesPerField: string[][] = [];
+  private maxNestedOptionNamesPerField: string[][] = [];
 
   constructor(paramsBundle: NodegenParamsBundle) {
     super();
@@ -26,8 +32,14 @@ export default class NodeFilesGenerator extends Generator {
   }
 
   /**Generate all node functionality files.*/
-  async run(): Promise<BackendOperationResult> {
+  async run(
+    options: { checkSorting: boolean } = { checkSorting: true }
+  ): Promise<BackendOperationResult> {
     try {
+      if (options.checkSorting) {
+        this.verifyOptionsSorting();
+      }
+
       this.generateMainNodeFile();
       this.generateGenericFunctionsFile();
 
@@ -44,6 +56,73 @@ export default class NodeFilesGenerator extends Generator {
     } catch (error) {
       return { completed: false, error };
     }
+  }
+
+  /**Verify if all options (first and second/max nested) in `regularNodeParameters` are ordered alphabetically per field.*/
+  private verifyOptionsSorting() {
+    this.extractOptionNames();
+    this.compareAgainstSorted(this.firstNestedOptionNamesPerField);
+    this.compareAgainstSorted(this.maxNestedOptionNamesPerField);
+  }
+
+  /**Extract option names per field (first and second/max nested) and store them in private fields.
+   * Example:
+   * ```ts
+   * [
+   *     [ 'Feature1', 'Feature2' ], // options per field
+   *     [ 'FeatureA', 'FeatureB', 'FeatureC', 'FeatureD' ] // options per field
+   * ]
+   * ```
+   */
+  // prettier-ignore
+  private extractOptionNames() {
+    if (areTriggerNodeParameters(this.mainParameters)) return; // skip trigger node params
+
+    // traverse regular node params to reach options
+    for (let resource in this.mainParameters) {
+      this.mainParameters[resource].forEach((operation) => {
+        operation.fields.forEach((field) => {
+
+          // first nested level
+          let firstNested: string[] = [];
+          if (isManyValuesGroupField(field)) {
+            field.options.forEach((option) => {
+              firstNested.push(option.name);
+
+              // second/max nested level
+              let maxNested: string[] = [];
+              if (isOptionWithMaxNesting(option)) {
+                option.options.forEach((option) => maxNested.push(option.name));
+                this.maxNestedOptionNamesPerField.push(maxNested);
+              }
+            });
+
+            this.firstNestedOptionNamesPerField.push(firstNested);
+          }
+        });
+      });
+    }
+  }
+
+  private compareAgainstSorted(optionsToCompare: string[][]) {
+    const errorMessageFooter =
+      "\n\nBased on n8n submission guidelines: 'Ensure that all the options are ordered alphabetically, unless a different order is needed for a specific reason' https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md#checklist-before-submitting-a-new-node";
+
+    optionsToCompare.forEach((fieldOptions) => {
+      if (fieldOptions.length > 1) {
+        const sortedFieldOptions = [...fieldOptions].sort();
+
+        fieldOptions.forEach((optionName, index) => {
+          if (optionName !== sortedFieldOptions[index]) {
+            throw Error(
+              "Options not alphabetically sorted:\n" +
+                fieldOptions.join(", ") +
+                errorMessageFooter
+            );
+          }
+        });
+      }
+    });
   }
 
   /**Generate `*.node.ts` (regular node) or `*Trigger.node.ts` (trigger node), with a different version for simple or complex node generation.*/
