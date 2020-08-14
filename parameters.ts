@@ -1,10 +1,12 @@
 import { getWorkflowSubmissionUrl } from "./utils/getWorkflowSubmissionUrl";
 
+// Sample parameters to test the nodemaker CLI or to replace with your own.
+
 export const metaParameters: MetaParameters = {
   serviceName: "Nodemaker News",
   authType: "OAuth2",
   nodeColor: "#ff6600",
-  apiUrl: "http://hn.algolia.com/api/v1/",
+  apiUrl: "http://api.nodemaker.com/",
 };
 
 export const regularNodeParameters: RegularNodeParameters = {
@@ -12,7 +14,7 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Get",
       description: "Get a Nodemaker News article",
-      endpoint: "items/$$articleId$$",
+      endpoint: "articles/:articleId",
       requestMethod: "GET",
       fields: [
         {
@@ -62,7 +64,7 @@ export const regularNodeParameters: RegularNodeParameters = {
           default: {},
           options: [
             {
-              name: "Tags",
+              name: "Keyword",
               description: "The keyword for filtering the results of the query",
               type: "multiOptions",
               default: "",
@@ -78,7 +80,7 @@ export const regularNodeParameters: RegularNodeParameters = {
               ],
             },
             {
-              name: "Keyword",
+              name: "Tags",
               description: "Tags for filtering the results of the query",
               type: "multiOptions",
               default: {},
@@ -96,11 +98,11 @@ export const regularNodeParameters: RegularNodeParameters = {
                   description: "Returns query results filtered by poll tag",
                 },
                 {
-                  name: "Show HN",
+                  name: "Show Nodemaker News",
                   description: "Returns query results filtered by Show HN tag",
                 },
                 {
-                  name: "Ask HN",
+                  name: "Ask Nodemaker News",
                   description: "Returns query results filtered by Ask HN tag",
                 },
                 {
@@ -119,26 +121,12 @@ export const regularNodeParameters: RegularNodeParameters = {
     {
       name: "Get",
       description: "Get a Nodemaker News user",
-      endpoint: "users/$$username$$",
+      endpoint: "users/:username",
       requestMethod: "GET",
       fields: [
         {
           name: "Username",
           description: "The Nodemaker News user to be returned",
-          type: "string",
-          default: "",
-        },
-      ],
-    },
-    {
-      name: "Rename",
-      description: "Rename a Nodemaker News user",
-      endpoint: "users/$$username$$",
-      requestMethod: "PUT",
-      fields: [
-        {
-          name: "Username",
-          description: "The Nodemaker News user to be renamed",
           type: "string",
           default: "",
         },
