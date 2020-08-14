@@ -1,8 +1,7 @@
 {
   "name": "nodemaker",
   "version": "1.0.0",
-  "description": "Proof of concept for n8n node generator",
-  "main": "index.js",
+  "description": "Automatic node generator for n8n",
   "scripts": {
     "setup": "npm i && cd client && npm i && cd ..",
     "nodegen": "cp .hygen.js build/.hygen.js && tsc && node build/scripts/generateNodeFiles.js",
@@ -22,7 +21,7 @@
   "keywords": [
     "n8n"
   ],
-  "author": "Iván Ovejero",
+  "author": "Iván Ovejero & Erin McNulty",
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.0",
