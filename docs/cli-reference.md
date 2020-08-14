@@ -541,6 +541,12 @@ $ npm run resize
 
 Per n8n codebase conventions, the output PNG filename is camelCased.
 
+<p align="center">
+  <img src="images/screencaps/resize-prompt.png"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/screencaps/resize-icon-candidates.png"/>
+</p>
+
 ### `place`
 
 ```bash
