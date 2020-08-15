@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/nodemaker-banner.png" width="315" />
+  <img src="docs/images/nodemaker-banner.png" width="315" alt="Nodemaker" />
 </p>
 
 <p align="center">
@@ -15,7 +15,7 @@
   <a href="#installation">Installation</a> •
   <a href="#operation">Operation</a> •
   <a href="/docs/output-examples">Examples</a> •
-  <a href="/docs/cli-reference.md">Documentation</a>
+  <a href="/docs/README.md">Documentation</a>
 </p>
 
 <p align="center">
@@ -33,13 +33,13 @@ Developed as a **desktop app** and **CLI utility**, in MVP stage, as a capstone 
 <br/>
 
 <p align="center">
-    <img src="docs/images/logos/ts.png" width="128">
+    <img src="docs/images/logos/ts.png" width="128" alt="TypeScript logo">
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="docs/images/logos/node.png" width="125">
+    <img src="docs/images/logos/node.png" width="125" alt="Node.js logo">
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="docs/images/logos/electron.png" width="112">
+    <img src="docs/images/logos/electron.png" width="112" alt="Electron logo">
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="docs/images/logos/vue.png" width="125">
+    <img src="docs/images/logos/vue.png" width="125" alt="Vue.js logo">
 </p>
 
 <p align="center">
