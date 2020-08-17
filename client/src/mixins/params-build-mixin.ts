@@ -23,7 +23,7 @@ class ParamsBuilderMixin extends Vue {
       return Number(defaultValue);
     } else if(type === "Boolean") {
       return new Boolean(defaultValue);
-    } else if(["Options", "Multioptions", "Collection", "Fixed Collection"].includes(type)) {
+    } else if(["Collection", "Fixed Collection"].includes(type)) {
       try{
         return JSON.parse(defaultValue);
       } catch(error) {
@@ -53,7 +53,7 @@ class ParamsBuilderMixin extends Vue {
         workflowUrl
     };
   }
-  public buildMainParameters(resources: FrontendResource[], operations: FrontendOperation[], fields: FrontendField[]) {
+  public buildMainParameters(resources: FrontendResource[], operations: FrontendOperation[], fields: FrontendRegularField[]) {
     let mainParameters: MainParametersBuilder = {};
 
     resources.forEach(resource => {
@@ -144,7 +144,7 @@ class ParamsBuilderMixin extends Vue {
 
     return mainParameters;
   }
-  public buildMainTriggerParameters(webhookEndpoint: string, properties: FrontendProperty[], fields: FrontendField[]) {
+  public buildMainTriggerParameters(webhookEndpoint: string, properties: FrontendProperty[], fields: FrontendTriggerField[]) {
     let mainParameters = {
       webhookEndpoint: webhookEndpoint,
       webhookProperties: []
@@ -200,7 +200,7 @@ class ParamsBuilderMixin extends Vue {
           description: field.description,
           type: fieldType,
           default: defaultValue,
-          required: true,
+          required: field.required,
           options: []
         };
 

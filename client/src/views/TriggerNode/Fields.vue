@@ -56,6 +56,13 @@
             :value=field.default
             v-model=field.default
           />
+          <SwitchComponent
+            class="my-15"
+            label="Required"
+            description=""
+            :value=field.required
+            v-on:input="toggleRequired(field.key)"
+          />
           <div v-if="field.type === 'Options' || field.type === 'Multioptions'">
             <strong>Options:</strong>
             <div class="box ml-1" v-bind:key="option.key" v-for="option in field.options">
@@ -266,6 +273,10 @@ export default {
       if(type === "Options" || type === "Multioptions") {
         this.createInnerOption({ fieldKey, optionKey });
       }
+    },
+    toggleRequired(fieldKey) {
+      const newValue = !this.fields[fieldKey].required;
+      this.$store.commit('toggleFieldsRequired', { fieldKey, newValue });
     },
     removeInnerOption(fieldKey, optionKey, innerOptionKey) {
       const newObj = this.fields[fieldKey].options[optionKey].options.filter(innerOption => innerOption.key !== innerOptionKey);

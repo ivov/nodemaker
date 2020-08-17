@@ -16,6 +16,7 @@ const state: FieldsState = {
           type: "",
           name: "",
           description: "",
+          required: false,
           default: ""
         }
       ]
@@ -134,6 +135,8 @@ const actions = {
 };
 
 const mutations = {
+    toggleFieldsRequired: (state: FieldsState, { fieldKey, newValue }: { fieldKey: number; newValue: boolean}) => Vue.set(state.fields[fieldKey], 'required', newValue),
+
     pushToResourceOperation: (state: FieldsState, { newObj, key }: { newObj: AssociatedProps; key: number}) => state.fields[key].resourceOperation.push(newObj),
     submitResourceOperation: (state: FieldsState, { newObj, fieldKey }: { newObj: AssociatedProps[]; fieldKey: number}) => state.fields[fieldKey].resourceOperation = newObj,
 

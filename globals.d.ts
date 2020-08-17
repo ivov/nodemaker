@@ -235,66 +235,60 @@ type DocsInfoState = {
   docsInfo: DocsParameters
 };
 
-type FrontendResource = {
-  key: number;
+type FrontendResource = FrontendAdditionalProps & {
   text: string;
-  cancel: boolean;
 };
 
 type ResourcesState = {
   resources: FrontendResource[];
 };
 
-type FrontendOperation = Operation & {
-  key: number;
+type FrontendOperation = Operation & FrontendAdditionalProps & {
   resource: string;
-  add?: boolean;
-  cancel?: boolean;
 };
 
 type OperationsState = {
   operations: FrontendOperation[];
 };
 
-type AssociatedProps = {
-  key: number;
+type AssociatedProps = FrontendAdditionalProps & {
   value: string;
-  add?: boolean;
-  cancel?: boolean;
 };
 
-type FrontendField = OperationField & {
-  key: number,
+type FrontendRegularField = OperationField & FrontendAdditionalProps & {
   resourceOperation: AssociatedProps[],
   options: FrontendOption[];
 };
 
-type FrontendProperty = WebhookProperty & {
-  key: number
+type FrontendTriggerField = WebhookPropertyOptionField & FrontendAdditionalProps & {
+  resourceOperation: AssociatedProps[],
+  options: FrontendOption[];
+};
+
+type FrontendField = FrontendRegularField | FrontendTriggerField;
+
+type FrontendProperty = WebhookProperty & FrontendAdditionalProps & {
   resource: string
-  cancel?: boolean
-}
+};
 
 type PropertyState = {
   properties: FrontendProperty[]
-}
-
-type OptionsOption = MaxNestedFieldOption & {
-  key: number;
-  add?: boolean;
-  cancel?: boolean;
 };
 
-type CollectionOption = ManyValuesGroupFieldOption & {
-  key: number;
-  add?: boolean;
-  cancel?: boolean;
-};
+type OptionsOption = MaxNestedFieldOption & FrontendAdditionalProps;
+
+type CollectionOption = ManyValuesGroupFieldOption & FrontendAdditionalProps;
 
 type FrontendOption = CollectionOption | OptionsOption;
 
 type FieldsState = {
   fields: FrontendField[];
+};
+
+type FrontendAdditionalProps = {
+  key: number;
+  add?: boolean;
+  cancel?: boolean;
 };
 
 type MainParametersBuilder = MainParameters & { 
