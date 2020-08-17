@@ -17,7 +17,10 @@ const state: FieldsState = {
           name: "",
           description: "",
           required: false,
-          default: ""
+          default: "",
+          min: "",
+          max: "",
+          displayRestrictions: "",
         }
       ]
 };

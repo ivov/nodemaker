@@ -83,8 +83,27 @@ class ParamsBuilderMixin extends Vue {
           description: field.description,
           type: type,
           default: defaultValue,
+          extraDisplayRestriction: {},
+          numericalLimits: { minLimit: 0, maxLimit: 0 },
           options: []
         };
+
+        if(type === 'number' && (field.min !== "0" && field.max !== "0")) {
+          //@ts-ignore
+          fieldObj.numericalLimits = {
+            minLimit: Number(field.min),
+            maxLimit: Number(field.max),
+          };
+        } else {
+          //@ts-ignore
+          delete fieldObj.numericalLimits;
+        }
+
+        if(field.displayRestrictions !== "" && field.displayRestrictions !== undefined) {
+          fieldObj.extraDisplayRestriction = JSON.parse(field.displayRestrictions);
+        } else {
+          delete fieldObj.extraDisplayRestriction;
+        }
         
         if(type === 'string' || type === 'boolean' || type === 'number') {
           //@ts-ignore because I am converting to SingleValues Operation Field by deleting options

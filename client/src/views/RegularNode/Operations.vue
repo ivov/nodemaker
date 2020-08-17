@@ -36,7 +36,7 @@
           <InputField 
             class="my-15"
             label="Endpoint"
-            placeholder="/items/$$articleId$$" 
+            placeholder="/items/:articleId" 
             description="The endpoint to associate with the operation. Wrap variables in dollar signs with the associated field name in the middle: $$var_name$$"
             :value=operation.endpoint
             v-model=operation.endpoint

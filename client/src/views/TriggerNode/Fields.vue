@@ -232,6 +232,7 @@ import ForwardButton from '../../components/ForwardButton.vue';
 import BackwardButton from '../../components/BackwardButton.vue';
 import InputField from '../../components/InputField.vue';
 import Dropdown from '../../components/Dropdown.vue';
+import SwitchComponent from '../../components/Switch.vue';
 import AddButton from '../../components/AddButton.vue';
 import SmallButton from '../../components/SmallButton.vue';
 
@@ -245,6 +246,7 @@ export default {
     BackwardButton,
     InputField,
     Dropdown,
+    SwitchComponent,
     AddButton,
     SmallButton
   },

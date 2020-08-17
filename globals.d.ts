@@ -232,7 +232,7 @@ type BasicInfoState = {
 };
 
 type DocsInfoState = {
-  docsInfo: DocsParameters
+  docsInfo: DocsParameters;
 };
 
 type FrontendResource = FrontendAdditionalProps & {
@@ -256,23 +256,26 @@ type AssociatedProps = FrontendAdditionalProps & {
 };
 
 type FrontendRegularField = OperationField & FrontendAdditionalProps & {
-  resourceOperation: AssociatedProps[],
+  resourceOperation: AssociatedProps[];
   options: FrontendOption[];
+  displayRestrictions: string;
+  min?: string;
+  max?: string;
 };
 
 type FrontendTriggerField = WebhookPropertyOptionField & FrontendAdditionalProps & {
-  resourceOperation: AssociatedProps[],
+  resourceOperation: AssociatedProps[];
   options: FrontendOption[];
 };
 
 type FrontendField = FrontendRegularField | FrontendTriggerField;
 
 type FrontendProperty = WebhookProperty & FrontendAdditionalProps & {
-  resource: string
+  resource: string;
 };
 
 type PropertyState = {
-  properties: FrontendProperty[]
+  properties: FrontendProperty[];
 };
 
 type OptionsOption = MaxNestedFieldOption & FrontendAdditionalProps;
@@ -292,5 +295,5 @@ type FrontendAdditionalProps = {
 };
 
 type MainParametersBuilder = MainParameters & { 
-  [key: string]: any 
+  [key: string]: any; 
 };
