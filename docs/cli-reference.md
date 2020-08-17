@@ -1,6 +1,16 @@
-# Nodemaker CLI Reference
+<p align="center">
+  <img src="images/icons/icons8-console-64.png" alt="console" />
+</p>
 
-Reference for operating the Nodemaker's CLI utility.
+<p align="center">
+  <h2 align="center">CLI Reference</h2>
+</p>
+
+<p align="center">
+  Learn how to operate the Nodemaker's CLI utility
+</p>
+
+<br>
 
 **Table of Contents**
 
@@ -43,6 +53,8 @@ To use the CLI utility:
 | `desktop`  | Run the desktop app.                                            | ---                  |
 
 **Note:** At MVP stage, `shotgen`, `flowgen`, `icongen` and `resize` are not available through the desktop app.
+
+<br>
 
 ## Parameters
 
@@ -343,10 +355,12 @@ type DocsParameters = {
 To validate that your params object conforms to the expected shape, type the object you are editing in `parameters.ts` and look for any TypeScript errors.
 
 <p align="center">
-  <img src="images/screencaps/validation-error.png"/>
+  <img src="images/screencaps/validation-error.png" alt="Validation error" />
 </p>
 
 Alternatively, to validate a parameter bundle built on the frontend, use the [`validate` script](#validate).
+
+<br>
 
 ## Commands
 
@@ -356,7 +370,7 @@ Output files are all generated in the `/output` dir.
 
 ### `nodegen`
 
-```bash
+```sh
 $ npm run nodegen
 ```
 
@@ -379,14 +393,16 @@ To generate these files, the CLI prompts the user to select:
 If `metaParameters.authType` is set to `"None"`, then no `*.credentials.ts` file will be generated.
 
 <p align="center">
-  <img src="images/screencaps/nodegen-prompt.png"/>
+  <img src="images/screencaps/nodegen-prompt.png" alt="Prompt for node generation"/>
 </p>
+
+**Note:** Per the [n8n submission guidelines](https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md#checklist-before-submitting-a-new-node), this operation auto-sorts all `options` in the node parameters in alphabetical order.
 
 ### `docsgen`
 
 > **Important**: `docsgen` is currently only available for regular nodes, not for trigger nodes.
 
-```bash
+```sh
 $ npm run docsgen
 ```
 
@@ -397,21 +413,23 @@ $ npm run docsgen
 
 ### `packgen`
 
-```bash
+```sh
 $ npm run packgen
 ```
 
 `packgen` retrieves a copy of the latest `package.json` file [from the official repo](https://raw.githubusercontent.com/n8n-io/n8n/master/packages/nodes-base/package.json), updates it with the paths to the new node files, and outputs the updated `package.json` file. Path insertion follows alphabetical order.
 
 <p align="center">
-  <img src="images/screencaps/packageJson.png"/>
+  <img src="images/screencaps/packageJson.png" alt="Insertion in package.json file"/>
 </p>
+
+**Note:** This operation disallows insertion of a node in the `package.json` if its name already exists in the listing.
 
 ### `shotgen`
 
 > **Important:** `shotgen` requires credentials. See below.
 
-```bash
+```sh
 $ npm run shotgen
 ```
 
@@ -433,12 +451,12 @@ There are two ways to run `shotgen`:
 - **Concurrent startup**: In the `nodemaker` repo, run `npm run runapp-shotgen`. Nodemaker will run two concurrent processes to start the n8n app and generate the screenshot. Concurrent startup functionality is not yet fully tested.
 
 <p align="center">
-  <img src="images/screencaps/workflow.png"/>
+  <img src="images/screencaps/workflow.png" alt="In-app screenshot of ndoe"/>
 </p>
 
 Concurrent startup requires the `nodemaker` repo to be located alongside your copy of the `n8n` repo.
 
-```bash
+```sh
 .
 ├── n8n
 └── nodemaker
@@ -457,7 +475,7 @@ Imgbb requires credentials. To generate them:
 5. Create an `.env` file in `/config`.
 6. Enter your API key as `IMGBB_API_KEY` in the `.env` file.
 
-```bash
+```sh
 IMGBB_API_KEY="6d17c6..."
 ```
 
@@ -465,7 +483,7 @@ IMGBB_API_KEY="6d17c6..."
 
 > **Important:** `flowgen` requires credentials. See below.
 
-```bash
+```sh
 $ npm run flowgen
 ```
 
@@ -475,7 +493,7 @@ $ npm run flowgen
 
 To log in to [n8n.io](https://n8n.io), `flowgen` needs credentials for a n8n account. Create an account at [n8n.io](https://n8n.io) and enter your credentials as env vars in the `.env` file you created at `/config`:
 
-```bash
+```sh
 N8N_LOGIN_USERNAME="name@example.com"
 N8N_LOGIN_PASSWORD="abc123"
 ```
@@ -484,16 +502,16 @@ N8N_LOGIN_PASSWORD="abc123"
 
 > **Important:** `icongen` requires credentials. See below.
 
-```bash
+```sh
 $ npm run icongen
 ```
 
 `icongen` generates five icon candidates for the node, placing them in `/output/icon-candidates`. To do so, the CLI prompts the user to enter a query string based on which to perform a search for a relevant image. Make sure to search for a specific string that is likely to return a logo image for the service—if the service name happens to be a generic word, add an identifier keyword.
 
 <p align="center">
-  <img src="images/screencaps/icongen-querystring.png"/>
+  <img src="images/screencaps/icongen-querystring.png" alt="Query string in icon generation prompt"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="images/screencaps/icongen-output.png"/>
+  <img src="images/screencaps/icongen-output.png" alt="Icon generation output"/>
 </p>
 
 **Image search credentials**
@@ -524,7 +542,7 @@ To generate a Google Cloud Platform project API key:
 
 End result in `/config/.env`:
 
-```bash
+```sh
 GOOGLE_IMAGE_SEARCH_ENGINE_ID="01782..."
 GOOGLE_PROJECT_API_KEY="AIzaS..."
 ```
@@ -533,7 +551,7 @@ Google's Custom Search Engine is limited to 100 free requests a day.
 
 ### `resize`
 
-```bash
+```sh
 $ npm run resize
 ```
 
@@ -541,23 +559,29 @@ $ npm run resize
 
 Per n8n codebase conventions, the output PNG filename is camelCased.
 
+<p align="center">
+  <img src="images/screencaps/resize-prompt.png" alt="Prompt for icon-resizing operation"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/screencaps/resize-icon-candidates.png" alt="Icon candidates in /output directory"/>
+</p>
+
 ### `place`
 
-```bash
+```sh
 $ npm run place
 ```
 
 `place` relocates node functionality and documentation files in the `/output` dir to their appropriate locations in the `n8n` and `n8n-docs` repos, respectively. To do so, the CLI prompts the user to select the type of file (functionality or documentation) to be relocated.
 
 <p align="center">
-  <img src="images/screencaps/place-prompt.png"/>
+  <img src="images/screencaps/place-prompt.png" alt="Prompt for placement operation"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="images/screencaps/place-small.png"/>
+  <img src="images/screencaps/place-small.png" alt="Files auto-placed in target directory"/>
 </p>
 
 `place` requires the `nodemaker` repo to be located alongside your copies of the `n8n` and `n8n-docs` repos.
 
-```bash
+```sh
 .
 ├── n8n
 ├── n8n-docs
@@ -566,7 +590,7 @@ $ npm run place
 
 ### `validate`
 
-```bash
+```sh
 $ npm run validate
 ```
 
@@ -593,7 +617,7 @@ validator.validateMetaParameters(dataToValidate);
 ```
 
 <p align="center">
-  <img src="images/screencaps/typeguard-error.png"/>
+  <img src="images/screencaps/typeguard-error.png" alt="Typeguard error"/>
 </p>
 
 </details>

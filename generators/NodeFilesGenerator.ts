@@ -82,7 +82,7 @@ export default class NodeFilesGenerator extends Generator {
   private generateMainNodeFile() {
     const command = this.formatCommand(`
     gen generate${this.nodeType}Node${this.nodeGenerationType}
-      --name \"${this.metaParameters.serviceName}\"
+      --name '${this.metaParameters.serviceName}'
       --metaParameters '${JSON.stringify(this.metaParameters)}'
       --mainParameters '${JSON.stringify(this.mainParameters)}'
     `);
@@ -104,7 +104,7 @@ export default class NodeFilesGenerator extends Generator {
   private generateCredentialsFile() {
     const command = this.formatCommand(`
     gen generate${this.metaParameters.authType}Credential
-      --name \"${this.metaParameters.serviceName}\"
+      --name '${this.metaParameters.serviceName}'
       --serviceCredential ${this.getServiceCredentialName(this.metaParameters)}
     `);
 
