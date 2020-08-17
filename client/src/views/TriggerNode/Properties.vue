@@ -37,7 +37,7 @@
             label="Required"
             description=""
             :value=property.required
-            v-on:my-15="toggleRequired(property.key)"
+            v-on:input="toggleRequired(property.key)"
           />
           <Dropdown 
             class="my-15"
