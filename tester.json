@@ -1,0 +1,66 @@
+{
+    "metaParameters": {
+      "serviceName": "Nodemaker News",
+      "authType": "OAuth2",
+      "nodeColor": "#ffffff",
+      "apiUrl": "http://api.com"
+    },
+    "mainParameters": {
+      "Article": [
+        {
+          "name": "Get",
+          "description": "Get a hacker news article",
+          "endpoint": "/items/:articleId",
+          "requestMethod": "GET",
+          "fields": [
+            {
+              "name": "Return All",
+              "description": "Whether to return all results or only up to a limit",
+              "type": "boolean",
+              "default": true
+            },
+            {
+              "name": "Limit",
+              "description": "Limit of Nodemaker News articles to be returned for the query",
+              "type": "number",
+              "default": 20,
+              "extraDisplayRestriction": {
+                "Return All": true
+              },
+              "numericalLimits": {
+                "minLimit": 5,
+                "maxLimit": 50
+              }
+            },
+            {
+              "name": "Additional Fields",
+              "description": "",
+              "type": "collection",
+              "default": {},
+              "options": [
+                {
+                  "name": "Tags",
+                  "description": "The keyword for filtering the results of the query",
+                  "type": "multiOptions",
+                  "default": "feature1",
+                  "options": [
+                    {
+                      "name": "Feature1",
+                      "description": "Some description"
+                    },
+                    {
+                      "name": "Feature2",
+                      "description": "Some other description"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "nodeGenerationType": "Simple",
+    "nodeType": "Regular"
+  }
+  

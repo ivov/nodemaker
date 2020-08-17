@@ -1,6 +1,4 @@
-// @ts-nocheck
-
-const state = {
+const state: OperationsState = {
     operations: [
         {
             key: 0,
@@ -8,6 +6,7 @@ const state = {
             name: "",
             description: "",
             endpoint: "",
+            //@ts-ignore for empty string
             requestMethod: "",
             cancel: false
         }
@@ -15,9 +14,9 @@ const state = {
 };
 
 const getters = {
-    operations: (state: any) => {return state.operations},
-    operationWithResourceNames: (state: any) => {
-        const nameList: any = [];
+    operations: (state: OperationsState): FrontendOperation[] => {return state.operations},
+    operationWithResourceNames: (state: OperationsState): string[] => {
+        const nameList: string[] = [];
 
         state.operations.forEach(operation => {
             nameList.push(operation.name + " : " + operation.resource);
@@ -28,13 +27,14 @@ const getters = {
 };
 
 const actions = {
-    addOperation({ commit }) {
-        const operation = {
+    addOperation({ commit }: any) {
+        const operation: FrontendOperation = {
             key: state.operations.length,
             resource: "",
             name: "",
             description: "",
             endpoint: "",
+            //@ts-ignore for empty string
             requestMethod: "",
             cancel: true
         };
@@ -44,8 +44,8 @@ const actions = {
 };
 
 const mutations = {
-    pushToOperations: (state, operation) => state.operations.push(operation),
-    submitOperations: (state, operations) => state.operations = operations,
+    pushToOperations: (state: OperationsState, operation: FrontendOperation) => state.operations.push(operation),
+    submitOperations: (state: OperationsState, operations: FrontendOperation[]) => state.operations = operations,
 };
 
 export default {

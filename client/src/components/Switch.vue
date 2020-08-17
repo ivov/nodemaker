@@ -11,10 +11,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
+<script>
+export default {
   name: 'SwitchComponent',
   props: ["label", "placeholder", "value", "description"],
   methods: {
@@ -22,8 +20,7 @@ import { Component, Vue } from 'vue-property-decorator';
         this.$emit('input', this.$refs.boolean_input.value);
     }
   }
-})
-export default class App extends Vue {}
+}
 </script>
 
 <style scoped> 
@@ -35,7 +32,7 @@ export default class App extends Vue {}
 
 .group {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
 }
 

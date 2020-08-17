@@ -36,7 +36,7 @@
           <InputField 
             class="my-15"
             label="Endpoint"
-            placeholder="/items/$$articleId$$" 
+            placeholder="/items/:articleId" 
             description="The endpoint to associate with the operation. Wrap variables in dollar signs with the associated field name in the middle: $$var_name$$"
             :value=operation.endpoint
             v-model=operation.endpoint
@@ -89,20 +89,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-import Instructions from '../../components/SharedComponents/Instructions.vue';
-import ForwardButton from '../../components/SharedComponents/ForwardButton.vue';
-import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
-import InputField from '../../components/SharedComponents/InputField.vue';
-import Dropdown from '../../components/SharedComponents/Dropdown.vue';
-import AddButton from '../../components/SharedComponents/AddButton.vue';
-import SmallButton from '../../components/SharedComponents/SmallButton.vue';
+<script>
+import Instructions from '../../components/Instructions.vue';
+import ForwardButton from '../../components/ForwardButton.vue';
+import BackwardButton from '../../components/BackwardButton.vue';
+import InputField from '../../components/InputField.vue';
+import Dropdown from '../../components/Dropdown.vue';
+import AddButton from '../../components/AddButton.vue';
+import SmallButton from '../../components/SmallButton.vue';
 
 import { mapGetters, mapActions} from 'vuex';
 
-@Component({
+export default {
   name: 'Operations',
   components: {
     Instructions,
@@ -120,8 +118,5 @@ import { mapGetters, mapActions} from 'vuex';
       this.$store.commit('submitOperations', this.operations.filter(operation => operation.key !== operationKey));
     }
   }
-})
-
-export default class App extends Vue {}
+}
 </script>
-
