@@ -8,17 +8,14 @@
 </template>
 
 <script>
-import { Component, Vue } from 'vue-property-decorator';
-import Header from './components/SharedComponents/Header';
+import Header from './components/Header';
 
-@Component({
+export default {
   name: 'App',
   components: {
     Header
   }
-})
-
-export default class App extends Vue {}
+}
 </script>
 
 <style>

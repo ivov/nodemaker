@@ -4,15 +4,11 @@
     </button>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
+<script>
+export default {
   name: 'GenericButton',
   props: ["text"]
-})
-
-export default class App extends Vue {}
+}
 </script>
 
 <style scoped>

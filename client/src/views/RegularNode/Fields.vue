@@ -56,6 +56,32 @@
             :value=field.default
             v-model=field.default
           />
+          <TextArea
+            class="my-15"
+            label="Extra Display Restrictions"
+            placeholder="{ 'Return All': true }"
+            description="Additional display restrictions. Enter in JSON formatting"
+            :value=field.displayRestrictions
+            v-model=field.displayRestrictions
+          />
+          <div v-if="field.type === 'Number'">
+            <InputField 
+              class="my-15"
+              label="Min Value"
+              placeholder="5" 
+              description="Minumum user input for the number"
+              :value=field.min
+              v-model=field.min
+            />
+            <InputField 
+              class="my-15"
+              label="Max Value"
+              placeholder="50" 
+              description="Maximum user input for the number"
+              :value=field.max
+              v-model=field.max
+            />
+          </div>
           <div v-if="field.type === 'Options' || field.type === 'Multioptions'">
             <strong>Options:</strong>
             <div class="box ml-1" v-bind:key="option.key" v-for="option in field.options">
@@ -219,27 +245,26 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { Component, Vue } from 'vue-property-decorator';
-
-import Instructions from '../../components/SharedComponents/Instructions.vue';
-import ForwardButton from '../../components/SharedComponents/ForwardButton.vue';
-import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
-import InputField from '../../components/SharedComponents/InputField.vue';
-import Dropdown from '../../components/SharedComponents/Dropdown.vue';
-import AddButton from '../../components/SharedComponents/AddButton.vue';
-import SmallButton from '../../components/SharedComponents/SmallButton.vue';
+<script>
+import Instructions from '../../components/Instructions.vue';
+import ForwardButton from '../../components/ForwardButton.vue';
+import BackwardButton from '../../components/BackwardButton.vue';
+import InputField from '../../components/InputField.vue';
+import TextArea from '../../components/TextArea.vue';
+import Dropdown from '../../components/Dropdown.vue';
+import AddButton from '../../components/AddButton.vue';
+import SmallButton from '../../components/SmallButton.vue';
 
 import { mapGetters, mapActions} from 'vuex';
 
-@Component({
+export default {
   name: 'Fields',
   components: {
     Instructions,
     ForwardButton,
     BackwardButton,
     InputField,
+    TextArea,
     Dropdown,
     AddButton,
     SmallButton
@@ -286,8 +311,6 @@ import { mapGetters, mapActions} from 'vuex';
       this.$store.commit('submitResourceOperation', { newObj, fieldKey});
     },
   },
-})
-
-export default class App extends Vue {}
+}
 </script>
 

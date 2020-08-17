@@ -31,17 +31,17 @@ const routes = [
   },
   {
     path: '/trigger/properties',
-    name: 'Events',
+    name: 'Trigger Node Properties',
     component: () => import(/* webpackChunkName: "properties" */ '../views/TriggerNode/Properties.vue')
   },
   {
     path: '/trigger/fields',
-    name: 'Fields',
+    name: 'Trigger Node Fields',
     component: () => import(/* webpackChunkName: "fieldsTrigger" */ '../views/TriggerNode/Fields.vue')
   },
   {
     path: '/trigger/complete',
-    name: 'Events',
+    name: 'Complete Trigger Node',
     component: () => import(/* webpackChunkName: "completeTrigger" */ '../views/TriggerNode/Complete.vue')
   },
 ]

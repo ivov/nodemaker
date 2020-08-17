@@ -1,20 +1,19 @@
-// @ts-nocheck
-
-const state = {
+const state: DocsInfoState = {
     docsInfo: {
+        serviceName: "",
         serviceUrl: "",
         introDescription: "",
         exampleUsage: "",
-        workflowNumber: "",
+        workflowUrl: "",
     }
 };
 
 const getters = {
-    docsInfo: (state: any) => {return state.docsInfo;}
+    docsInfo: (state: DocsInfoState): DocsParameters => {return state.docsInfo;}
 };
 
 const mutations = {
-    submitDocsInfo: (state: any, info: any) => state.docsInfo = info,
+    submitDocsInfo: (state: DocsInfoState, info: DocsParameters) => state.docsInfo = info,
 };
 
 export default {

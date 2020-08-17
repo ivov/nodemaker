@@ -26,6 +26,7 @@ export const regularNodeParameters: RegularNodeParameters = {
         {
           name: "Additional Fields",
           type: "collection",
+          description: "",
           default: {},
           options: [
             {
@@ -61,6 +62,7 @@ export const regularNodeParameters: RegularNodeParameters = {
         {
           name: "Additional Fields",
           type: "collection",
+          description: "",
           default: {},
           options: [
             {

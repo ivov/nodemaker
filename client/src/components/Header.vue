@@ -1,18 +1,14 @@
 <template>
   <div id="header">
-      <img id="headerImg" src="../../assets/n8n_copy.png" />
+      <img id="headerImg" src="../assets/n8n_copy.png" />
       <h1 id="headerText">nodemaker</h1>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
+<script>
+export default {
     name: 'Header'
-})
-
-export default class App extends Vue {}
+}
 </script>
 
 <style>

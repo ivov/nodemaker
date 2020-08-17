@@ -177,6 +177,7 @@ type SingleValueOperationField = {
 
 type ManyValuesGroupField = {
   name: string;
+  description: string;
   type: CollectionType | OptionsType;
   default: ManyValuesFieldDefault;
   options: ManyValuesGroupFieldOption[];
@@ -188,6 +189,8 @@ type SingleValueFieldType = "string" | "number" | "boolean";
 type OptionsType = "options" | "multiOptions";
 
 type CollectionType = "collection" | "fixedCollection";
+
+type FieldType = SingleValueFieldType | OptionsType | CollectionType;
 
 type FieldDefault = SingleValueFieldDefault | ManyValuesFieldDefault;
 
@@ -211,3 +214,86 @@ type MaxNestedFieldOption = {
 type OptionWithMaxNesting = ManyValuesGroupFieldOption & {
   options: MaxNestedFieldOption[];
 }; // only used for type guard
+
+
+// ********************************************************************
+//                        Frontend Types
+// ********************************************************************
+type FrontendNodeType = NodeType | "";
+
+type BasicInfo = MetaParameters & {
+  webhookEndpoint: string;
+};
+
+type BasicInfoState = {
+  basicInfo: BasicInfo;
+  nodeType: FrontendNodeType;
+  documentation: boolean;
+};
+
+type DocsInfoState = {
+  docsInfo: DocsParameters;
+};
+
+type FrontendResource = FrontendAdditionalProps & {
+  text: string;
+};
+
+type ResourcesState = {
+  resources: FrontendResource[];
+};
+
+type FrontendOperation = Operation & FrontendAdditionalProps & {
+  resource: string;
+};
+
+type OperationsState = {
+  operations: FrontendOperation[];
+};
+
+type AssociatedProps = FrontendAdditionalProps & {
+  value: string;
+};
+
+type FrontendRegularField = OperationField & FrontendAdditionalProps & {
+  resourceOperation: AssociatedProps[];
+  options: FrontendOption[];
+  displayRestrictions: string;
+  min?: string;
+  max?: string;
+};
+
+type FrontendTriggerField = WebhookPropertyOptionField & FrontendAdditionalProps & {
+  resourceOperation: AssociatedProps[];
+  options: FrontendOption[];
+};
+
+type FrontendField = FrontendRegularField | FrontendTriggerField;
+
+type FrontendProperty = WebhookProperty & FrontendAdditionalProps & {
+  resource: string;
+};
+
+type PropertyState = {
+  properties: FrontendProperty[];
+};
+
+type OptionsOption = MaxNestedFieldOption & FrontendAdditionalProps;
+
+type CollectionOption = ManyValuesGroupFieldOption & FrontendAdditionalProps;
+
+type FrontendOption = CollectionOption | OptionsOption;
+
+type FieldsState = {
+  fields: FrontendField[];
+};
+
+type FrontendAdditionalProps = {
+  key: number;
+  add?: boolean;
+  cancel?: boolean;
+};
+
+type MainParametersBuilder = MainParameters & { 
+  [key: string]: any; 
+};
