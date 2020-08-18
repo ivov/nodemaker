@@ -67,6 +67,7 @@ The Nodemaker's frontend is an Electron/Vue app in `/client`. It uses **channels
 
 Firstly, the command `npm run desktop` starts up the Electron app in `client/src/background.ts`, which serves the Vue app rooted in `main.ts` and self-registers all the inter-process communication channels in `client/channels`, namely `NodegenChannel`, `DocsgenChannel`, `PackgenChannel`, `PlacementChannel` and `EmptyChannel`.
 
+#### Interface
 <p align="center">
   <img src="images/graphs/backend-frontend-communication.png" alt="Communication between the Nodemaker's frontend and backend" />
 </p>
@@ -74,6 +75,51 @@ Firstly, the command `npm run desktop` starts up the Electron app in `client/src
 To communicate with the backend, the Electron app imports and instantiates a class called `Requester` and uses its `request` method like a `fetch` call: `requester.request(channel, argument)` sends out an argument to the backend and returns a `Promise` containing a backend operation result.
 
 The argument is sent out by the frontend's renderer process to its main process through a specific channel. Each channel registered in the Electron app satisfies `Channel.interface.ts`, so it only has a `name` for identification and a `handle` method containing all the logic (provided by the backend) to service the request.
+
+### Vue App
+
+The frontend application is written in Vue with Vuex.
+
+#### Store
+
+ The store holds all of the user's form data in seperate state objects:
+
+##### Shared
+
+- BasicInfo.vue --> basicInfo.ts
+- Fields.vue --> fields.ts
+
+##### Regular
+
+- Docs info (in BasicInfo.vue) --> docsInfo.ts
+- Resources.vue --> resource.ts
+- Operations.vue --> operations.ts
+
+##### Trigger
+
+- Properties.vue --> properties.ts
+
+#### Views
+
+There are two "paths" of views the user can go down depending on whether or not they choose to make a regular/trigger node.
+
+Each View aims to handle as little of the state logic as possible (instead leaving it up to vuex).
+
+- BasicInfo is shown initially to users, and they enter the meta parameters and the documentation parameters here.
+
+- Resources and operations are exclusively for the regular nodes, and properties are exclusively for the trigger nodes.
+
+- Fields is different depending on the node type due to the slightly different inputs and instructions needed, but they share the same store.
+
+- The Complete views allow the user to check off the different operations they want done and then generate the node. They then call methods in the mixins.
+
+### Mixins
+
+There are two mixin files: `params-build-mixin.ts` and `routes-mixin.ts`.
+
+- `params-build-mixin.ts` contains the functions that build the parameters (based on the backend specifications in `parameters.ts`) out of the existing state objects.
+
+- `routes-mixins.ts` contains functions with requester calls to the channels.
 
 <p align="center">
   <h3 align="center">Frontend dependency graph</h3>
