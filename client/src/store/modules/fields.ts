@@ -1,8 +1,6 @@
-// @ts-nocheck
-
 import Vue from 'vue';
 
-const state = {
+const state: FieldsState = {
     fields: [
         {
           key: 0,
@@ -14,32 +12,36 @@ const state = {
               cancel: false
             }
           ],
+          //@ts-ignore for empty string
           type: "",
           name: "",
           description: "",
-          default: ""
+          required: false,
+          default: "",
+          min: "",
+          max: "",
+          displayRestrictions: "",
         }
       ]
 };
 
 const getters = {
-    fields: (state: any) => {return state.fields;},
+    fields: (state: FieldsState): FrontendField[] => {return state.fields;},
 };
 
 const actions = {
-  addField({ commit }) {
-    const field = {
+  addField({ commit }: any) {
+    const field: FrontendField = {
         key: state.fields.length,
         resourceOperation: [
           {
             key: 0,
             value: "",
-            resource: "",
-            operation: "",
             add: true,
             cancel: false
           }
         ],
+        //@ts-ignore for empty string
         type: "",
         name: "",
         description: "",
@@ -49,18 +51,18 @@ const actions = {
 
       commit('pushToFields', field);
     },
-    addResourceOperation({ commit }, key) {
-      const newObj = {
+    addResourceOperation({ commit }: any, key: number) {
+      const newObj: AssociatedProps = {
         key: state.fields[key].resourceOperation.length,
-        text: "",
+        value: "",
         add: false,
         cancel: true
       };
 
       commit('pushToResourceOperation', { newObj, key });
     },
-    createOption({ commit }, fieldKey: any) {
-      const option = {
+    createOption({ commit }: any, fieldKey: number) {
+      const option: OptionsOption = {
         name: "",
         description: "",
         key: 0,
@@ -70,19 +72,20 @@ const actions = {
 
       commit('createOption', { fieldKey, option });
     },
-    addOption({ commit }, fieldKey) {
-      const option = {
+    addOption({ commit }: any, fieldKey: number) {
+      const option: OptionsOption = {
         name: "",
         description: "",
-        key: state.fields[fieldKey].options.length,
+        //@ts-ignore because of optional chaining operator
+        key: state.fields[fieldKey].options?.length,
         add: false,
         cancel: true
       };
 
       commit('pushOption', { fieldKey, option });
     },
-    createInnerOption({ commit }, { fieldKey, optionKey }) {
-      const option = {
+    createInnerOption({ commit }: any, { fieldKey, optionKey }: { fieldKey: number; optionKey: number}) {
+      const option: OptionsOption = {
         name: "",
         description: "",
         key: 0,
@@ -92,20 +95,22 @@ const actions = {
 
       commit('createInnerOption', { fieldKey, optionKey, option });
     },
-    addInnerOption({ commit }, { fieldKey, optionKey }) {
-      const option = {
+    addInnerOption({ commit }: any, { fieldKey, optionKey }: { fieldKey: number; optionKey: number}) {
+      const option: OptionsOption = {
         name: "",
         description: "",
-        key: state.fields[fieldKey].options[optionKey].options.length,
+        //@ts-ignore this will only be called on a CollectionOption
+        key: state.fields[fieldKey]?.options[optionKey].options.length,
         add: false,
         cancel: true
       };
 
       commit('pushInnerOption', { fieldKey, optionKey, option });
     },
-    createCollectionOption({ commit }, fieldKey: any) {
-      const option = {
+    createCollectionOption({ commit }: any, fieldKey: number) {
+      const option: CollectionOption = {
         key: 0,
+        //@ts-ignore for empty string
         type: "",
         name: "",
         description: "",
@@ -116,9 +121,10 @@ const actions = {
 
       commit('createOption', { fieldKey, option });
     },
-    addCollectionOption({ commit }, fieldKey) {
-      const option = {
-        key: this.fields[fieldKey].options.length,
+    addCollectionOption({ commit }: any, fieldKey: number) {
+      const option: CollectionOption = {
+        key: state.fields[fieldKey].options.length,
+        //@ts-ignore for empty string
         type: "",
         name: "",
         description: "",
@@ -132,19 +138,23 @@ const actions = {
 };
 
 const mutations = {
-    pushToResourceOperation: (state, { newObj, key }) => state.fields[key].resourceOperation.push(newObj),
-    submitResourceOperation: (state, { newObj, fieldKey }) => state.fields[fieldKey].resourceOperation = newObj,
+    toggleFieldsRequired: (state: FieldsState, { fieldKey, newValue }: { fieldKey: number; newValue: boolean}) => Vue.set(state.fields[fieldKey], 'required', newValue),
 
-    createOption: (state, { fieldKey, option }) => Vue.set(state.fields[fieldKey], 'options', [option]),
-    pushOption: (state, { fieldKey, option}) => state.fields[fieldKey].options.push(option),
-    submitOptions: (state, { fieldKey, newObj }) => state.fields[fieldKey].options = newObj,
+    pushToResourceOperation: (state: FieldsState, { newObj, key }: { newObj: AssociatedProps; key: number}) => state.fields[key].resourceOperation.push(newObj),
+    submitResourceOperation: (state: FieldsState, { newObj, fieldKey }: { newObj: AssociatedProps[]; fieldKey: number}) => state.fields[fieldKey].resourceOperation = newObj,
 
-    createInnerOption: (state, { fieldKey, optionKey, option }) => Vue.set(state.fields[fieldKey].options[optionKey], 'options', [option]),
-    pushInnerOption: (state, { fieldKey, optionKey, option }) => state.fields[fieldKey].options[optionKey].options.push(option),
-    submitInnerOptions: (state, { fieldKey, optionKey, newObj }) => state.fields[fieldKey].options[optionKey].options = newObj,
+    createOption: (state: FieldsState, { fieldKey, option }: { fieldKey: number; option: FrontendOption}) => Vue.set(state.fields[fieldKey], 'options', [option]),
+    pushOption: (state: FieldsState, { fieldKey, option} : { fieldKey: number; option: FrontendOption}) => state.fields[fieldKey].options.push(option),
+    submitOptions: (state: FieldsState, { fieldKey, newObj }: { fieldKey: number; newObj: FrontendOption[]}) => state.fields[fieldKey].options = newObj,
 
-    pushToFields: (state, field) => state.fields.push(field),
-    submitFields: (state, fields) => state.fields = fields,
+    createInnerOption: (state: FieldsState, { fieldKey, optionKey, option }: { fieldKey: number; optionKey: number; option: OptionsOption}) => Vue.set(state.fields[fieldKey].options[optionKey], 'options', [option]),
+    //@ts-ignore because this will always be a CollectionOption and the error is caused by OptionsOption
+    pushInnerOption: (state: FieldsState, { fieldKey, optionKey, option }: { fieldKey: number; optionKey: number; option: OptionsOption}) => state.fields[fieldKey].options[optionKey].options.push(option),
+    //@ts-ignore because this will always be a CollectionOption and the error is caused by OptionsOption
+    submitInnerOptions: (state: FieldsState, { fieldKey, optionKey, newObj }: { fieldKey: number; optionKey: number; newObj: OptionsOption[]}) => state.fields[fieldKey].options[optionKey].options = newObj,
+
+    pushToFields: (state: FieldsState, field: FrontendField) => state.fields.push(field),
+    submitFields: (state: FieldsState, fields: FrontendField[]) => state.fields = fields,
 };
 
 export default {
@@ -153,5 +163,4 @@ export default {
     actions,
     mutations
 }
-
 

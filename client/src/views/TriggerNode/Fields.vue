@@ -56,6 +56,13 @@
             :value=field.default
             v-model=field.default
           />
+          <SwitchComponent
+            class="my-15"
+            label="Required"
+            description=""
+            :value=field.required
+            v-on:input="toggleRequired(field.key)"
+          />
           <div v-if="field.type === 'Options' || field.type === 'Multioptions'">
             <strong>Options:</strong>
             <div class="box ml-1" v-bind:key="option.key" v-for="option in field.options">
@@ -219,21 +226,19 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { Component, Vue } from 'vue-property-decorator';
-
-import Instructions from '../../components/SharedComponents/Instructions.vue';
-import ForwardButton from '../../components/SharedComponents/ForwardButton.vue';
-import BackwardButton from '../../components/SharedComponents/BackwardButton.vue';
-import InputField from '../../components/SharedComponents/InputField.vue';
-import Dropdown from '../../components/SharedComponents/Dropdown.vue';
-import AddButton from '../../components/SharedComponents/AddButton.vue';
-import SmallButton from '../../components/SharedComponents/SmallButton.vue';
+<script>
+import Instructions from '../../components/Instructions.vue';
+import ForwardButton from '../../components/ForwardButton.vue';
+import BackwardButton from '../../components/BackwardButton.vue';
+import InputField from '../../components/InputField.vue';
+import Dropdown from '../../components/Dropdown.vue';
+import SwitchComponent from '../../components/Switch.vue';
+import AddButton from '../../components/AddButton.vue';
+import SmallButton from '../../components/SmallButton.vue';
 
 import { mapGetters, mapActions} from 'vuex';
 
-@Component({
+export default {
   name: 'Fields',
   components: {
     Instructions,
@@ -241,6 +246,7 @@ import { mapGetters, mapActions} from 'vuex';
     BackwardButton,
     InputField,
     Dropdown,
+    SwitchComponent,
     AddButton,
     SmallButton
   },
@@ -270,6 +276,10 @@ import { mapGetters, mapActions} from 'vuex';
         this.createInnerOption({ fieldKey, optionKey });
       }
     },
+    toggleRequired(fieldKey) {
+      const newValue = !this.fields[fieldKey].required;
+      this.$store.commit('toggleFieldsRequired', { fieldKey, newValue });
+    },
     removeInnerOption(fieldKey, optionKey, innerOptionKey) {
       const newObj = this.fields[fieldKey].options[optionKey].options.filter(innerOption => innerOption.key !== innerOptionKey);
       this.$store.commit('submitInnerOptions', { fieldKey, optionKey, newObj });
@@ -286,8 +296,6 @@ import { mapGetters, mapActions} from 'vuex';
       this.$store.commit('submitResourceOperation', { newObj, fieldKey});
     },
   },
-})
-
-export default class App extends Vue {}
+}
 </script>
 

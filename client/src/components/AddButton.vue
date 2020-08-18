@@ -1,21 +1,17 @@
 <template>
     <button>
         <div class="button">
-            <i class="fas fa-times-circle icon" v-if="cancel"></i>
-            <i class="fas fa-plus-circle icon" v-else></i>
+            <div>{{text}}</div>
+            <i class="fas fa-plus-circle icon"></i>
         </div>
     </button>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
-  name: 'SmallButton',
-  props: ["cancel"]
-})
-
-export default class App extends Vue {}
+<script>
+export default {
+  name: 'AddButton',
+  props: ["text"]
+}
 </script>
 
 <style scoped>
@@ -28,6 +24,6 @@ button {
     border-radius: 30px;
     color: white;
     font-weight: bold;
-    margin-left: .2rem;
+    width: 15rem;
 }
 </style>

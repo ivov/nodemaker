@@ -39,7 +39,7 @@ Major operations that do not involve generation with hygen are the services in t
 - `FilePlacer` — to place output files in the official repos,
 - `IconResizer` — to resize the selected icon candidate,
 - `ImageFetcher` — to fetch five icon candidates,
-- `ScreenshotTaker` — to takke an in-app screenshot,
+- `ScreenshotTaker` — to take an in-app screenshot,
 - `Validator` — to validate an object built on the frontend, and
 - `WorkflowCreator` — to submit a workflow on [n8n.io](https://n8n.io/workflows).
 
