@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <h2 align="center">Issue Submission Huidelines</h2>
+  <h2 align="center">Issue Submission Guidelines</h2>
 </p>
 
 <p align="center">
