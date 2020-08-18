@@ -1,4 +1,14 @@
-# Guidelines for Submitting an Issue
+<p align="center">
+  <img src="images/icons/icons8-bug-64.png" alt="Bug" />
+</p>
+
+<p align="center">
+  <h2 align="center">Issue Submission Huidelines</h2>
+</p>
+
+<p align="center">
+  Please read before submitting an issue to Nodemaker
+</p>
 
 ## Bug Report
 
