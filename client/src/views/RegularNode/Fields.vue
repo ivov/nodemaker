@@ -59,7 +59,7 @@
           <TextArea
             class="my-15"
             label="Extra Display Restrictions"
-            placeholder="{ 'Return All': true }"
+            placeholder='{ "Return All": true }'
             description="Additional display restrictions. Enter in JSON formatting"
             :value=field.displayRestrictions
             v-model=field.displayRestrictions

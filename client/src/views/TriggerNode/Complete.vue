@@ -107,7 +107,7 @@ export default {
       if(this.placeNode) {
         await this.placeFunctional();
       }
-      alert("All done! Thank you for using the nodemaker.")
+      alert("All done! Thank you for using the nodemaker. Check the developer console for more detailed logs.")
     },
   },
 }

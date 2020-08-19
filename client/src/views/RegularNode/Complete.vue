@@ -151,7 +151,7 @@ export default {
       if(this.placeDocs) {
         await this.placeDocumentation();
       }
-      alert("All done! Thank you for using the nodemaker.")
+      alert("All done! Thank you for using the nodemaker. Check the developer console for more detailed logs.")
     },
   },
 }
