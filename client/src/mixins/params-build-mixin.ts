@@ -100,7 +100,11 @@ class ParamsBuilderMixin extends Vue {
         }
 
         if(field.displayRestrictions !== "" && field.displayRestrictions !== undefined) {
-          fieldObj.extraDisplayRestriction = JSON.parse(field.displayRestrictions);
+          const strToParse = field.displayRestrictions.replace(/\n/g, "\\n")
+                .replace(/\r/g, "\\r")
+                .replace(/\t/g, "\\t")
+                .replace(/\f/g, "\\f");
+          fieldObj.extraDisplayRestriction = JSON.parse(strToParse);
         } else {
           delete fieldObj.extraDisplayRestriction;
         }
