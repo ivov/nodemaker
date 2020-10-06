@@ -27,7 +27,7 @@
     "chalk": "^4.1.0",
     "concurrently": "^5.2.0",
     "dotenv": "^8.2.0",
-    "electron": "^9.1.1",
+    "electron": "^9.3.0",
     "form-data": "^3.0.0",
     "hygen": "^5.0.3",
     "inquirer": "^7.3.1",
