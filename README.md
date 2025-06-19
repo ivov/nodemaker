@@ -1,8 +1,4 @@
 <p align="center">
-  <img src="docs/images/nodemaker-banner.png" width="315" alt="Nodemaker" />
-</p>
-
-<p align="center">
   <h1 align="center">Nodemaker</h1>
 </p>
 
@@ -24,7 +20,8 @@
   <img src="https://img.shields.io/badge/license-MIT-brightgreen">
 </p>
 
-<br/>
+> [!WARNING]
+> **This project is deprecated and no longer maintained.** Please refer to [`n8n-nodewriter`](https://github.com/ivov/nodewriter) instead.
 
 **Nodemaker** is an automatic node generator for [n8n](https://github.com/n8n-io/n8n), a workflow automation tool. Nodemaker outputs all functionality and documentation files for a node, places them in the official repos, and uploads a sample workflow to [n8n.io](https://n8n.io/workflows).
 
