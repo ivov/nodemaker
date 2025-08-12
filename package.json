@@ -31,7 +31,7 @@
     "form-data": "^3.0.0",
     "hygen": "^5.0.3",
     "inquirer": "^7.3.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "puppeteer": "^5.2.1",
     "sharp": "^0.25.4",
     "typescript-is": "^0.16.3",
